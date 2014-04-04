@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>canfar</title>
+    <title>CANFAR | VOSpace</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -125,14 +125,9 @@
 	</code></pre>
 	<h4>Mac OS-X</h4>
 	<p>You will need to install <a href="http://osxfuse.github.com/">OSX-FUSE</a>
-	  first (you will need to install this
-	  package in &#39;MacFUSE
-	  Compatibility&#39; mode, there is a
-	  selection box for this during the
-	  install) and then follow the
-	  instructions for installing the
-	  mountvofs python package (see
-	  below).</p>
+	  first (you will need to install this package in &#39;MacFUSE Compatibility&#39; mode, there is a
+	  selection box for this during the install) and then follow the instructions for installing the
+	  vos python package (see below).</p>
 	<pre><code>
 	    sudo easy_install vos
 	</code></pre>
@@ -147,33 +142,27 @@
 	<h3>Using the VOSpace command line tools</h3>
 
 	<p>Try the following commands, substituting your CADC VOSpace in for
-	  &#60;vospace&#62; (most CANFAR users have VOSpace that is the same
+	  USER (most CANFAR users have VOSpace that is the same
 	  name as their CADC user name. There are also project VOSpaces):</p>
 	<pre><code>
-	    vls vos:&#60;vospace&#62;                                 # lists the
-	    contents to the root directory of the VOSpace
-	    vcp ${HOME}/bar vos:&#60;vospace&#62;                     # copies the
-	    bar file to the root node of the VOSpace
-	    vrm vos:&#60;vospace&#62;/foo                             # removes
-	    the bar file from the VOSpace
-	    vmkdir vos:&#60;vospace&#62;/bar                          # creates a
-	    new container node (directory) called foo in the VOSpace
-	    vmv vos:&#60;vospace&#62;/bar vos:&#60;vospace&#62;/foo/          #
-	    moves the file bar into the container node foo
-	    vmv vos:&#60;vospace&#62;/foo/bar vos:&#60;vospace&#62;/foo/bar2  #
-	    changes the name of file bar to bar2 on the VOSpace
+	    vls vos:USER                             # lists the contents to the root directory of the VOSpace
+	    vcp ${HOME}/bar vos:USER                 # copies the bar file to the root node of the VOSpace
+	    vrm vos:USER/foo                         # removes the bar file from the VOSpace
+	    vmkdir vos:USER/bar                      # creates a new container node (directory) called foo in the VOSpace
+	    vmv vos:USER/bar vos:USER/foo/           # moves the file bar into the container node foo
+	    vmv vos:USER/foo/bar vos:USER/foo/bar2   # changes the name of file bar to bar2 on the VOSpace
 	</code></pre>
 	<p>Details on these commands can be found via the option</p>
 	<pre><code>vls --help</code></pre>.
 	And if you want to see a more verbose output, try 
 	<pre><code>vls -v vos:USER</code></pre>
 
-	<h3>>Using the VOSpace FUSE file system</h3>
+	<h3>Using the VOSpace FUSE file system</h3>
 
 	<p>One can also access to VOSpace as a filesystem layer.  This
 	  technique uses the &#39;FUSE&#39; package as a layer between
 	  file-system actions (like &#39;cp&#39; and &#39;rm&#39;) and the
-	  VOSpace storage system.  Using the <b>vofs</b> makes your VOSpace
+	  VOSpace storage system. Using the <b>vofs</b> makes your VOSpace
 	  appear like a filesystem.</p>
 	<p>To mount all available VOSpaces use the command:</p>
 	<pre><code>
@@ -215,18 +204,12 @@
 	  username/password, add a $HOME/.netrc file containing these lines:
 	</p>
 	<pre><code>
-	    machine www.canfar.phys.uvic.ca &#60;username&#62; password
-	    &#60;password&#62;
-	    machine www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
-	    password &#60;password&#62;
-	    machine www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
-	    password &#60;password&#62; 
-	    machine www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
-	    password &#60;password&#62;
-	    machine www3.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
-	    password &#60;password&#62;
-	    machine www4.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
-	    password &#60;password&#62;
+	    machine www.canfar.phys.uvic.ca login USER password PASSWORD
+	    machine www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+	    machine www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+	    machine www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+	    machine www3.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+	    machine www4.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
 	</code></pre>
 
 	<p>WARNING: this is not a fully secure solution.</p>
