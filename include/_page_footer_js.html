@@ -1,0 +1,90 @@
+
+<!-- Custom javascript to handle items. -->
+<script src="/en/resources/cadc-ccda.js" type="text/javascript"></script>
+
+<!--
+  TODO
+  TODO - This really should be replaced with the OpenCADC cadc.uri.js file!
+  TODO
+  -->
+<script src="/en/resources/uri.js" type="text/javascript"></script>
+
+<script src="/en/resources/cadc.user.js" type="text/javascript"></script>
+<script src="/cadcJS/javascript/cadc.util.js" type="text/javascript"></script>
+
+<!-- START OF SmartSource Data Collector TAG -->
+<!-- Copyright (c) 1996-2012 Webtrends Inc.  All rights reserved. -->
+<!-- Version: 9.4.0 -->
+<!-- Tag Builder Version: 3.3  -->
+<!-- Created: 2/21/2012 9:21:19 PM -->
+<script type="text/javascript"
+        src="http://www.nrc-cnrc.gc.ca/scripts/webtrends_external.js"></script>
+<!-- Warning: The two script blocks below must remain inline. Moving them to an external -->
+<!-- JavaScript include file can cause serious problems with cross-domain tracking.      -->
+<script type="text/javascript">
+  /*  */
+  var _tag = new WebTrends();
+  _tag.dcsGetId();
+  /*  */
+</script>
+<script type="text/javascript">
+  /*  */
+  _tag.dcsCustom = function ()
+  {
+    // Add custom parameters here.
+    //_tag.DCSext.param_name=param_value;
+    if (document.getElementById("query") && document.getElementById("query").value)
+    {
+      _tag.WT.oss = document.getElementById("query").value;
+    }
+    if (document.getElementById("fullmatch") && document.getElementById("fullmatch").innerHTML)
+    {
+      _tag.WT.oss_r = document.getElementById("fullmatch").innerHTML;
+    }
+    if (document.getElementById("partialmatch") && document.getElementById("partialmatch").innerHTML)
+    {
+      _tag.WT.oss_rp = document.getElementById("partialmatch").innerHTML;
+    }
+  }
+  _tag.dcsCollect();
+  /*  */
+</script>
+<noscript>
+  <div><img alt="" id="DCSIMG" width="1" height="1"
+            src="http://sdc.imsb.nrc.ca/dcs6bv4sbl3x2ewofywn198y7_9r5ba/njs.gif?dcsuri=http://www.nrc-cnrc.gc.ca/eng/rd/nsi/index.html&amp;WT.js=No&amp;WT.tv=9.4.0&amp;WT.dcssip=www.nrc-cnrc.gc.ca&amp;WT.ti=National%20science%20infrastructure%20(NRC%20Herzberg%2C%20Programs%20in%20Astronomy%20and%20Astrophysics)"/>
+  </div>
+</noscript>
+<!-- END OF SmartSource Data Collector TAG -->
+
+
+<!-- ScriptsStart -->
+<script type="text/javascript" src="/wet/javascript/settings.js"></script>
+<!--[if lte IE 8]>
+<script type="text/javascript" src="/wet/theme-gcwu-fegc/js/theme-ie-min.js"></script>
+<script type="text/javascript" src="/wet/javascript/pe-ap-ie-min.js"></script>
+<script type="text/javascript" src="/wet/javascript/jquerymobile/jquery.mobile-ie.min.js"></script>
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<script type="text/javascript" src="/wet/theme-gcwu-fegc/js/theme-min.js"></script>
+<script type="text/javascript" src="/wet/javascript/pe-ap-min.js"></script>
+<script type="text/javascript" src="/wet/javascript/jquerymobile/jquery.mobile.min.js"></script>
+<!--<![endif]-->
+
+<!--GoogleAnalyticsStarts-->
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-17595828-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<!--GoogleAnalyticsEnds-->
+
+<!-- ScriptsEnd -->
+
+
+<!-- endnoindex -->
