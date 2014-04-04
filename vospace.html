@@ -1,0 +1,251 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>canfar</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>canfar</h1>
+        <p>multi-cloud astronomy data processing</p>
+      </header>
+
+      <section>
+	<h1>VOSpace</h1>
+
+
+	<h2>Introduction to VOSpace</h2>
+
+	<p>VOspace is the CANFAR storage system. It is intended to be used for
+	  storing the output of the CANFAR processing system and also
+	  for sharing files between members of a collaboration. If the data you
+	  want to process
+	  is not already on a CADC archive, you can stage it on a VOSpace for
+	  further processing.
+	  Files in VOspace are mirrored in four physical locations, so they are
+	  secure against
+	  disk failure.</p>
+	<p>There are two ways to interact with VOspace. The first is with your
+	  browser
+	  via the web user interface; this is easy to use and interactive. To
+	  access your VOSpace in scripts,
+	  a command line client is available.</p>
+	<h2>Requesting a VOSpace acccount</h2>
+
+	<ol>
+	  <li>If you haven&#39;t already, request
+	    a <a href="http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/auth/register.html">CADC
+	      account</a></li>
+	  <li>Email us with your space requirements, your CADC user
+	    name and a very 2 lines justification. Please
+	    be realistic in your space requirements, if
+	    you later find that you need your quota
+	    increased, this can be done fairly
+	    easily.</li>
+	</ol>
+
+	<h2>The web user interface</h2>
+
+	<p>The web user interface should be fairly easy to use. The only part
+	  that is not completely obvious to a new user might be the permissions
+	  system.</p>
+
+	<ul>
+	  <li>To upload a file, click on &#34;Upload File&#34;. In the pop-up,
+	    click on Browse. Navigate to the file</li></ul>
+	<p>you want to upload and click on it (this behavior is slightly
+	  browser dependent).
+	  Click upload. After a pause (expect about 2 seconds + 1 second per MB
+	  of file size) the
+	  screen will refresh and your file will uploaded
+	</p>
+	<ul>
+	  <li>To download one file, click on a link and save it like you would a
+	    normal link.</li>
+	  <li>To download multiple files, tick off on the appropriate boxes on
+	    the leftmost column, or</li></ul>
+	<p>click on the top box to select all the files. Click on
+	  &#34;Download&#34;. You will
+	  be redirected to CADC download manager. You can now use a Java
+	  interface to download files simultaneously.
+	</p>
+	<ul>
+	  <li>To delete files, tick off their boxes and click on
+	    &#34;Delete&#34;.</li>
+	  <li>To set permissions on files tick off their boxes and click on
+	    &#34;Set Permissions&#34;.</li></ul>
+
+	<h2>The command line client</h2>
+	<p>The VOspace can also be accessed via some commands on a terminal or
+	  a script. They are part of the vos command line client:
+	</p>
+	<ul>
+	  <li>vos client source on <a href="https://github.com/ijiraq/cadcVOFS">GitHub</a></li>
+	  <li>vos client on <a href="https://pypi.python.org/pypi/vos">PyPi</a></li></ul>
+
+	<h3>Installation</h3>
+
+	<h4>CANFAR computers and VMs</h4>
+	<p>The latest version of the vos command line client should be already
+	  installed on the CANFAR login host and all the template VMs. If not,
+	  either file a bug. You can also install it yourself following the
+	  docs below.</p>
+	<h4>Linux based systems</h4>
+	<p>vos is most likely not part of any Linux distribution packages. So
+	  install the Python installer, PIP. It is usually called
+	  &#34;pip&#34; or &#34;python-pip&#34; depending on your
+	  distribution. Example on Ubuntu 12.04:</p>
+	<pre><code>
+	    sudo apt-get install python-pip
+	    sudo pip install -U vos
+
+
+	</code></pre>
+	<h4>RHEL 5 / CentOS 5 / Scientific Linux 5</h4>
+	<p>These antique versions still are at Python 2.4. So first, install
+	  dependencies and python-2.6 (to do only once):</p>
+	<pre><code>
+	    sudo yum install python26 python26-distribute fuse fuse-devel
+	    sudo /usr/sbin/usermod -a  -G fuse `whoami`
+	</code></pre>
+	<p>Then install or update the vos client on python-2.6:</p>
+	<pre><code>
+	    sudo easy_install-2.6 -U vos
+	</code></pre>
+	<h4>Mac OS-X</h4>
+	<p>You will need to install <a href="http://osxfuse.github.com/">OSX-FUSE</a>
+	  first (you will need to install this
+	  package in &#39;MacFUSE
+	  Compatibility&#39; mode, there is a
+	  selection box for this during the
+	  install) and then follow the
+	  instructions for installing the
+	  mountvofs python package (see
+	  below).</p>
+	<pre><code>
+	    sudo easy_install vos
+	</code></pre>
+	<p>On some OS-X installations the mountvofs command will result in an
+	  error like &#39;libfuse.dylib&#39; not found. Setting the
+	  environment variable DYLD_FALLBACK_LIBRARY_PATH can help resolve
+	  this issue:</p>
+	<pre><code>
+	    export DYLD_FALLBACK_LIBRARY_PATH=/usr/local/lib
+	</code></pre>
+
+	<h3>Using the VOSpace command line tools</h3>
+
+	<p>Try the following commands, substituting your CADC VOSpace in for
+	  &#60;vospace&#62; (most CANFAR users have VOSpace that is the same
+	  name as their CADC user name. There are also project VOSpaces):</p>
+	<pre><code>
+	    vls vos:&#60;vospace&#62;                                 # lists the
+	    contents to the root directory of the VOSpace
+	    vcp ${HOME}/bar vos:&#60;vospace&#62;                     # copies the
+	    bar file to the root node of the VOSpace
+	    vrm vos:&#60;vospace&#62;/foo                             # removes
+	    the bar file from the VOSpace
+	    vmkdir vos:&#60;vospace&#62;/bar                          # creates a
+	    new container node (directory) called foo in the VOSpace
+	    vmv vos:&#60;vospace&#62;/bar vos:&#60;vospace&#62;/foo/          #
+	    moves the file bar into the container node foo
+	    vmv vos:&#60;vospace&#62;/foo/bar vos:&#60;vospace&#62;/foo/bar2  #
+	    changes the name of file bar to bar2 on the VOSpace
+	</code></pre>
+	<p>Details on these commands can be found via the option</p>
+	<pre><code>vls --help</code></pre>.
+	And if you want to see a more verbose output, try 
+	<pre><code>vls -v vos:USER</code></pre>
+
+	<h3>>Using the VOSpace FUSE file system</h3>
+
+	<p>One can also access to VOSpace as a filesystem layer.  This
+	  technique uses the &#39;FUSE&#39; package as a layer between
+	  file-system actions (like &#39;cp&#39; and &#39;rm&#39;) and the
+	  VOSpace storage system.  Using the <b>vofs</b> makes your VOSpace
+	  appear like a filesystem.</p>
+	<p>To mount all available VOSpaces use the command:</p>
+	<pre><code>
+	    mountvofs
+	</code></pre>
+	<p>now looking in /tmp/vospace you should see a listing of all
+	  available VOSpaces that you have read access.</p>
+	<p>To mount a specific vospace use commands like:</p>
+	<pre><code>
+	    mountvofs --vospace vos:USER --mountpoint /path/to/a/directory
+	</code></pre>
+	<p>the mountvofs command creates a cache directory where local copies
+	  of files from the VOSpace are kept, as needed. If the cached version
+	  is older than the copy on VOSpace then a new version is pulled.  You
+	  can specify the size of the cache (default is 50 GBytes) and the
+	  location (default is ${HOME}/vos:VOSpace) on the command line.
+	  try:  </p>
+	<pre><code>
+	    mountvofs --help
+	</code></pre>
+	<p>for more details.</p>
+	<p>To unmount the VOSpace, use the following command:</p>
+	<pre><code>
+	    fusermount -u /path/to/a/directory   # Linux
+	    umount /path/to/a/directory          # OS-X
+	  </code>
+	</pre>
+
+	<h3>Retrieving your CADC X509 certificates</h3>
+
+	<p>To access a VOSpace, the command line client needs a
+	  certificate. These certificates are created for you when you request
+	  an account, and you can get a short-lived proxy of this certificate
+	  to access your data with the &#34;getCert&#34; command line,
+	  distributed with the vos client:</p>
+	<pre><code>getCert</code></pre>
+	<p>In batch processing, you might want to use the getCert at the start
+	  of every job. To avoid interactivity asking for your CADC
+	  username/password, add a $HOME/.netrc file containing these lines:
+	</p>
+	<pre><code>
+	    machine www.canfar.phys.uvic.ca &#60;username&#62; password
+	    &#60;password&#62;
+	    machine www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
+	    password &#60;password&#62;
+	    machine www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
+	    password &#60;password&#62; 
+	    machine www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
+	    password &#60;password&#62;
+	    machine www3.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
+	    password &#60;password&#62;
+	    machine www4.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login &#60;username&#62;
+	    password &#60;password&#62;
+	</code></pre>
+
+	<p>WARNING: this is not a fully secure solution.</p>
+	<h2>VOSpace API and access with web clients</h2>
+	<p>VOSpace is a RESTful service with an API that call be called
+	  through standard web client such as curl or wget.
+	  Please refer to the <a href="http://www.canfar.phys.uvic.ca/vospace">API Reference
+	    page</a> for more information.
+	</p>
+
+      </section>
+
+      <footer>
+	<p><small><a href="https://github.com/canfar">GitHub</a>
+	    &mdash; <a href="https://github.com/orderedlist"> GitHub pages
+              theme</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+
+  </body>
+</html>

@@ -184,7 +184,7 @@
 	<p>Let's check that the VOSpace client works by copying the SExtractor
 	  results to your VOSpace:</p>
 
-	<pre><code>vcp 1056213p.cat vos:&lt;user&gt;/
+	<pre><code>vcp 1056213p.cat vos:USER;/
 	</code></pre>
 	
 	<p>Verify that the file is properly uploaded by pointing your
@@ -204,7 +204,7 @@
 	    funpack  $1.fits.fz
 	    cp ~/sextractor-2.19.5/config/default.* .
 	    sex $1.fits -CATALOG_NAME $1.cat 
-	    vcp $1.cat vos:&lt;user&gt;/
+	    vcp $1.cat vos:USER;/
 	</code></pre>
 	
 	<p>Remember to substitute  with your CADC user account.</p>
@@ -242,11 +242,11 @@
 	<p>Before the first VM to save, you need to create the vmstore
 	  directory on you VOSpace where you will keep your VMs:</p>
 	
-	<pre><code>vmkdir vos:&lt;user&gt;/vmstore</code></pre>
+	<pre><code>vmkdir vos:USER/vmstore</code></pre>
 	
 	<p>Then save your VM with the following command:</p>
 	
-	<pre><code>sudo vmsave -t vmdemo -v &lt;user&gt;</code></pre>
+	<pre><code>sudo vmsave -t vmdemo -v USER</code></pre>
 	
 	<p>You will wait 4mn until your brand new VM has been saved. You can
 	  then check the VM on your VOSpace by again pointing
@@ -290,7 +290,7 @@
                            Arch == "x86_64" &amp;&amp; \
                            Memory &gt;= 1024 &amp;&amp; \
                            Cpus &gt;=  1
-	    +VMLoc="http://www.canfar.phys.uvic.ca/data/pub/vospace/<user>/vmstore/vmdemo.img.gz"
+	    +VMLoc="http://www.canfar.phys.uvic.ca/data/pub/vospace/USER/vmstore/vmdemo.img.gz"
 	    +VMMem="1024"
 	    +VMCPUCores="1"
 	    +VMStorage="10"
