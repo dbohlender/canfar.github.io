@@ -2,3 +2,4 @@ name: CANFAR - Astronomy on the Cloud
 pygments: true
 relative_permalinks: false
 #auto: true
+markdown: kramdown
