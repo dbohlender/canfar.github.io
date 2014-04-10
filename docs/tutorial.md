@@ -9,9 +9,7 @@ The goal of this tutorial is to show you how to:
 * store the detected sources into your VOSpace storage
 * launch batch jobs doing executing the same script with other astronomical images
 
-Setup
------
-	
+## Setup ##	
 We assume here you have the following accounts activated:
 	* a [CADC Account](http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/auth/request.html%20CADC%20account)
 	* a [CANFAR account](register.html) with access for both storage and
@@ -35,8 +33,7 @@ The canfar login host is a bastion host or jump host. You need to
 connect to it to access your VMs, the VMs are not accessible from
 outside the CADC internal network.
 
-Creating a Virtual Machine
---------------------------
+## Create a Virtual Machine ##
 
 Let's create a VM called *vmdemo*. From the
 [CANFAR Processing Page](http://www.canfar.phys.uvic.ca/processing),
@@ -54,8 +51,7 @@ from the CANFAR login host. Then click on "Running VMs", or simply
 refresh the page if you were already on it: you should see your VM and
 the private IP.
 	
-Installing software on the Virtual Machine
-------------------------------------------
+## Install software on the Virtual Machine ##
 
 You can use the ssh wrapper script to connect to the just created VM from the CANFAR login host:
 
@@ -97,8 +93,7 @@ CADC. Download and install it on your VM with the following commands:
     sudo mv funpack /usr/local/bin
     sudo chmod a+x /usr/local/bin/funpack
 	
-Test the pipeline
------------------
+## Test the pipeline ##
 
 We are now ready to do a simple test. Let's download a FITS image on
 scratch space (called *staging*), uncompress it and run SExtractor on it:
@@ -113,8 +108,8 @@ The image "1056213p.fits.fz" is a Multi-Extension FITS file with 36
 extensions, each containing data from one CCD from the CFHT Megacam
 camera. 
 	
-Store the results
------------------
+## Store the results ##
+
 We want to store the output catalogue 1056213p.cat on a persistent
 storage because the scratch space where it resides now will be wiped
 out when the VM shuts down. So we will use VOSpace to store the
@@ -136,8 +131,8 @@ Let's check that the VOSpace client works by copying the results to your VOSpace
 Verify that the file is properly uploaded by pointing your browser to
 the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui/%20VOSpace%20web%20interface).
 
-Create a script for batch
--------------------------
+## Create a script for batch ##
+
 Now we want to automate the whole procedure above in a single
 script. Paste all the commands above into one BASH script: 
 
@@ -166,8 +161,7 @@ Just as during the manual testing, verify the output, and the check
 with the VOSpace web interface on that the catalogue has been
 uploaded. 
 	
-Save the Virtual Machine
-------------------------
+## Save the Virtual Machine ##
 
 To launch batch jobs to various clusters, you will need to store your
 software stack installed on your Virtual Machine. To do this, you
@@ -193,8 +187,7 @@ check the VM on your VOSpace by again pointing to
 [your VOSpace](http://www.canfar.phys.uvic.ca/vosui/), and go to the
 vmstore directory.
 
-Configure a submission file
----------------------------
+## Configure a submission file ##
 
 Now we are ready to launch a bunch of batch processing jobs creating
 catalogues of various CFHT Megacam images and uploading the catalogues
@@ -252,8 +245,7 @@ paste the following condor submission file:
 
 Again, make sure in the script above to substitute USER by your CADC username.
 
-Submitting a processing job
----------------------------
+## Submitting a processing job ##
 
 Save the script as "mydemo.sub"and  submit your script to the condor job pool:
 	

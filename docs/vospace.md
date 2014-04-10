@@ -1,3 +1,8 @@
+---
+layout: default
+title: CANFAR | VOSpace
+---
+
 ## Introduction to VOSpace ##
 
 VOspace is the CANFAR storage system. It is intended to be used for
