@@ -1,19 +1,10 @@
-<!doctype html>
-<html>
+{% include top.html %}
 
-  <head>
-    <title>{{ page.title }}</title>
-    {% include metas.html %}
-    {% include stylesheets.html %}
-  </head>
-  
-  <body>
-    {% include nav.html %}
-    <div class="wrapper">
-      {% include header.html %}
-      {{ content }}
-      {% include footer.html %}
-    </div>
-  </body>
+<body class="wrap">
+  {% include header.html %}
 
+  {{ content }}
+
+  {% include footer.html %}
+</body>
 </html>
