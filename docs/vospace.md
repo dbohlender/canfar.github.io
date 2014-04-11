@@ -87,7 +87,7 @@ follow the instructions for installing the mountvofs python package
 
 On some OS-X installations the mountvofs command will result in an
 error like 'libfuse.dylib' not found. Setting the environment variable
-DYLD_FALLBACK_LIBRARY_PATH can help resolve this issue: 
+`DYLD_FALLBACK_LIBRARY_PATH` can help resolve this issue: 
 
 	export DYLD_FALLBACK_LIBRARY_PATH=/usr/local/lib
 
@@ -164,6 +164,7 @@ username/password, add a `$HOME/.netrc` file containing these lines:
 WARNING: this is not a fully secure solution.
 
 ### VOSpace API and access with web clients ###
+
 VOSpace is a RESTful service with an API that call be called through
 standard web client such as curl or wget.
 Please refer to the [API Reference]([http://www.canfar.phys.uvic.ca/vospace) for more information. 
