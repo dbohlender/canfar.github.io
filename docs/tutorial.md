@@ -1,19 +1,21 @@
 ---
-layout: default
-title: CANFAR | Tutorial
+layout: docs
+title: Tutorial
+permalink: /docs/tutorial/
 ---
 
 The goal of this tutorial is to show you how to:
-* create a Virtual Machine on CANFAR
-* make with a very simple script which will download public astronomical image and detect sources
-* store the detected sources into your VOSpace storage
-* launch batch jobs doing executing the same script with other astronomical images
+- create a Virtual Machine on CANFAR
+- make with a very simple script which will download public astronomical image and detect sources
+- store the detected sources into your VOSpace storage
+- launch batch jobs doing executing the same script with other astronomical images
 
-## Setup ##	
+## Setup
 We assume here you have the following accounts activated:
-	* a [CADC Account](http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/auth/request.html%20CADC%20account)
-	* a [CANFAR account](register.html) with access for both storage and
-	  processing on CANFAR. 
+- a [CADC Account](http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/auth/request.html%20CADC%20account)
+- a [CANFAR account](register.html) with access for both storage and
+  processing on CANFAR.
+  
 They are both with the same username which we will refer to the CADC username.
 Replace USER with your CADC username. Then connect to to the canfar
 host with your CADC username and password:
@@ -33,17 +35,19 @@ The canfar login host is a bastion host or jump host. You need to
 connect to it to access your VMs, the VMs are not accessible from
 outside the CADC internal network.
 
-## Create a Virtual Machine ##
+## Create a Virtual Machine
 
 Let's create a VM called *vmdemo*. From the
 [CANFAR Processing Page](http://www.canfar.phys.uvic.ca/processing),
 login with your CADC credentials, and create a VM using the web
-interface: 
-* Choose a **VM Name** - enter *vmdemo*
-* Choose a **Template VM** - the first one on the list (Scientific Linux 5) works fine
-* Leave **Processing Cores**, **Memory** and **Staging Disk Space** to their default values
-* Copy the ssh key from the canfar login host you created above ($HOME/.ssh/id_rsa.pub) to the "Public SSH Key" entry box 
-* Click **Create**
+interface:
+
+- Choose a **VM Name** - enter *vmdemo*
+- Choose a **Template VM** - the first one on the list (Scientific Linux 5) works fine
+- Leave **Processing Cores**, **Memory** and **Staging Disk Space** to their default values
+- Copy the ssh key from the canfar login host you created above
+($HOME/.ssh/id_rsa.pub) to the "Public SSH Key" entry box
+- Click **Create**
 	
 Wait a few minutes for an email that will tell you the VM is ready and
 will give you a private IP address for the VM that you can access only
@@ -51,13 +55,15 @@ from the CANFAR login host. Then click on "Running VMs", or simply
 refresh the page if you were already on it: you should see your VM and
 the private IP.
 	
-## Install software on the Virtual Machine ##
+## Install software on the Virtual Machine
 
-You can use the ssh wrapper script to connect to the just created VM from the CANFAR login host:
+You can use the ssh wrapper script to connect to the just created VM
+from the CANFAR login host:
 
 	vmssh vmdemo
 
-or follow this [guide](vmacess.html) for a more graphical way to access the VM through the browser.
+or follow this [guide](vmacess) for a more graphical way to
+access the VM through the browser.
 
 The VM operating system has only a set of minimal packages. For this
 tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor)
@@ -93,7 +99,7 @@ CADC. Download and install it on your VM with the following commands:
     sudo mv funpack /usr/local/bin
     sudo chmod a+x /usr/local/bin/funpack
 	
-## Test the pipeline ##
+## Test the pipeline
 
 We are now ready to do a simple test. Let's download a FITS image on
 scratch space (called *staging*), uncompress it and run SExtractor on it:
@@ -108,7 +114,7 @@ The image "1056213p.fits.fz" is a Multi-Extension FITS file with 36
 extensions, each containing data from one CCD from the CFHT Megacam
 camera. 
 	
-## Store the results ##
+## Store the results
 
 We want to store the output catalogue 1056213p.cat on a persistent
 storage because the scratch space where it resides now will be wiped
@@ -120,7 +126,9 @@ your VM to automate CADC and canfar credentials calls:
 	
 	scp canfar.dao.nrc.ca:.netrc ${HOME}/
 
-On the VM, download a proxy [X.509 certificate](http://en.wikipedia.org/wiki/X.509) for 7 days with the following command:
+On the VM, download a proxy
+[X.509 certificate](http://en.wikipedia.org/wiki/X.509) for 7 days
+with the following command:
 
 	getCert
 	
@@ -129,13 +137,14 @@ Let's check that the VOSpace client works by copying the results to your VOSpace
 	vcp 1056213p.cat vos:USER
 	
 Verify that the file is properly uploaded by pointing your browser to
-the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui/%20VOSpace%20web%20interface).
+the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui/%20VOSpace%20web%20interface). 
 
-## Create a script for batch ##
+## Create a script for batch
 
 Now we want to automate the whole procedure above in a single
 script. Paste all the commands above into one BASH script: 
 
+{% highlight bash %}
 	#!/bin/bash
 	cd ${TMPDIR}
 	wget -O $1.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData?archive=CFHT&amp;asf=true&amp;file_id='$1
@@ -143,7 +152,8 @@ script. Paste all the commands above into one BASH script:
 	cp ~/sextractor-2.19.5/config/default.* .
 	sex $1.fits -CATALOG_NAME $1.cat 
 	vcp $1.cat vos:USER;/
-	
+{% endhighlight %}
+
 Remember to substitute USER with your CADC user account.
 	
 This script runs all the commands, one after the other, and takes only
@@ -153,7 +163,8 @@ on the CADC CFHT archive. Save your script which we will name
 
 	chmod +x mydemo.bash
 	
-Now let's test the newly created script with a different file ID. If the script is on your home directory type:
+Now let's test the newly created script with a different file ID. If
+the script is on your home directory type: 
 	
 	${HOME}/mydemo.bash 1056214p
 
@@ -161,7 +172,7 @@ Just as during the manual testing, verify the output, and the check
 with the VOSpace web interface on that the catalogue has been
 uploaded. 
 	
-## Save the Virtual Machine ##
+## Save the Virtual Machine
 
 To launch batch jobs to various clusters, you will need to store your
 software stack installed on your Virtual Machine. To do this, you
@@ -187,7 +198,7 @@ check the VM on your VOSpace by again pointing to
 [your VOSpace](http://www.canfar.phys.uvic.ca/vosui/), and go to the
 vmstore directory.
 
-## Configure a submission file ##
+## Configure a submission file
 
 Now we are ready to launch a bunch of batch processing jobs creating
 catalogues of various CFHT Megacam images and uploading the catalogues
@@ -208,7 +219,7 @@ given CADC CFHT file id. We will do it for 3 CFHT images with the file
 ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify
 the configuration file listed below. Fire up your favorite editor to
 paste the following condor submission file:
-	
+
 	    Universe   = vanilla
 	    Executable = mydemo.bash
 	    should_transfer_files = YES
@@ -245,13 +256,15 @@ paste the following condor submission file:
 
 Again, make sure in the script above to substitute USER by your CADC username.
 
-## Submitting a processing job ##
+## Submitting a processing job
 
-Save the script as "mydemo.sub"and  submit your script to the condor job pool:
+Save the script as "mydemo.sub" and  submit your script to the condor
+job pool:
 	
 	condor_submit mydemo.sub
 
-Count the dots, there should be 3. Wait a couple minutes. Find where your jobs stand on the queue:
+Count the dots, there should be 3. Wait a couple minutes. Find where
+your jobs stand on the queue: 
 
 	condor_q
 
@@ -265,9 +278,9 @@ If your job  is running (job status is R), you can connect to your running job:
 
 and you'll end up in the `$TMPDIR`  directory. The interesting files are:
 
-* `_condor_stderr` on the VM will become `mydemo.err` on the login host
-* `_condor_stdout` on the VM will become `mydemo.out` on the login host
-* `condor_exec.exe` was your script `mydemo.bash`
+- `_condor_stderr` on the VM will become `mydemo.err` on the login host
+- `_condor_stdout` on the VM will become `mydemo.out` on the login host
+- `condor_exec.exe` was your script `mydemo.bash`
 
 Once you have no more jobs on the queue, check the logs and output
 files `mydemo.*` on the login host, and check on your VOSpace browser

@@ -1,6 +1,7 @@
 ---
-layout: default
-title: CANFAR | VM Access
+layout: docs
+title: VM Access
+permalink: /docs/vmaccess
 ---
 
 Access to the canfar hosts is limited to SSH (Secure Shell). SSH is a
@@ -9,9 +10,9 @@ local machine, and any remote machines where you need either
 interactive or programmatic connections. SSH has a client-server
 architecture.
 
-## SSH Desktop Setup ##
+## SSH Desktop Setup
 
-### Basic SSH configuration ###
+### Basic SSH configuration
 
 On the canfar login host, you have probably created your ssh key with
 either the `canfarsetup` command or with a `ssh-keygen` command. For
@@ -29,49 +30,49 @@ desktop/laptop .ssh/config file:
 
     Host canfar
       Hostname canfar.dao.nrc.ca
-      User <CADC_USERNAME>
+      User USER
 
     Host 172.22.128.*
-      User <CADC_USERNAME>
+      User USER
       ProxyCommand ssh canfar -W %h:%p
 
 With these commands, you can connect to the canfar login host simply
 with `ssh canfar` command, and connect directly to the VM with `ssh VM IP` command.
 
-### Advanced SSH configuration ###
+### Advanced SSH configuration
 
 For a more advanced setup, you can add these options to your
 `~/.ssh/config`. Add them to either each "Host" individually, or
 defining a "Host \*" section that will apply for all: 
 
-* allow X windows launched from your VM to appear:
+- allow X windows launched from your VM to appear:
 
-    ForwardX11 yes
-    ForwardX11Trusted yes
+        ForwardX11 yes
+        ForwardX11Trusted yes
 
-* use agent forwarding to avoid typing passphrases all the time:
+- use agent forwarding to avoid typing passphrases all the time:
 
-    ForwardAgent yes
+		ForwardAgent yes
 
-* re-use existing ssh connections:
+- re-use existing ssh connections:
 
-    ControlMaster auto
-    ControlPath ~/.ssh/control/%h-%l-%p
-    ControlPersist 3600
+		ControlMaster auto
+		ControlPath ~/.ssh/control/%h-%l-%p
+		ControlPersist 3600
 
-and create your directory for the sessions:
+  and create your directory for the sessions:
 
-    mkdir ~/.ssh/control
+		mkdir ~/.ssh/control
 
-* If you need to have several private keys add:
+- If you need to have several private keys add:
 
-    IdentityFile /full/path/to/my/private/key
+		IdentityFile /full/path/to/my/private/key
 
-* If you are often losing connections, you could add:
+- If you are often losing connections, you could add:
 
-    ServerAliveInterval 30
+		ServerAliveInterval 30
 
-## Command-line connection to the VMs (interactive and batch) ##
+## Command-line connection to the VMs (interactive and batch)
 
 
 You can access the CANFAR configuration VM by simply follow the basic
@@ -90,9 +91,9 @@ wherever it is running from the canfar login host:
 
     condor_ssh_to_job JOB_ID
 
-## Graphical (VNC) connection to the interactive VMs ##
+## Graphical (VNC) connection to the interactive VMs
 
-### Using the CANFAR web interface ###
+### Using the CANFAR web interface
 
 You can access the CANFAR configuration VM using only your browser
 using the Virtual Network Computing (VNC) protocol. The CANFAR web
@@ -122,40 +123,40 @@ use the CANFAR web interface VNC client:
     choose one if it is the first time on this session, or enter the
     same one as you entered initially for this session. 
 
-### Other possible VNC connections ###
+### Other possible VNC connections
 
 You might have a more pleasant experience using other VNC clients,
 such as more native to your operating system. One way to do it is to
 use ssh tunnelling. 
 
-* For the ssh server, set canfar.dao.nrc.ca, with your CADC user name
-* For the VNC server set to `VM_IP:5901`
-* You will need to start the VNC server on your VM, by either using
+- For the ssh server, set canfar.dao.nrc.ca, with your CADC user name
+- For the VNC server set to `VM_IP:5901`
+- You will need to start the VNC server on your VM, by either using
   the CANFAR web VNC graphical client mentioned above, or running this
   command: 
 
-ssh VM_IP vncserver
+		ssh VM_IP vncserver
 
 Now you need a VNC client on your desktop. Here are some examples of
 known to be good VNC clients for Linux and OSX: 
 
-#### Linux ####
+#### Linux
 
-* Install Remmina, then launch it
-* From Reminna, click "Create a new profile" with:
+- Install Remmina, then launch it
+- From Reminna, click "Create a new profile" with:
 
-    Basic -> Server: VM_IP:5901
-    Basic -> Username: USER
-    SSH -> Enable SSH tunnel: yes
-    SSH -> SSH Server->Custom->Server: canfar.dao.nrc.ca
-    SSH -> SSH Authentification->Public Key(automatic): yes
+		Basic -> Server: VM_IP:5901
+		Basic -> Username: USER
+		SSH -> Enable SSH tunnel: yes
+		SSH -> SSH Server->Custom->Server: canfar.dao.nrc.ca
+		SSH -> SSH Authentification->Public Key(automatic): yes
 
-#### Mac OS-X ####
+#### Mac OS-X
 
-* Create an ssh tunnel (assumes the ssh configuration above):
+- Create an ssh tunnel (assumes the ssh configuration above):
 
-ssh -f -N -L 5902:VM_IP:5901 canfar
+		ssh -f -N -L 5902:VM_IP:5901 canfar
 
-* Launch safari and point your it to: [vnc://localhost:5902](vnc://localhost:5902)
-* Once you're done, kill your ssh tunnel (find the process id, then kill)
+- Launch safari and point your it to: [vnc://localhost:5902](vnc://localhost:5902)
+- Once you're done, kill your ssh tunnel (find the process id, then kill)
 
