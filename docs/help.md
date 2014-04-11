@@ -1,3 +1,8 @@
+---
+layout: docs
+title: Support
+permalink: /docs/help/
+---
 
 The CANFAR system is maintained by the [CADC](http://www.cadc.hia.nrc.gc.ca).
 
