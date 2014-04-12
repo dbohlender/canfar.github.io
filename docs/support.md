@@ -4,16 +4,10 @@ title: Support
 permalink: /docs/help/
 ---
 
-The CANFAR system is maintained by the [CADC](http://www.cadc.hia.nrc.gc.ca).
+The CANFAR system is maintained by the [CADC](http://www.cadc.hia.nrc.gc.ca/).
 
-If you are interested in getting a CANFAR computing account or a VOSpace account (or both) follow these instructions:
-
-1. [Request a CADC account](http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/auth/register.html),
-   if you don't already have one.
-2. [File a new account issue](mailto:canfar@uvic.ca)
-   explaining your computing and storage requirements,
-   providing your CADC user name and a very brief justification (1 or
-   2 sentences). If we need more information we will contact you.
+If you are interested in getting a CANFAR computing account or a
+VOSpace account (or both) follow these [instructions](/docs/register/).
 
 ## Chat Room
 
@@ -34,6 +28,5 @@ get help quickly. You need to:
     - Windows: pidgin, Google talk
 
 3. join the chat room with the following settings:
-	- Room: canfar
-    - Server: conference.jabber.org
-
+	- Room: `canfar`
+    - Server: `conference.jabber.org`

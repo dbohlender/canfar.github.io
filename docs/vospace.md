@@ -7,26 +7,20 @@ permalink: /docs/vospace/
 ## Introduction to VOSpace
 
 VOspace is the CANFAR storage system , an implementation of	the
-[Virtual Observatory Specification](http://www.ivoa.net/Documents/VOSpace/). It
-is intended to be used for storing the output of the CANFAR processing
+[Virtual Observatory Specification](http://www.ivoa.net/Documents/VOSpace/).
+It is intended to be used for storing the output of the CANFAR processing
 system and also for sharing files between members of a
 collaboration. If the data you want to process is not already on a
 CADC archive, you can stage it on a VOSpace for further processing.
 Files in VOspace are mirrored in four physical locations, so they are
 secure against disk failure.
 
-There are two ways to interact with VOspace. The first is with your browser
-via the web user interface; this is easy to use and interactive. To
-access your VOSpace in scripts, a command line client is available.
+You will need to [register](/docs/register/).
 
-## Requesting a VOSpace acccount
-
-1. If you haven't already, request a [CADC account](http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/auth/register.html)
-2. Send an e-mail to [CANFAR](mailto:canfar@uvic.ca) with your space
- requirements, your CADC user name and a very 2 lines
- justification. Please be realistic in your space requirements, if you
- later find that you need your quota increased, this can be done
- fairly easily.
+There are two ways to interact with VOspace. The first is with your
+browser via the web user interface. The web interface is familiar for
+most people to use and interactive. To access your VOSpace in scripts,
+a command line client is available.
 
 ## The web user interface
 
@@ -38,9 +32,9 @@ system.
 **Browse**. Navigate to the file you want to upload and click on it
 (this behavior is slightly browser dependent). Click **Upload**. After
 a pause (expect about 2 seconds + 1 second per MB of file size) the
-screen will refresh and your file will uploaded 
+screen will refresh and your file will uploaded.
 - To download one file, click on a link and save it like you would a
-  normal link. 
+normal link. 
 - To download multiple files, tick off on the appropriate boxes on the
 leftmost column, or click on the top box to select all the
 files. Click on **Download**. You will be redirected to CADC download
@@ -52,9 +46,8 @@ simultaneously.
 ## The command line client
 
 The VOspace can also be accessed via some commands on a terminal or a
-script. They are part of the vos command line client: 
-- [PyPi](https://pypi.python.org/pypi/vos) released versions
-- [GitHub source](https://github.com/ijiraq/cadcVOFS) vos client
+script. They are part of the [vos](https://github.com/ijiraq/cadcVOFS)
+command line client.
 
 ### Installation
 
@@ -67,22 +60,24 @@ below.
 
 #### Linux based systems (fairly recent)
 
-vos is most likely not part of any Linux distribution packages. So
-install the Python installer, PIP. It is usually called "pip" or
-"python-pip" depending on your distribution. Example on Ubuntu 12.04: 
+vos is most likely not part of any Linux distribution packages, but
+it is part of [PyPi](https://pypi.python.org/pypi/vos). You then to
+install a Python installer such as PIP or easy_install. It is usually
+called `pip` or `python-pip` depending on your distribution. Example
+on Ubuntu:
 
 	sudo apt-get install python-pip
 	sudo pip install -U vos
 
 #### RHEL 5 / CentOS 5 / Scientific Linux 5
 
-These antique versions still are at Python 2.4. So first, install
-dependencies and python-2.6 (to do only once):
+The default Python version on these antique distributions still are at
+Python 2.4, so you need to install dependencies and Python 2.6:
 
 	sudo yum install python26 python26-distribute fuse fuse-devel
 	sudo /usr/sbin/usermod -a  -G fuse `whoami`
 
-Then install or update the vos client on python-2.6:
+Then install or update the vos client on Python 2.6:
 
 	sudo easy_install-2.6 -U vos
 
@@ -108,12 +103,18 @@ Try the following commands, substituting your CADC VOSpace in for
 VOSPACE (most CANFAR users have VOSpace that is the same name as
 their CADC user name. There are also project VOSpaces): 
 
-	vls vos:VOSPACE                               # lists the contents to the root directory of VOSPACE
-	vcp ${HOME}/bar vos:VOSPACE                   # copies the bar file to the root node of VOSPACE
-	vrm vos:VOSPACE/foo                           # removes the bar file from VOSPACE
-	vmkdir vos:VOSPACE/bar                        # creates a new container node (directory) called foo in VOSPACE
-	vmv vos:VOSPACE/bar vos:VOSPACE/foo/          # moves the file bar into the container node foo
-	vmv vos:VOSPACE/foo/bar vos:VOSPACE/foo/bar2  # changes the name of file bar to bar2 on the VOSpace
+    # lists the contents to the root directory of VOSPACE
+	vls vos:VOSPACE
+	# copies the bar file to the root node of VOSPACE
+	vcp ${HOME}/bar vos:VOSPACE
+	# removes the bar file from VOSPACE
+	vrm vos:VOSPACE/foo
+	# creates a new container node (directory) called foo in VOSPACE
+	vmkdir vos:VOSPACE/bar
+	# moves the file bar into the container node foo
+	vmv vos:VOSPACE/bar vos:VOSPACE/foo/
+	# changes the name of file bar to bar2 on the VOSpace
+	vmv vos:VOSPACE/foo/bar vos:VOSPACE/foo/bar2
 
 Details on these commands can be found via the `--help` option,
 e.g. `vls --help`. And if you want to see a more verbose
@@ -121,10 +122,10 @@ output, try `vls -v vos:USER`
 
 ### Using the VOSpace FUSE file system
 
-One can also access to VOSpace as a filesystem layer.  This technique
-uses the 'FUSE' package as a layer between file-system actions (like
-'cp' and 'rm') and the VOSpace storage system.  Using the VOFS
-makes your VOSpace appear like a filesystem. 
+One can also access to VOSpace as a filesystem. This technique uses a
+[FUSE](http://en.wikipedia.org/wiki/Filesystem_in_Userspace) layer
+between file-system actions and the VOSpace storage system. Using
+the VOFS makes your VOSpace appear like a regular filesystem.
 
 To mount all available VOSpaces use the command:
 
@@ -166,19 +167,18 @@ vos client:
 In batch processing, you might want to use the getCert at the start of
 every job. To avoid interactivity asking for your CADC
 username/password, add a `$HOME/.netrc` file containing these lines: 
-
-	machine www.canfar.phys.uvic.ca USER password PASSWORD
-	machine www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
-	machine www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD 
-	machine www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
-	machine www3.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
-	machine www4.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
-
+{% highlight text %}
+machine www.canfar.phys.uvic.ca USER password PASSWORD
+machine www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+machine www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+machine www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+machine www3.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+machine www4.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
+{% endhighlight %}
 WARNING: this is not a fully secure solution.
 
 ### VOSpace API and access with web clients
 
 VOSpace is a RESTful service with an API that call be called through
 standard web client such as curl or wget.
-Please refer to the
-[API Reference]([http://www.canfar.phys.uvic.ca/vospace) for more information. 
+Please refer to the [API Reference]([http://www.canfar.phys.uvic.ca/vospace) for more information. 

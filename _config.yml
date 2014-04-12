@@ -1,14 +1,14 @@
-name: canfar - multi-cloud astronomy data processing
+name: canfar | multi-cloud astronomy
 highlighter: pygments
 permalink: /news/:year/:month/:day/:title/
 relative_permalinks: false
 markdown: kramdown
 repository: https://github.com/canfar
-help_url: /docs/help
+support: /docs/support/
 url: http://canfar.github.io/
 description: Process astronomy data on the cloud
 login: http://www.canfar.phys.uvic.ca/canfar/
+exclude: docs_old
 
 kramdown:
   input: GFM
-  

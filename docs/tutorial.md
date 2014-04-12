@@ -5,20 +5,17 @@ permalink: /docs/tutorial/
 ---
 
 The goal of this tutorial is to show you how to:
+
 - create a Virtual Machine on CANFAR
 - make with a very simple script which will download public astronomical image and detect sources
 - store the detected sources into your VOSpace storage
 - launch batch jobs doing executing the same script with other astronomical images
 
 ## Setup
-We assume here you have the following accounts activated:
-- a [CADC Account](http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/auth/request.html%20CADC%20account)
-- a [CANFAR account](register.html) with access for both storage and
-  processing on CANFAR.
-  
-They are both with the same username which we will refer to the CADC username.
-Replace USER with your CADC username. Then connect to to the canfar
-host with your CADC username and password:
+
+We assume here you have [registered](/docs/register), so you got a
+CADC username `USER`. Then connect to to the canfar login host with
+your CADC username and password:
 
 	ssh USER@canfar.dao.nrc.ca
 
@@ -27,10 +24,10 @@ script to make your life easier using VOSpace and certificates.
 	
 	canfarsetup
 
-It generates a proxy X.509 certificate ($HOME/.ssl/cadcproxy.pem)
-to access your VOSpace, a file ($HOME/.netrc) to automatically
-connect to CANFAR web services, and an ssh key pair
-($HOME/.ssh/id_rsa.*) to access your Virtual Machines (VMs).
+It will generate a proxy for your [X.509 certificate](http://en.wikipedia.org/wiki/X.509) in
+`$HOME/.ssl/cadcproxy.pem` to access your VOSpace, a `$HOME/.netrc`
+file to automatically connect to CANFAR web services, and an ssh key
+pair `$HOME/.ssh/id_rsa.*` to access your Virtual Machines (VMs).
 The canfar login host is a bastion host or jump host. You need to
 connect to it to access your VMs, the VMs are not accessible from
 outside the CADC internal network.
@@ -43,15 +40,15 @@ login with your CADC credentials, and create a VM using the web
 interface:
 
 - Choose a **VM Name** - enter *vmdemo*
-- Choose a **Template VM** - the first one on the list (Scientific Linux 5) works fine
+- Choose a **Template VM** - the first one on the list works fine
 - Leave **Processing Cores**, **Memory** and **Staging Disk Space** to their default values
 - Copy the ssh key from the canfar login host you created above
-($HOME/.ssh/id_rsa.pub) to the "Public SSH Key" entry box
+  `$HOME/.ssh/id_rsa.pub` to the **Public SSH Key** entry box
 - Click **Create**
 	
-Wait a few minutes for an email that will tell you the VM is ready and
+Wait a few minutes for an email that will tell you your VM is ready and
 will give you a private IP address for the VM that you can access only
-from the CANFAR login host. Then click on "Running VMs", or simply
+from the CANFAR login host. Then click on **Running VMs**, or simply
 refresh the page if you were already on it: you should see your VM and
 the private IP.
 	
@@ -62,13 +59,12 @@ from the CANFAR login host:
 
 	vmssh vmdemo
 
-or follow this [guide](vmacess) for a more graphical way to
-access the VM through the browser.
+or follow this [guide](/docs/vmacess/) for other ways access the VM
+such as VNC.
 
 The VM operating system has only a set of minimal packages. For this
-tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor)
-package to create catalogues of stars and galaxies. We will install it
-from source for illustration purpose:
+tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to
+create catalogues of stars and galaxies. We will install it from source for illustration purpose:
 	
     wget http://www.astromatic.net/download/sextractor/sextractor-2.19.5.tar.gz
     tar xf sextractor-2.19.5.tar.gz
@@ -90,10 +86,9 @@ Now we can finish up our SExtractor installation
 	make
 	sudo make install
 
-Most FITS images from CADC come compressed in the fz
-format. SExtractor reads uncompressed images only, so we also need the
-`funpack` executable from CFITSIO to uncompress data from
-CADC. Download and install it on your VM with the following commands:
+Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the
+[funpack](http://heasarc.nasa.gov/fitsio/fpack/) utility to uncompress
+data from CADC. Download and install it on your VM with the following commands:
 	
     wget http://heasarc.gsfc.nasa.gov/fitsio/fpack/bin/pc_linux_64bit/funpack
     sudo mv funpack /usr/local/bin
@@ -110,13 +105,13 @@ scratch space (called *staging*), uncompress it and run SExtractor on it:
 	funpack 1056213p.fits.fz
 	sex 1056213p.fits -CATALOG_NAME 1056213p.cat 
 	
-The image "1056213p.fits.fz" is a Multi-Extension FITS file with 36
+The image `1056213p.fits.fz` is a Multi-Extension FITS file with 36
 extensions, each containing data from one CCD from the CFHT Megacam
 camera. 
 	
 ## Store the results
 
-We want to store the output catalogue 1056213p.cat on a persistent
+We want to store the output catalogue `1056213p.cat` on a persistent
 storage because the scratch space where it resides now will be wiped
 out when the VM shuts down. So we will use VOSpace to store the
 result. To access VOSpace, we need a proxy authorization of your
@@ -124,11 +119,10 @@ behalf to store files. If you ran `canfarsetup` and answered yes to
 create a `.netrc` file, you can copy it from the CANFAR login host to
 your VM to automate CADC and canfar credentials calls: 
 	
-	scp canfar.dao.nrc.ca:.netrc ${HOME}/
+	scp canfar.dao.nrc.ca:.netrc ~/
 
-On the VM, download a proxy
-[X.509 certificate](http://en.wikipedia.org/wiki/X.509) for 7 days
-with the following command:
+On the VM, download a proxy certificate for 10 days with the following
+command:
 
 	getCert
 	
@@ -145,13 +139,13 @@ Now we want to automate the whole procedure above in a single
 script. Paste all the commands above into one BASH script: 
 
 {% highlight bash %}
-	#!/bin/bash
-	cd ${TMPDIR}
-	wget -O $1.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData?archive=CFHT&amp;asf=true&amp;file_id='$1
-	funpack  $1.fits.fz
-	cp ~/sextractor-2.19.5/config/default.* .
-	sex $1.fits -CATALOG_NAME $1.cat 
-	vcp $1.cat vos:USER;/
+#!/bin/bash
+cd ${TMPDIR}
+wget -O $1.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData?archive=CFHT&amp;asf=true&amp;file_id='$1
+funpack  $1.fits.fz
+cp ~/sextractor-2.19.5/config/default.* .
+sex $1.fits -CATALOG_NAME $1.cat 
+vcp $1.cat vos:USER;/
 {% endhighlight %}
 
 Remember to substitute USER with your CADC user account.
@@ -166,7 +160,7 @@ on the CADC CFHT archive. Save your script which we will name
 Now let's test the newly created script with a different file ID. If
 the script is on your home directory type: 
 	
-	${HOME}/mydemo.bash 1056214p
+	~/mydemo.bash 1056214p
 
 Just as during the manual testing, verify the output, and the check
 with the VOSpace web interface on that the catalogue has been
@@ -179,11 +173,11 @@ software stack installed on your Virtual Machine. To do this, you
 simply save the full Virtual Machine into one file, then upload it to
 your VOSpace.
 	
-Your VOSpace directory needs to be public. Go
+Your VOSpace directory needs to be public. Go to
 [your VOSpace](http://www.canfar.phys.uvic.ca/vosui) then one
 directory up, and change the permissions by clicking on the folder
-icon next to your VOSpace name. 
-	
+icon next to your VOSpace name.
+
 Before the first VM to save, you need to create the vmstore directory
 on you VOSpace where you will keep your VMs: 
 	
@@ -193,10 +187,9 @@ Then save your VM with the following command:
 	
 	sudo vmsave -t vmdemo -v USER
 	
-You will wait 4mn until your brand new VM has been saved. You can then
-check the VM on your VOSpace by again pointing to
-[your VOSpace](http://www.canfar.phys.uvic.ca/vosui/), and go to the
-vmstore directory.
+You will wait 4min until your brand new VM has been saved. You can then
+check the VM on [your VOSpace](http://www.canfar.phys.uvic.ca/vosui/),
+and go to the `vmstore` directory.
 
 ## Configure a submission file
 
@@ -220,45 +213,47 @@ ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify
 the configuration file listed below. Fire up your favorite editor to
 paste the following condor submission file:
 
-	    Universe   = vanilla
-	    Executable = mydemo.bash
-	    should_transfer_files = YES
-	    when_to_transfer_output = ON_EXIT
-	    RunAsOwner = True
-	    getenv = True
-	    transfer_output_files = /dev/null
-	    Requirements = VMType =?= "vmdemo" && \
-                           Arch == "x86_64" && \
-                           Memory >= 1024 && \
-                           Cpus >=  1
-	    +VMLoc="http://www.canfar.phys.uvic.ca/data/pub/vospace/USER/vmstore/vmdemo.img.gz"
-	    +VMMem="1024"
-	    +VMCPUCores="1"
-	    +VMStorage="10"
+{% highlight text %}
+Universe   = vanilla
+Executable = mydemo.bash
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+RunAsOwner = True
+getenv = True
+transfer_output_files = /dev/null
+Requirements = VMType =?= "vmdemo" && \
+               Arch == "x86_64" && \
+               Memory >= 1024 && \
+               Cpus >=  1
++VMLoc="http://www.canfar.phys.uvic.ca/data/pub/vospace/USER/vmstore/vmdemo.img.gz"
++VMMem="1024"
++VMCPUCores="1"
++VMStorage="10"
 
-	    Arguments = 1056215p
-	    Log = 1056215p.log
-	    Output = 1056215p.out
-	    Error = 1056215p.err
-	    Queue
+Arguments = 1056215p
+Log = 1056215p.log
+Output = 1056215p.out
+Error = 1056215p.err
+Queue
 
-	    Arguments = 1056216p
-	    Log = 1056216p.log
-	    Output = 1056216p.out
-	    Error = 1056216p.err
-	    Queue
+Arguments = 1056216p
+Log = 1056216p.log
+Output = 1056216p.out
+Error = 1056216p.err
+Queue
 
-	    Arguments = 1056217p
-	    Log = 1056217p.log
-	    Output = 1056217p.out
-	    Error = 1056217p.err
-	    Queue
+Arguments = 1056217p
+Log = 1056217p.log
+Output = 1056217p.out
+Error = 1056217p.err
+Queue
+{% endhighlight %}
 
 Again, make sure in the script above to substitute USER by your CADC username.
 
 ## Submitting a processing job
 
-Save the script as "mydemo.sub" and  submit your script to the condor
+Save the submission file as `mydemo.sub` and  submit your jobs to the condor
 job pool:
 	
 	condor_submit mydemo.sub
