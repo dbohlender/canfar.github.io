@@ -7,7 +7,7 @@ repository: https://github.com/canfar
 help_url: /docs/help
 url: http://canfar.github.io/
 description: Process astronomy data on the cloud
-login: http://www.canfar.phys.uvic.ca/canfar/login.html?target=/canfar/
+login: http://www.canfar.phys.uvic.ca/canfar/
 
 kramdown:
   input: GFM
