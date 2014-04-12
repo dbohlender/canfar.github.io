@@ -4,7 +4,7 @@ permalink: /news/:year/:month/:day/:title/
 relative_permalinks: false
 markdown: kramdown
 repository: https://github.com/canfar
-support: /docs/support/
+support: /support/
 url: http://canfar.github.io/
 description: Process astronomy data on the cloud
 login: http://www.canfar.phys.uvic.ca/canfar/
