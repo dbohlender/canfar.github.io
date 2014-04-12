@@ -105,14 +105,14 @@ error like 'libfuse.dylib' not found. Setting the environment variable
 ### Using the VOSpace client command line tools
 
 Try the following commands, substituting your CADC VOSpace in for
-<vospace> (most CANFAR users have VOSpace that is the same name as
+VOSPACE (most CANFAR users have VOSpace that is the same name as
 their CADC user name. There are also project VOSpaces): 
 
 	vls vos:VOSPACE                               # lists the contents to the root directory of VOSPACE
 	vcp ${HOME}/bar vos:VOSPACE                   # copies the bar file to the root node of VOSPACE
 	vrm vos:VOSPACE/foo                           # removes the bar file from VOSPACE
 	vmkdir vos:VOSPACE/bar                        # creates a new container node (directory) called foo in VOSPACE
-	vmv vos:VOSPACE/bar vos:<vospace>/foo/        # moves the file bar into the container node foo
+	vmv vos:VOSPACE/bar vos:VOSPACE/foo/          # moves the file bar into the container node foo
 	vmv vos:VOSPACE/foo/bar vos:VOSPACE/foo/bar2  # changes the name of file bar to bar2 on the VOSpace
 
 Details on these commands can be found via the `--help` option,

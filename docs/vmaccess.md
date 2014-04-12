@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: VM Access
-permalink: /docs/vmaccess
+permalink: /docs/vmaccess/
 ---
 
 Access to the canfar hosts is limited to SSH (Secure Shell). SSH is a
