@@ -55,7 +55,7 @@ For a more advanced setup, you can add these options to your `~/.ssh/config`. Ad
 
   and create your directory for the sessions:
 
-{% highlight basj %}
+{% highlight bash %}
 mkdir ~/.ssh/control
 {% endhighlight %}
 
