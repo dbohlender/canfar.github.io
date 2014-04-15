@@ -21,7 +21,7 @@ ssh USER@canfar.dao.nrc.ca
 
 If this is the first time you login to this machine, run the following script to make your life easier using VOSpace and certificates.
 
-{% highlight bash %}	
+{% highlight bash %}
 canfarsetup
 {% endhighlight %}
 
@@ -62,7 +62,7 @@ cd sextractor-2.19.5
 
 As you can see, it fails on missing dependencies: the `fftw` libraries as reported by the configure command. If you only install the `fftw` libraries and run `./configure` again, you will see the `atlas` libraries are missing too. Fortunately they have already been packaged for RedHat based systems, which is what Scientific Linux is based on. So we can install them with the`yum` package manager:
 
-{% highlight bash %}	
+{% highlight bash %}
 sudo yum install fftw3-devel.x86_64 atlas-devel.x86_64
 {% endhighlight %}
 
@@ -76,7 +76,7 @@ sudo make install
 
 Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the [funpack](http://heasarc.nasa.gov/fitsio/fpack/) utility to uncompress data from CADC. Download and install it on your VM with the following commands:
 
-{% highlight bash %}	
+{% highlight bash %}
 wget http://heasarc.gsfc.nasa.gov/fitsio/fpack/bin/pc_linux_64bit/funpack
 sudo mv funpack /usr/local/bin
 sudo chmod a+x /usr/local/bin/funpack
@@ -142,7 +142,7 @@ chmod +x mydemo.bash
 
 Now let's test the newly created script with a different file ID. If the script is on your home directory type: 
 
-{% highlight bash %}	
+{% highlight bash %}
 ~/mydemo.bash 1056214p
 {% endhighlight %}
 
@@ -162,7 +162,7 @@ vmkdir vos:USER/vmstore
 
 Then save your VM with the following command:
 
-{% highlight bash %}		
+{% highlight bash %}
 sudo vmsave -t vmdemo -v USER
 {% endhighlight %}
 
@@ -178,7 +178,7 @@ vmlist
 
 Copy the returned IP and remote-copy your script:
 
-{% highlight bash %}	
+{% highlight bash %}
 scp VM_IP:mydemo.bash .
 {% endhighlight %}
 

@@ -125,11 +125,11 @@ Now you need a VNC client on your desktop. Here are some examples of known to be
 - Your can install [Remmina](http://remmina.sourceforge.net/), then launch it
 - From Reminna, click **Create a new profile**  on the interface, then:
 
-	**Basic** &rarr; **Server**: VM_IP:5901
-	**Basic** &rarr; **Username**: USER
-	**SSH** &rarr; **Enable SSH tunnel**: yes
-	**SSH** &rarr; **SSH Server** &rarr; **Custom** &rarr; **Server**: canfar.dao.nrc.ca
-	**SSH** &rarr; **SSH Authentification** &rarr; **Public Key(automatic)** : yes
+	**Basic** &rarr; **Server**: *VM_IP:5901*
+	**Basic** &rarr; **Username**: *USER*
+	**SSH** &rarr; **Enable SSH tunnel**: *yes*
+	**SSH** &rarr; **SSH Server** &rarr; **Custom** &rarr; **Server**: *canfar.dao.nrc.ca*
+	**SSH** &rarr; **SSH Authentification** &rarr; **Public Key(automatic)** : *yes*
 
 #### Mac OS-X
 

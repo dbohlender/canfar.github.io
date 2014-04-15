@@ -36,7 +36,7 @@ The latest version of the vos command line client should be already installed on
 
 vos is most likely not part of any Linux distribution packages, but it is part of [PyPi](https://pypi.python.org/pypi/vos). You then to install a Python installer such as PIP or easy_install. It is usually called `pip` or `python-pip` depending on your distribution. Example on Ubuntu:
 
-{% highlight bash %}	
+{% highlight bash %}
 sudo apt-get install python-pip
 sudo pip install -U vos
 {% endhighlight %}
