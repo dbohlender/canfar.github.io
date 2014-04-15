@@ -131,7 +131,7 @@ umount /path/to/a/directory          # OS-X
 To access a VOSpace, the command line client needs a certificate. These certificates are created for you when you request an account, and you can get a short-lived proxy of this certificate to access your data with the "getCert" command line, distributed with the vos client:
 
 {% highlight bash %}
-	getCert
+getCert
 {% endhighlight %}
 
 In batch processing, you might want to use the getCert at the start of every job. To avoid interactivity asking for your CADC username/password, add a `$HOME/.netrc` file containing these lines:
