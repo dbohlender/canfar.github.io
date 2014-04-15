@@ -14,8 +14,10 @@ The goal of this tutorial is to show you how to:
 ## Setup
 
 We assume here you have [registered](/docs/register), so you got a CADC username `USER`. Then connect to to the canfar login host with your CADC username and password:
+
 {% highlight bash %}
-	ssh USER@canfar.dao.nrc.ca
+ssh USER@canfar.dao.nrc.ca
+{% endhighlight %}
 
 If this is the first time you login to this machine, run the following script to make your life easier using VOSpace and certificates.
 
@@ -42,6 +44,7 @@ Wait a few minutes for an email that will tell you your VM is ready and will giv
 ## Install software on the Virtual Machine
 
 You can use the ssh wrapper script to connect to the just created VM from the CANFAR login host:
+
 {% highlight bash %}
 vmssh vmdemo
 {% endhighlight %}
@@ -64,6 +67,7 @@ sudo yum install fftw3-devel.x86_64 atlas-devel.x86_64
 {% endhighlight %}
 
 Now we can finish up our SExtractor installation
+
 {% highlight bash %}
 ./configure
 make
@@ -101,6 +105,7 @@ scp canfar.dao.nrc.ca:.netrc ~/
 {% endhighlight %}
 
 On the VM, download a proxy certificate for 10 days with the following command:
+
 {% highlight bash %}
 getCert
 {% endhighlight %}
