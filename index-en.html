@@ -1,38 +1,46 @@
-{% include theme/page_header.html %}
+---
+layout: canfar-main
+title: canfar | multi-cloud astronomy
+overview: true
+---
 
-              <!-- MainContentStart -->
-              <h1 id="wb-cont">CANFAR Dashboard</h1>
+<section class="intro">
+  <div class="grid">
+    <div class="unit whole center-on-mobiles">
+      <p class="first">Astronomy data processing without download</p>
+    </div>
+  </div>
+</section>
 
-              <!-- Alert the user to log in. -->
-              <div id="canfar-alert-container"
-                   class="module-alert span-4 align-center" style="display: none;">
-                <div class="login_message">Login above to view your activity</div>
-              </div>
-
-              <div id="canfar-widget-container" class="grid-12" style="display: none;">
-
-                <div class="span-1 row-start"></div>
-                <div class="span-4">
-                  <div class="module-info">
-                    <h3>Storage Activity</h3>
-                    <div id="vospace_activity" class="widget-content">
-                      <span class="loading">Loading...</span>
-                      <span class="message"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="span-2"></div>
-                <div class="span-4">
-                  <div class="module-info">
-                    <h3>Configuration Activity <a class="font-xsmall" id="processing_refresh_link" title="Refresh link" href="#">Refresh</a></h3>
-                    <div id="vm_activity" class="widget-content">
-                      <span class="loading">Loading...</span>
-                      <span class="message"></span>
-                    </div>
-                  </div>
-                </div>
-                <div class="span-1 row-end"></div>
-                <div class="clear"></div>
-              </div>
-
-{% include theme/page_footer.html %}
+<section class="features">
+  <div class="grid">
+    <div class="unit one-third">
+      <h2>Store</h2>
+      <p>
+        Keep your data close to processing nodes, and have it
+        either public, private or accessible to a
+        restricted set of collaborators.
+      </p>
+      <a href="/docs/vospace/">VOSpace Storage &rarr;</a>
+    </div>
+    <div class="unit one-third">
+      <h2>Process</h2>
+      <p>
+        Build your data processing pipeline, interactively analyze
+        results, and launch thousands of batch jobs on multiple
+        clusters, using exactly the same environment.
+      </p>
+      <a href="/docs/tutorial/">Get Started &rarr;</a>
+    </div>
+    <div class="unit one-third">
+      <h2>Know</h2>
+      <p>
+        Learn bout the Canadian Advanced Network for Astronomical
+        Research, read documentation, and contribute to its building
+        pieces.
+      </p>
+      <a href="/docs/about/">Read more &rarr;</a>
+    </div>
+    <div class="clear"></div>
+  </div>
+</section>
