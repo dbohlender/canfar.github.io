@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW)
+wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
+<!-- DataAjaxFragmentStart -->
+<li>
+  <section>
+    <h3><a href="/">CANFAR Project</a></h3>
+    <div class="mb-sm">
+      <div class="span-2">
+        <ul>
+          <li><a href="http://www.canfar.phys.uvic.ca/vosui">VOSpace Browser</a></li>
+          <li><a href="http://www.canfar.phys.uvic.ca/processing">Processing</a></li>
+          <li><a href="http://www.canfar.phys.uvic.ca/canfar/groups">Group Management</a></li>
+        </ul>
+      </div>
+      <div class="clear"></div>
+      <div class="mb-main-link"><a href="/">Dashboard</a></div>
+    </div>
+  </section>
+</li>
+<li>
+  <div>
+    <a class="access_control_link" href="http://www.canfar.phys.uvic.ca/canfar/login.html">Login</a>
+    <div class="profile_modal">
+      <a class="user_edit_profile" href="http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/auth/update.html">Edit Profile</a>
+      <br />
+      <a class="access_control_logout" href="http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/access/logout">Logout</a>
+      <br />
+      <br />
+      <a class="access_control_logout cancel" href="#">Cancel</a>
+    </div>
+  </div>
+</li>
+<!-- DataAjaxFragmentEnd -->
+</html>

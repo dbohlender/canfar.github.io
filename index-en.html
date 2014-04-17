@@ -1,0 +1,40 @@
+<!-- include virtual="/theme/includes/_page_header.html" -->
+{% include theme/includes/_page_header.html %}
+
+              <!-- MainContentStart -->
+              <h1 id="wb-cont">CANFAR Dashboard</h1>
+
+              <!-- Alert the user to log in. -->
+              <div id="canfar-alert-container"
+                   class="module-alert span-4 align-center" style="display: none;">
+                <div class="login_message">Login above to view your activity</div>
+              </div>
+
+              <div id="canfar-widget-container" class="grid-12" style="display: none;">
+
+                <div class="span-1 row-start"></div>
+                <div class="span-4">
+                  <div class="module-info">
+                    <h3>Storage Activity</h3>
+                    <div id="vospace_activity" class="widget-content">
+                      <span class="loading">Loading...</span>
+                      <span class="message"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="span-2"></div>
+                <div class="span-4">
+                  <div class="module-info">
+                    <h3>Configuration Activity <a class="font-xsmall" id="processing_refresh_link" title="Refresh link" href="#">Refresh</a></h3>
+                    <div id="vm_activity" class="widget-content">
+                      <span class="loading">Loading...</span>
+                      <span class="message"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="span-1 row-end"></div>
+                <div class="clear"></div>
+              </div>
+
+{% include theme/includes/_page_footer.html %}
+<!-- include virtual="/theme/includes/_page_footer.html" -->
