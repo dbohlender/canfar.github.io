@@ -1,0 +1,153 @@
+/**
+  Styling for CANFAR related documentation pages.
+*/
+
+body
+{
+  /*font-family: Verdana, Arial, Helvetica, sans-serif;*/
+  font-family: sans-serif;
+  font-size: smaller;
+  background-color: white;
+}
+
+h1
+{
+  font-size: 120%;
+  font-weight: bold;
+  color: inherit;
+  background: inherit;
+  padding-top: 1em;
+  padding-left: 1em;
+}
+
+h2
+{
+  font-size: 100%;
+  color: inherit;
+  background: inherit;
+  padding-top: 1em;
+  padding-left: 2em;
+}
+
+h3
+{
+  font-size: 100%;
+  color: inherit;
+  background: inherit;
+  padding-top: 1em;
+  padding-left: 2em;
+}
+
+a.link
+{
+  color: blue;
+}
+
+a.link:visited
+{
+  text-decoration: underline;
+  color: blue;
+}
+
+#header
+{
+  float: none;
+}
+
+div.main
+{
+  background: white;
+  color: black;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+
+/*  Table contents  */
+
+table
+{
+  background: inherit;
+  color: inherit;
+  font-size: inherit;
+  border: 0 none;
+  padding: 0;
+  margin: 0;
+}
+
+table.content
+{
+  font-family: monospace;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: 1px solid black;
+  padding-left: 0;
+  padding-right: 0;
+  empty-cells: show;
+}
+
+table.content th
+{
+  background: #bfccd9;
+  color: black;
+  text-align: center;
+  border: 1px solid black;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+table.content td
+{
+  border: 0 solid;
+  vertical-align: top;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+tr.odd_b td
+{
+  border: 1px solid;
+  vertical-align: top;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+tr.even_b td
+{
+  border: 1px solid;
+  vertical-align: top;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+table.content tr.odd
+{
+  background: white;
+}
+
+table.content tr.even
+{
+  background: #ddd;
+}
+
+table.content tr.subhead
+{
+  background: #bfccd9;
+}
+
+table.content tr.odd_b
+{
+  background: white;
+}
+
+table.content tr.even_b
+{
+  background: #ddd;
+}
+
+table.content tr.subhead
+{
+  background: #bfccd9;
+}
