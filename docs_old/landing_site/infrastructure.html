@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Canadian Advanced Network for Astronomical Research (CANFAR)</title>
+    <link href="/canfar/css/demo.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="/canfar/css/header.css"/>
+    <link rel="stylesheet" type="text/css" href="/canfar/css/footer.css"/>
+    <style type="text/css">
+      #canfar_footer
+      {
+        top: 0;
+        float: none;
+        display: block;
+        position: relative;
+        clear: both;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body text="#FFFFFF">
+    <div id="container">
+      <div id="canfar_header"></div>
+      <div id="sidebar1">
+        <div id="navcontainer">
+          <ul id="navlist">
+            <li><a href="/canfar">CANFAR Home</a></li>
+            <li class="current"><a href="/canfar/about.html" class="current">About CANFAR</a></li>
+            <li><a href="http://www.canfar.phys.uvic.ca/wiki">Documentation Wiki</a></li>
+            <li><a href="/canfar/links.html">CANFAR Links</a></li>
+            <li><a href="/canfar/contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id="mainContent">
+        <div id="breadCrumb"><a href="/canfar">CANFAR home</a> / Infrastructure</div>
+        <h1>About the CANFAR Project</h1>
+        <ul id="navlist2">
+          <li><a href="/canfar/about.html">Project Background </a></li>
+          <li class="active"><a href="/canfar/infrastructure.html" class="current">Infrastructure</a></li>
+          <li><a href="/canfar/science.html">Science</a></li>
+          <li><a href="/canfar/talks.html">Talks</a></li>
+          <li><a href="/canfar/papers.html">Papers</a></>
+        </ul>
+        <br/>
+
+        <h3>CANFAR Infrastructure Team</h3>
+
+        <p><strong>The CANFAR Infrastructure Team is responsible for: </strong></p>
+        <ul>
+          <li>Designing and developing various components of the CANFAR
+            infrastructure
+          </li>
+          <li>Evaluating and recommending existing software packages to be included
+            in the CANFAR infrastructure
+          </li>
+          <li>Modifying existing software packages to support the CANFAR
+            infrastructure
+          </li>
+          <li>Reviewing the designs and code produced by peers</li>
+          <li>Improving the network throughput among the CANFAR infrastructure
+            sites
+          </li>
+          <li>Working with network administrators at each CANFAR partner site,
+            CANARIE, and ORANs to establish common monitoring infrastructure
+          </li>
+          <li>Design, implement and test a processing system on a testbed cluster
+          </li>
+          <li>Move the test system onto production
+            clusters
+          </li>
+        </ul>
+        <p> The CANFAR Infrastructure Team is composed of software and network
+          specialists located at the <a
+              href="https://particle.phys.uvic.ca/index.html">University of
+            Victoria's High Energy Physics Group</a> and at the <a
+              href="http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/cadc/">National
+            Research Council's Canadian Astronomy Data Centre</a>.</p>
+        <hr/>
+        <h3>How to use CANFAR</h3>
+
+        <p>User Guides, Tutorials, Toolboxes and and general help can be found on
+          the CANFAR <a href="http://www.canfar.phys.uvic.ca/wiki">Documentation
+            Wiki</a>. Help on getting a CANFAR account is available from the <a
+              href="http://www.canfar.phys.uvic.ca/wiki/index.php/Help">wiki</a> or by
+          contacting <a href="mailto:canfarhelp@nrc.gc.ca">canfarhelp@nrc.gc.ca</a>.
+        </p>
+        <hr/>
+        <div id="canfar_footer"></div>
+      </div>
+    </div>
+
+    <!-- Main JQuery script -->
+    <script type="text/javascript" src="/canfar/javascript/jquery-1.8.1.min.js"></script>
+
+    <!-- Only included for easy tooltips -->
+    <script type="text/javascript" src="/canfar/javascript/jquery.tools.tooltip.min.js"></script>
+
+    <!-- All other cool stuff. -->
+    <script type="text/javascript" src="/canfar/javascript/jquery-ui-1.8.23.custom.min.js"></script>
+    <script type="text/javascript" src="/canfar/javascript/canfar_widget.js"></script>
+    <script defer type="text/javascript">
+      // perform JavaScript after the document is scriptable.
+      $(document).ready(function()
+                        {
+                          $("#canfar_header").load("/canfar/_header.html #header");
+                          $("#canfar_footer").load("/canfar/_footer.html #footer", "",
+                                                   function(responseText, textStatus, XMLHttpRequest)
+                                                   {
+                                                     $(".footer_link").hover(function(inEvent)
+                                                                             {
+                                                                               $(this).fadeTo("fast", 1.0);
+                                                                             },
+                                                                             function(outEvent)
+                                                                             {
+                                                                               $(this).fadeTo("fast", 0.8);
+                                                                             }).tooltip({
+                                                                                          effect: "fade",
+                                                                                          opacity: 0.8,
+                                                                                          position: "top",
+                                                                                          offset: [-10, -40]
+                                                                                        });
+
+                                                     $.getScript("/canfar/javascript/canfar.js");
+                                                   });
+                        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css"
+          href="/canfar/css/cadc-jquery-ui-1.10.1.custom.min.css" />
+    <title></title>
+    <style type="text/css">
+      .ui-dialog-title
+      {
+        height: 0;
+      }
+
+      .ui-dialog-titlebar
+      {
+        height: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="two_column">
+      <div id="left_column" class="left_column"></div>
+      <div class="right_column">
+        <form title="Login form" name="loginForm" id="loginForm" method="post"
+              action="/access/login" class="login_form">
+          <fieldset class="login_form_fieldset">
+            <div class="login_form_row">
+              <label for="username" class="login_form_field"
+                     id="usernameLabel">Username:</label>
+              <input type="text" class="login_form_field" id="username"
+                     name="username" tabindex="10">
+              <br />
+              <a href="/cadcbin/userID.pl?language=EN" class="forgot_link" tabindex="30"
+                 title="Forgot Username" name="forgot_username">Forgot CADC Account information?</a>
+            </div>
+            <div class="login_form_row">
+              <label for="password" class="login_form_field"
+                     id="passwordLabel">Password:</label>
+              <input type="password" class="login_form_field" id="password"
+                     name="password" tabindex="15">
+            </div>
+            <br />
+            <input type="submit" name="login" id="login_button" class="button"
+                   value="Login" tabindex="20" />
+            <input type="button" name="cancel_login" id="cancel_login_button"
+                   class="button" value="Cancel" tabindex="25" />
+            <br />
+            <div class="login_form_row">
+              <div class="logingFormField" id="errorMessage"></div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <div class="footer"></div>
+    </div>
+    <div id="overlay"><span class="login_message">Logging in...</span></div>
+
+    <script type="text/javascript"
+            src="/canfar/javascript/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript"
+            src="/canfar/javascript/jquery-ui-1.10.1.custom.min.js"></script>
+    <script type="text/javascript"
+            src="/canfar/javascript/canfar_uri.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function()
+                        {
+                          var overlay = $("#overlay");
+                          var loginForm = $("#loginForm");
+                          var requestURL = new canfar.URI(window.location.href);
+                          var queryStringObject =
+                              requestURL.getQueryStringObject();
+                          var refererURL;
+
+                          if (queryStringObject.referer)
+                          {
+                            refererURL = new canfar.URI(queryStringObject.referer);
+                          }
+                          else
+                          {
+                            refererURL = new canfar.URI(document.referrer);
+                          }
+
+                          var cadcStyle =
+                              '<link rel="stylesheet" type="text/css" href="/canfar/css/cadc.css" />';
+                          var canfarStyle =
+                              '<link rel="stylesheet" type="text/css" href="/canfar/css/canfar.css" />';
+                          var pageHead = $("head");
+
+                          if ((refererURL.getPath().indexOf("/canfar") >= 0)
+                                  || (refererURL.getPath().indexOf("/vosui") >= 0)
+                              || (refererURL.getPath().indexOf("/processing") >= 0))
+                          {
+                            pageHead.append(canfarStyle);
+                            pageHead.find("title").text("CANFAR Login");
+                          }
+                          else
+                          {
+                            pageHead.append(cadcStyle);
+                            pageHead.find("title").text("CADC Login");
+                          }
+
+                          var targetURL = window.location.protocol + "//"
+                                          + window.location.hostname;
+
+                          // Some sanitizing.
+                          if (refererURL.getPath().indexOf("/vosui") >= 0)
+                          {
+                            targetURL += "/vosui";
+                          }
+                          else if (refererURL.getPath().indexOf("/access/login")
+                                   >= 0)
+                          {
+                            targetURL += "/cadc";
+                          }
+                          else
+                          {
+                            targetURL += refererURL.getPath();
+                          }
+
+                          if (requestURL.getHash()
+                              && (requestURL.getHash() != null)
+                              && (requestURL.getHash() != ""))
+                          {
+                            targetURL += "#" + requestURL.getHash();
+                          }
+
+                          $("#cancel_login_button").click(function(event)
+                                                          {
+                                                            parent.history.back();
+                                                            return false;
+                                                          });
+
+                          // Overlay during operations.
+                          overlay.dialog({
+                                            autoOpen: false,
+                                            overlay: {
+                                              "background-color": "#000",
+                                              "opacity": "0.5",
+                                              "-moz-opacity": "0.5"
+                                            },
+                                            modal: true,
+                                            show: {
+                                              effect: "fade",
+                                              duration: 400
+                                            },
+                                            height: 75,
+                                            width: 125,
+                                            draggable: false,
+                                            resizable: false,
+                                            hide: {
+                                              effect: "fade",
+                                              duration: 400
+                                            }
+                                          });
+                                          
+                          // turn the form submission into an ajax request
+                          loginForm.submit(function(event)
+                          {
+                              event.preventDefault();
+                              
+                              $.ajax(
+                              {
+                                  url: '/access/login?target=' + encodeURI(targetURL),
+                                  method: 'POST',
+                                  data: $(this).serialize()
+                              }).done(function (message)
+                              {
+                                  // send the user to the URL in the response message
+                                  window.location=encodeURI(message);
+                              }).fail(function ()
+                              {
+                                console.log("Fail");
+                
+                                  // clear the password field and show
+                                  // an error message
+                                  $("#password").val("");
+                                  $("#errorMessage").text("The username or password you entered is incorrect.");
+                              });
+              
+                          });
+
+                          //loadResources();
+                          $("#username").focus();
+                        });
+
+      function loadResources()
+      {
+        $.getJSON("/access/i18n/Header", function(jsonData)
+        {
+          var forgotUsernameLink = $("a[name='forgot_username']");
+
+          $("#cancel_login_button").attr("value", jsonData.CancelLoginButtonLabel);
+          $("#login_button").attr("value", jsonData.LoginButtonLabel);
+          forgotUsernameLink.attr("href", "/cadcbin/userID.pl?language="
+              + jsonData.locale);
+          forgotUsernameLink.text(jsonData.ForgotAccountInfoLabel);
+          $("#usernameLabel").text(jsonData.UsernameLabel + ":");
+          $("#passwordLabel").text(jsonData.PasswordLabel + ":");
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,111 @@
+#header
+{
+    width: 100%;
+    height: auto;
+    float: left;
+    color: #4c6b87;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 85%;
+    background: #001D45 url('../images/header_background.png') no-repeat 50% 0;
+}
+
+#header .content
+{
+    /*width: 937px;*/
+    margin: auto;
+    padding: 10px;
+    height: 100px;
+}
+
+#header .header_left
+{
+    padding-top: 10px;
+    width: auto;
+    height: auto;
+    float: left;
+    /*margin-left: -110px;*/
+}
+
+#header .header_center
+{
+  text-align: center;
+  width: 13em;
+  margin: 6.0em auto 0;
+  padding: 0.25em 0.25em 0.25em;
+  background: rgba(256, 60, 70, 0.4);
+  border-radius: 1em;
+}
+
+.header_center a
+{
+  border: 0;
+  background-color: transparent;
+  text-decoration: none;
+  font-weight: bolder;
+  color: #fff;
+}
+
+.header_center a:hover
+{
+  border: 0;
+  background-color: transparent;
+  text-decoration: underline;
+  font-weight: bolder;
+  color: #fff;
+}
+
+.header_left a
+{
+  border: 0;
+  background-color: transparent;
+}
+
+#header .header_right
+{
+    float: right;
+    width: auto;
+    height: auto;
+    padding-top: 5px;
+}
+
+.header_right .welcome
+{
+    color: #4682B4;
+    font-size: 12px;
+    padding-bottom: 3px;
+}
+
+.header_right .link
+{
+    display: block;
+    clear: both;
+}
+
+.header_right .link a
+{
+    cursor: pointer;
+    color: #1c94c4;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+.header_right .link a.access_control_link
+{
+    font-weight: bolder;
+}
+
+span.user_full_name
+{
+    font-weight: bolder;
+}
+
+hr.link_divide
+{
+    border: 0;
+    display: inline-block;
+    height: 0.1em;
+    opacity: 0.2;
+    color: #87c4fb;
+    background-color: #87c4fb;
+    width: 100%;
+}

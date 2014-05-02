@@ -1,0 +1,317 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <head>
+    <title>CANFAR Dashboard</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="/canfar/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/canfar/css/canfar.widgets.css" />
+    <link rel="stylesheet" type="text/css" href="/canfar/css/header.css" />
+    <link rel="stylesheet" type="text/css" href="/canfar/css/footer.css" />
+  </head>
+  <body>
+    <div id="container">
+      <div id="canfar_header"></div>
+      <div id="body_content">
+        <div class="content">
+          <div class="content_outer">
+            <div class="content_inner">
+              <div class="title_bar">
+                <h1>Taskbar</h1>
+              </div>
+              <div class="task_list_content">
+                <ul class="task_list">
+                  <li class="task_list_item"><a class="task_list_item_link process_task" href="/processing"><span>Process Data</span></a></li>
+                  <li class="task_list_item"><a class="task_list_item_link storage_task" href="/vosui"><span>Manage Storage</span></a></li>
+                  <li class="task_list_item"><a class="task_list_item_link group_management_task" href="/en/groups"><span>Manage Groups</span></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <hr class="separator" />
+          <!-- When Widgets rule the earth, uncomment this section. -->
+          <!--<div id="widget_menu">-->
+            <!--<label class="widget_add_select_label" for="widget_add_select">-->
+              <!--<a href="#" class="widget_add_select_button">+ Add</a>-->
+            <!--</label>-->
+            <!--<select id="widget_add_select" name="widget_add_select"-->
+                    <!--class="widget_add_select">-->
+            <!--</select>-->
+          <!--</div>-->
+          <!--<hr class="widget_menu_separator" />-->
+          <div id="login_message_container">
+            <div class="login_message">Login above to view your activity</div>
+          </div>
+          <div id="columns">
+            <ul id="column1" class="column">
+              <li class="widget color-white" id="vospace">
+                <div class="widget-head">
+                  <h3>Storage Activity</h3>
+                </div>
+                <div class="widget-content" id="vospace_activity">
+                  <span class="loading">Loading...</span>
+                  <span class="message"></span>
+                </div>
+              </li>
+            </ul>
+            <ul id="column2" class="column">
+              <li class="widget color-white" id="vms">
+                <div class="widget-head">
+                  <h3>Configuration Activity <a class="refresh_link" id="processing_refresh_link" title="Refresh link" href="#">Refresh</a></h3>
+                </div>
+                <div class="widget-content" id="vm_activity">
+                  <span class="loading">Loading...</span>
+                  <span class="message"></span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="canfar_footer"></div>
+  </body>
+  <!-- Main JQuery script -->
+  <script type="text/javascript" src="/canfar/javascript/jquery-1.8.1.min.js"></script>
+
+  <!-- Only included for easy tooltips -->
+  <script type="text/javascript" src="/canfar/javascript/jquery.tools.tooltip.min.js"></script>
+
+  <!-- All other cool stuff. -->
+  <script type="text/javascript" src="/canfar/javascript/jquery-ui-1.8.23.custom.min.js"></script>
+  <script type="text/javascript" src="/canfar/javascript/canfar_widget.js"></script>
+
+  <script defer type="text/javascript">
+    $(document).ready(function()
+                      {
+                        var captionLink = $("#processing_refresh_link");
+
+                        captionLink.click(function(event)
+                                          {
+                                            event.preventDefault();
+                                            loadVMWidget();
+                                          });
+
+                        $("#canfar_header").load("_header.html #header");
+                        $("#canfar_footer").load("_footer.html #footer", "",
+                                                 function(responseText, textStatus, XMLHttpRequest)
+                                                 {
+                                                     $(".footer_link").hover(function(inEvent)
+                                                                             {
+                                                                                 $(this).fadeTo("fast", 1.0);
+                                                                             },
+                                                                             function(outEvent)
+                                                                             {
+                                                                                 $(this).fadeTo("fast", 0.8);
+                                                                             }).tooltip({
+                                                                                            effect: "fade",
+                                                                                            opacity: 0.8,
+                                                                                            position: "top",
+                                                                                            offset: [-10, -40]
+                                                                                        });
+
+                                                   $.getScript("/canfar/javascript/canfar.js");
+                                                 });
+
+                        // Load the CANFAR header logic, and user specific
+                        // information, if they're logged in.
+                        $.getJSON("/access/login/user", function(jsonData)
+                        {
+                          if (jsonData.loggedIn)
+                          {
+                            $("#login_message_container").remove();
+                            initWidgets(jsonData.username);
+                          }
+                         });
+
+                        function initWidgets(currentUsername)
+                        {
+                          var canfarWidgets = canfar.Widget;
+                          canfarWidgets.init();
+
+                          loadVOSpaceWidget(currentUsername);
+                          loadVMWidget();
+                        }
+
+                        function loadVMWidget()
+                        {
+                          var DOCUMENTATION_URL =
+                                "http://www.canfar.phys.uvic.ca/wiki/index.php/VNCConfiguration";
+                          var $vmActivity = $("#vm_activity");
+                          var loading = $vmActivity.find(".loading");
+                          var message = $vmActivity.find(".message");
+
+                          message.text("");
+                          loading.show();
+
+                          $vmActivity.find("table").remove();
+
+                          $.getJSON("/processing/vm/list", {media: "json"}, function(jsonData)
+                          {
+                            loading.hide();
+
+                            if (!jsonData || (JSON.stringify(jsonData) == "{}"))
+                            {
+                              message.text("No running Configuration VMs.");
+                            }
+                            else
+                            {
+                              var vmActivityTable = $("<table></table>");
+                              vmActivityTable.attr("id", "processing_vm_list");
+
+                              var vmActivityTableTBody = $("<tbody></tbody>");
+                              vmActivityTable.append(vmActivityTableTBody);
+
+                              $.each(jsonData, function(ipAddress, vmJSON)
+                              {
+                                // Skip VM's that aren't running.
+                                if (!vmJSON.is_running)
+                                {
+                                  return true;
+                                }
+
+                                var vmName = vmJSON.name;
+
+                                if (!vmName || (vmName == "<unknown>") || (vmName == ""))
+                                {
+                                  vmName = "(Unknown)";
+                                }
+
+                                var vmActivityTableTBodyRow = $("<tr></tr>");
+
+                                var sessionLink = $("<a></a>");
+                                sessionLink.attr("name", "SESSION_" + ipAddress);
+                                sessionLink.attr("id", "SESSION_" + ipAddress);
+
+                                if ((vmName == "(Unknown)") || (ipAddress == ""))
+                                {
+                                  sessionLink.attr("title", "This VM is in a busy "
+                                                                    + "state.  Please "
+                                                                    + "refresh this list "
+                                          + "after a few moments.");
+                                  sessionLink.attr("href", "");
+                                  sessionLink.click(function(event)
+                                                    {
+                                                      event.preventDefault();
+
+                                                      alert("The VM is busy (booting or shutting down).\n\n"
+                                                                    + "Please refresh after a few moments.");
+
+                                                      return false;
+                                                    });
+                                }
+                                else if ((vmJSON.vnc_ports == null)
+                                        || (vmJSON.vnc_ports.indexOf("5901") == -1))
+                                {
+                                  sessionLink.attr("title",
+                                                   "No VNC server running on port 5901 on the VM. <br /><br />"
+                                                           + "Want to connect with VNC? "
+                                                           + "See documentation at <a href='" + DOCUMENTATION_URL + "' "
+                                                           + "class='documentation_link'>" + DOCUMENTATION_URL + "</a>.");
+                                  sessionLink.attr("href", "");
+                                  sessionLink.click(function(event)
+                                                    {
+                                                      event.preventDefault();
+
+                                                      alert("There is no VNC session to connect to.\n\n"
+                                                                    + "Please see the Documentation to set up a "
+                                                                    + "VNC Server on your VM at "
+                                                                    + DOCUMENTATION_URL);
+
+                                                      return false;
+                                                    });
+                                }
+                                else
+                                {
+                                  sessionLink.attr("title",
+                                                   "Open a VNC session.<br /><br />"
+                                                           + "See documentation at <a href='" + DOCUMENTATION_URL + "' "
+                                                           + "class='documentation_link'>" + DOCUMENTATION_URL + "</a>.");
+                                  sessionLink.attr("href", "/processing/session/" + ipAddress);
+                                }
+
+                                sessionLink.addClass("session_link");
+                                sessionLink.addClass("active");
+                                sessionLink.text(ipAddress);
+
+                                sessionLink.tooltip(
+                                        {
+                                          effect: "fade",
+                                          opacity: 0.8,
+                                          position: "top right",
+                                          offset: [0, 20],
+                                          delay: 200
+                                        });
+
+                                vmActivityTableTBodyRow.append("<td>" + vmName + "</td>");
+
+                                // The column plus the Outer HTML of the link.
+                                vmActivityTableTBodyRow.append(
+                                        "<td class=\"midcolumn\">"
+                                        + sessionLink.clone().wrap('<p>').parent().html()
+                                        + "</td>");
+
+                                vmActivityTableTBodyRow.append("<td>" + vmJSON.shutdown_date + "</td>");
+                                vmActivityTableTBody.append(vmActivityTableTBodyRow);
+                              });
+
+                              $vmActivity.append(vmActivityTable);
+                            }
+                          });
+                        }
+
+                        function loadVOSpaceWidget(currentUsername)
+                        {
+                          var $vospaceActivity = $("#vospace_activity");
+                          var loading = $vospaceActivity.find(".loading");
+                          var message = $vospaceActivity.find(".message");
+
+                          message.text("");
+                          loading.show();
+
+                          $.getJSON("/vosui/browser/nodes/" + currentUsername,
+                                    {media: "json", pageSize: "1", minimum: "true"},
+                                    function(vospaceJSON)
+                                    {
+                                      loading.hide();
+
+                                      if (vospaceJSON)
+                                      {
+                                        var vospaceActivityTable = $("<table></table>");
+                                        var vospaceActivityTableTBody = $("<tbody></tbody>");
+                                        vospaceActivityTable.append(vospaceActivityTableTBody);
+
+                                        $vospaceActivity.append(vospaceActivityTable);
+
+                                        var vospaceName = vospaceJSON.name;
+
+                                        var quotaSpace = vospaceJSON.quotaSpace;
+                                        var size = vospaceJSON.contentLength;
+
+                                        var vospaceActivityTableTBodyRow = $("<tr></tr>");
+                                        vospaceActivityTableTBodyRow.append("<td><a class='vospace_activity_link' href='/vosui#/"
+                                                                                    + vospaceName + "'>"
+                                                                                    + vospaceName
+                                                                                    + "</a></td>");
+                                        var quotaValue = ((quotaSpace - size) / 1024 / 1024 / 1024).toFixed(2);
+
+                                        if (quotaValue < 0)
+                                        {
+                                          quotaValue = 0.00;
+                                        }
+
+                                        vospaceActivityTableTBodyRow.append("<td class=\"midcolumn\">" + Number(quotaValue) + " GB</td>");
+                                        vospaceActivityTableTBodyRow.append("<td>" + vospaceJSON.lastModifiedHumanReadable + "</td>");
+
+                                        vospaceActivityTableTBody.append(vospaceActivityTableTBodyRow);
+                                      }
+                                    }).error(function()
+                                             {
+                                               loading.hide();
+                                               message.text("No such VOSpace named '"
+                                                            + currentUsername + "'");
+                                             });
+                        }
+                      })
+  </script>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Canadian Advanced Network for Astronomical Research (CANFAR)</title>
+    <link href="/canfar/css/demo.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="/canfar/css/header.css"/>
+    <link rel="stylesheet" type="text/css" href="/canfar/css/footer.css"/>
+    <style type="text/css">
+      #canfar_footer
+      {
+        top: 0;
+        float: none;
+        display: block;
+        position: relative;
+        clear: both;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body text="#FFFFFF">
+    <div id="container">
+      <div id="canfar_header"></div>
+      <div id="sidebar1">
+        <div id="navcontainer">
+          <ul id="navlist">
+            <li><a href="/canfar">CANFAR Home</a></li>
+            <li class="current"><a href="/canfar/about.html" class="current">About CANFAR</a></li>
+            <li><a href="http://www.canfar.phys.uvic.ca/wiki">Documentation Wiki</a></li>
+            <li><a href="/canfar/links.html">CANFAR Links</a></li>
+            <li><a href="/canfar/contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div id="mainContent">
+        <div id="breadCrumb"><a href="/canfar">CANFAR home</a> / Project Background</div>
+        <h1>About the CANFAR Project</h1>
+        <ul id="navlist2">
+          <li class="active"><a href="/canfar/about.html" class="current">Project Background </a></li>
+          <li><a href="/canfar/infrastructure.html">Infrastructure</a></li>
+          <li><a href="/canfar/science.html">Science</a></li>
+          <li><a href="/canfar/talks.html">Talks</a></li>
+          <li><a href="/canfar/papers.html">Papers</a></li>
+        </ul>
+        <br/>
+
+        <h3> CANARIE’s Network-Enabled Platform (NEP) Program</h3>
+
+        <p> CANARIE’s flagship Network-Enabled Platform (NEP) Program funds the
+          development of tools and software that help researchers, in a wide range
+          of disciplines, to fully exploit and share the massive amount of data and
+          research that flow along the CANARIE Network. Initial CANFAR development
+          was undertaken with $2.3 million of funding under this program.</p>
+        <ul>
+          <li><a href="PDF/CANFAR.pdf">CANFAR NEP Project Fact Sheet (pdf)</a></li>
+          <li><a href="PDF/CANFAR_Success.pdf">CANFAR NEP Project Success Story
+            (pdf)</a></li>
+          <li><a href="PDF/NEP_Deliverables.pdf">CANFAR NEP Project Deliverables
+            (pdf)</a></li>
+          <li><a href="canfar_project/index.html">CANARIE NEP-39 (CANFAR) Project
+            Site (archive-no longer updated)</a></li>
+        </ul>
+        <h3>CANFAR Development Post NEP</h3>
+
+        <p> Development and implementation of CANFAR infrastructure have continued
+          since the completion of the CANFARIE funded NEP project in May 2010.</p>
+        <hr/>
+        <h3>How to use CANFAR</h3>
+
+        <p>User Guides, Tutorials, Toolboxes and and general help can be found on
+          the CANFAR <a href="http://www.canfar.phys.uvic.ca/wiki">Documentation
+            Wiki</a>. Help on getting a CANFAR account is available from the <a
+              href="http://www.canfar.phys.uvic.ca/wiki/index.php/Help">wiki</a> or by
+          contacting <a href="mailto:canfarhelp@nrc.gc.ca">canfarhelp@nrc.gc.ca</a>.
+        </p>
+        <hr/>
+        <div id="canfar_footer"></div>
+      </div>
+    </div>
+    <!-- Main JQuery script -->
+    <script type="text/javascript" src="/canfar/javascript/jquery-1.8.1.min.js"></script>
+
+    <!-- Only included for easy tooltips -->
+    <script type="text/javascript" src="/canfar/javascript/jquery.tools.tooltip.min.js"></script>
+
+    <!-- All other cool stuff. -->
+    <script type="text/javascript" src="/canfar/javascript/jquery-ui-1.8.23.custom.min.js"></script>
+    <script type="text/javascript" src="/canfar/javascript/canfar_widget.js"></script>
+    <script defer type="text/javascript">
+      // perform JavaScript after the document is scriptable.
+      $(document).ready(function()
+                        {
+                          $("#canfar_header").load("/canfar/_header.html #header");
+                          $("#canfar_footer").load("/canfar/_footer.html #footer", "",
+                                                   function(responseText, textStatus, XMLHttpRequest)
+                                                   {
+                                                     $(".footer_link").hover(function(inEvent)
+                                                                             {
+                                                                               $(this).fadeTo("fast", 1.0);
+                                                                             },
+                                                                             function(outEvent)
+                                                                             {
+                                                                               $(this).fadeTo("fast", 0.8);
+                                                                             }).tooltip({
+                                                                                          effect: "fade",
+                                                                                          opacity: 0.8,
+                                                                                          position: "top",
+                                                                                          offset: [-10, -40]
+                                                                                        });
+
+                                                     $.getScript("/canfar/javascript/canfar.js");
+                                                   });
+                        });
+    </script>
+  </body>
+</html>
