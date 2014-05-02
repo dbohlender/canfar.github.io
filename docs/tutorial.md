@@ -9,8 +9,8 @@ permalink: /docs/tutorial/
   <ul class="column-2">
     <li><a href="#setup">Setup</a></li>
     <li><a href="#create-a-virtual-machine">Create the Virtual Machine</a></li>
-    <li><a href="#install-software-on-the-virtual-machine">Install software</a></li>
-    <li><a href="#test-the-pipeline">Test</a></li>
+    <li><a href="#install-software">Install software</a></li>
+    <li><a href="#test">Test</a></li>
     <li><a href="#store-the-results">Store the results</a></li>
     <li><a href="#batch-processing">Batch processing</a></li>
     <li><a href="#save-the-virtual-machine">Save the Virtual Machine</a></li>
