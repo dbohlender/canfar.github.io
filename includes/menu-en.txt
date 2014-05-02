@@ -18,7 +18,7 @@ wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licenc
   </section>
 </li>
 <li>
-  <a href="{{site.basepath}}/docs/home">Documentation</a>
+  <a href="/docs/home">Documentation</a>
 </li>
 <li class="float-right">
   <div>
