@@ -17,7 +17,7 @@ scp USER@canfar.dao.nrc.ca:.ssh/id*sa* ~/.ssh/
 chmod 600 ~/.ssh/id*sa
 {% endhighlight %}
 
-You actually don't need the private key on the canfar login host, this is slightly insecure but more convenient to have. However the CANFAR VMOD system needs the public key. Now to simplify your connections to CANFAR VM and login host, you can add the following lines to your desktop/laptop `.ssh/config` file:
+You don't actually need the private key on the canfar login host, this is slightly insecure but more convenient to have. However the CANFAR VMOD service needs the public key. Now to simplify your connections to CANFAR VM and login host, you can add the following lines to your desktop/laptop `.ssh/config` file:
 
 {% highlight text %}
 Host canfar
@@ -29,7 +29,7 @@ Host 172.22.128.*
   ProxyCommand ssh canfar -W %h:%p
 {% endhighlight %}
 
-With these commands, you can connect to the canfar login host simply with `ssh canfar` command, and connect directly to the VM with `ssh VM IP` command.
+With these configurations, you will be able to connect to the canfar login host simply with a `ssh canfar` command, and connect directly to the VM with a `ssh VM_IP` command.
 
 ### Advanced SSH configuration
 
