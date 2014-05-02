@@ -6,20 +6,35 @@ permalink: /docs/tutorial/
 
 The goal of this tutorial is to show you how to:
 
-- create a Virtual Machine on CANFAR
-- make with a very simple script which will download public astronomical image and detect sources
-- store the detected sources into your VOSpace storage
-- launch batch jobs doing executing the same script with other astronomical images
+- Create a Virtual Machine on CANFAR
+- Make a very simple script to download a public astronomical image and detect sources
+- Store the detected sources into your VOSpace storage
+- Launch batch jobs while executing the same script on other astronomical images
+
+<div class="span-4 module-table-contents">
+	<h2>Table of contents</h2>
+  <ul class="column-2">
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="#create-a-virtual-machine">Create the Virtual Machine</a></li>
+    <li><a href="#install-software-on-the-virtual-machine">Install software</a></li>
+    <li><a href="#test-the-pipeline">Test</a></li>
+    <li><a href="#store-the-results">Store the results</a></li>
+    <li><a href="#batch-processing">Batch processing</a></li>
+    <li><a href="#save-the-virtual-machine">Save the Virtual Machine</a></li>
+    <li><a href="#configure-your-processing">Configure your processing</a></li>
+    <li><a href="#execute-it">Execute it</a></li>
+  </ul>
+</div>
 
 ## Setup
 
-We assume here you have [registered](/docs/register), so you got a CADC username `USER`. Then connect to to the canfar login host with your CADC username and password:
+If you have not already [registered]({{site.basepath}}/docs/register), please do so.  Then connect to to the canfar login host with the CADC `USERNAME` and password:
 
 {% highlight bash %}
-ssh USER@canfar.dao.nrc.ca
+ssh USERNAME@canfar.dao.nrc.ca
 {% endhighlight %}
 
-If this is the first time you login to this machine, run the following script to make your life easier using VOSpace and certificates.
+If this is your first time logging in to this machine, run the following script to make your life easier using VOSpace and certificates:
 
 {% highlight bash %}
 canfarsetup
@@ -49,7 +64,7 @@ You can use the ssh wrapper script to connect to the just created VM from the CA
 vmssh vmdemo
 {% endhighlight %}
 
-or follow this [guide](/docs/vmacess/) for other ways access the VM such as VNC.
+or follow this [guide]({{site.basepath}}/docs/vmacess/) for other ways access the VM such as VNC.
 
 The VM operating system has only a set of minimal packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies. We will install it from source for illustration purpose:
 
@@ -168,7 +183,7 @@ sudo vmsave -t vmdemo -v USER
 
 You will wait 4min until your brand new VM has been saved. You can then check the VM on [your VOSpace](http://www.canfar.phys.uvic.ca/vosui/), and go to the `vmstore` directory.
 
-## Configure a submission file
+## Configure your processing
 
 Now we are ready to launch a bunch of batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to the VOSpace. On the CANFAR login host, copy over your `mydemo.bash` script. Get the VM IP address: 
 
@@ -222,7 +237,7 @@ Queue
 
 Again, make sure in the script above to substitute USER by your CADC username.
 
-## Submitting a processing job
+## Execute it
 
 Save the submission file as `mydemo.sub` and  submit your jobs to the condor job pool:
 

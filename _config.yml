@@ -12,7 +12,6 @@ basepath: /canfar-github
 description: Process astronomy data on the cloud
 login: http://www.canfar.phys.uvic.ca/canfar/
 exclude: docs_old
-include: includes
 
 kramdown:
   input: GFM
