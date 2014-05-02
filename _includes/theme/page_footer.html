@@ -1,6 +1,6 @@
 <dl id="canfar-date-mod" role="contentinfo">
   <dt>Date modified:</dt>
-  <dd><span><time>2014-05-02</time></span></dd>
+  <dd><span><time>$LastChangedDate$</time></span></dd>
 </dl>
 <div class="clear"></div>
 <!-- MainContentEnd -->
@@ -39,10 +39,6 @@
 </div>
 </div>
 </div>
-
-
-
-
 
 <div id="wb-foot">
   <div id="wb-foot-in">
@@ -101,44 +97,6 @@
 <!-- ScriptsEnd -->
 
 <!-- CustomScriptsStart -->
-<!-- Open CADC library to handle URIs. -->
-<script src="/cadcJS/javascript/cadc.uri.js" type="text/javascript"></script>
-
-<!-- CADC JavaScript to handle login/logout link. -->
-<script src="/en/resources/cadc.login.js" type="text/javascript"></script>
-
-<!-- CANFAR Script to handle widget logic. -->
-<script src="/canfar/javascript/canfar.widget-control.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-  $(document).ready(function()
-                    {
-                      var $alertContainer =
-                          $("#canfar-alert-container");
-                      var $widgetContainer =
-                          $("#canfar-widget-container");
-
-                      $alertContainer.hide();
-                      $widgetContainer.hide();
-
-                      var dashboardControl =
-                          new canfar.util.DashboardControl();
-
-                      // Load the CANFAR widgets if they're logged in.
-                      $.getJSON("/access/login/user", function(jsonData)
-                      {
-                        if (jsonData.loggedIn)
-                        {
-                          $widgetContainer.show();
-                          dashboardControl.initWidgets(jsonData.username);
-                        }
-                        else
-                        {
-                          $alertContainer.show();
-                        }
-                      });
-                    });
-</script>
 <!-- CustomScriptsEnd -->
 </body>
 </html>
