@@ -50,7 +50,7 @@ Let's create a VM called *vmdemo*. From the [CANFAR Processing Page](http://www.
 	
 Wait a few minutes for an email that will tell you your VM is ready and will give you a private IP address for the VM that you can access only from the CANFAR login host. Then click on **Running VMs**, or simply refresh the page if you were already on it: you should see your VM and the private IP.
 	
-## Install software on the Virtual Machine
+## Install software
 
 You can use the ssh wrapper script to connect to the just created VM from the CANFAR login host:
 
@@ -91,7 +91,7 @@ sudo mv funpack /usr/local/bin
 sudo chmod a+x /usr/local/bin/funpack
 {% endhighlight %}
 
-## Test the pipeline
+## Test
 
 We are now ready to do a simple test. Let's download a FITS image on scratch space (called *staging*), uncompress it and run SExtractor on it:
 
@@ -127,7 +127,7 @@ vcp 1056213p.cat vos:USER
 
 Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui/%20VOSpace%20web%20interface). 
 
-## Create a script for batch
+## Batch processing
 
 Now we want to automate the whole procedure above in a single script. Paste all the commands above into one BASH script:
 
