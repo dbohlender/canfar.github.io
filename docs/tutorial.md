@@ -37,6 +37,8 @@ canfarsetup
 It will generate a proxy for your [X.509 certificate](http://en.wikipedia.org/wiki/X.509) in `$HOME/.ssl/cadcproxy.pem` to access your VOSpace, a `$HOME/.netrc` file to automatically connect to CANFAR web services, and an ssh key pair `$HOME/.ssh/id_rsa.*` to access your Virtual Machines (VMs).
 The canfar login host is a bastion host or jump host. You need to connect to it to access your VMs, the VMs are not accessible from outside the CADC internal network.
 
+{% include backToTop.html %}
+
 ## Create a Virtual Machine
 
 Let's create a VM called *vmdemo*. From the [CANFAR Processing Page](http://www.canfar.phys.uvic.ca/processing), login with your CADC credentials, and create a VM using the web interface:
@@ -49,7 +51,9 @@ Let's create a VM called *vmdemo*. From the [CANFAR Processing Page](http://www.
 - Click **Create**
 	
 Wait a few minutes for an email that will tell you your VM is ready and will give you a private IP address for the VM that you can access only from the CANFAR login host. Then click on **Running VMs**, or simply refresh the page if you were already on it: you should see your VM and the private IP.
-	
+
+{% include backToTop.html %}
+
 ## Install software
 
 You can use the ssh wrapper script to connect to the just created VM from the CANFAR login host:
@@ -91,6 +95,8 @@ sudo mv funpack /usr/local/bin
 sudo chmod a+x /usr/local/bin/funpack
 {% endhighlight %}
 
+{% include backToTop.html %}
+
 ## Test
 
 We are now ready to do a simple test. Let's download a FITS image on scratch space (called *staging*), uncompress it and run SExtractor on it:
@@ -104,7 +110,9 @@ sex 1056213p.fits -CATALOG_NAME 1056213p.cat
 {% endhighlight %}
 
 The image `1056213p.fits.fz` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
-	
+
+{% include backToTop.html %}
+
 ## Store the results
 
 We want to store the output catalogue `1056213p.cat` on a persistent storage because the scratch space where it resides now will be wiped out when the VM shuts down. So we will use VOSpace to store the result. To access VOSpace, we need a proxy authorization of your behalf to store files. If you ran `canfarsetup` and answered yes to create a `.netrc` file, you can copy it from the CANFAR login host to your VM to automate CADC and canfar credentials calls:
@@ -126,6 +134,8 @@ vcp 1056213p.cat vos:USER
 {% endhighlight %}
 
 Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui/%20VOSpace%20web%20interface). 
+
+{% include backToTop.html %}
 
 ## Batch processing
 
@@ -156,7 +166,9 @@ Now let's test the newly created script with a different file ID. If the script 
 {% endhighlight %}
 
 Just as during the manual testing, verify the output, and the check with the VOSpace web interface on that the catalogue has been uploaded.
-	
+
+{% include backToTop.html %}
+
 ## Save the Virtual Machine
 
 To launch batch jobs to various clusters, you will need to store your software stack installed on your Virtual Machine. To do this, you simply save the full Virtual Machine into one file, then upload it to your VOSpace.
@@ -176,6 +188,8 @@ sudo vmsave -t vmdemo -v USER
 {% endhighlight %}
 
 You will wait 4min until your brand new VM has been saved. You can then check the VM on [your VOSpace](http://www.canfar.phys.uvic.ca/vosui/), and go to the `vmstore` directory.
+
+{% include backToTop.html %}
 
 ## Configure your processing
 
@@ -231,6 +245,8 @@ Queue
 
 Again, make sure in the script above to substitute USER by your CADC username.
 
+{% include backToTop.html %}
+
 ## Execute it
 
 Save the submission file as `mydemo.sub` and  submit your jobs to the condor job pool:
@@ -266,3 +282,5 @@ and you'll end up in the `$TMPDIR`  directory. The interesting files are:
 Once you have no more jobs on the queue, check the logs and output files `mydemo.*` on the login host, and check on your VOSpace browser all the 3 generated catalogues have been uploaded. 
 	
 You are done!
+
+{% include backToTop.html %}
