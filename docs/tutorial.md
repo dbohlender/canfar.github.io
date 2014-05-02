@@ -6,7 +6,7 @@ permalink: /docs/tutorial/
 
 <div class="span-4 module-table-contents">
 	<h2>Table of contents</h2>
-  <ul class="column-2">
+  <ol class="column-2">
     <li><a href="#setup">Setup</a></li>
     <li><a href="#create-a-virtual-machine">Create the Virtual Machine</a></li>
     <li><a href="#install-software">Install software</a></li>
@@ -16,7 +16,7 @@ permalink: /docs/tutorial/
     <li><a href="#save-the-virtual-machine">Save the Virtual Machine</a></li>
     <li><a href="#configure-your-processing">Configure your processing</a></li>
     <li><a href="#execute-it">Execute it</a></li>
-  </ul>
+  </ol>
 </div>
 <div class="clear"></div>
 
