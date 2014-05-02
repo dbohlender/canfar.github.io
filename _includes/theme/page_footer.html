@@ -1,6 +1,6 @@
 <dl id="canfar-date-mod" role="contentinfo">
   <dt>Date modified:</dt>
-  <dd><span><time>2014-04-17</time></span></dd>
+  <dd><span><time>2014-05-02</time></span></dd>
 </dl>
 <div class="clear"></div>
 <!-- MainContentEnd -->
@@ -34,10 +34,10 @@
                       handle_tbs_class();
                     });
 </script>
-       
-      </div>
-    </div>
-  </div>
+
+</div>
+</div>
+</div>
 </div>
 
 
@@ -53,38 +53,26 @@
 
           <div id="canfar-sft-in">
             <section>
-              <div class="span-2"><h4 class="canfar-col-head">About</h4>
+              <div class="span-2">
+                <h4 class="canfar-col-head">About</h4>
                 <ul>
-                  <li><a title="About CANFAR" href="/docs/about/">About the CANFAR Project</a></li>
-                  <li><a title="University of Victoria" rel="external" href="http://www.phys.uvic.ca">University of Victoria</a></li>
-                  <li><a title="University of British Columbia" rel="external" href="http://www.phas.ubc.ca">University of British Columbia</a></li>
-                  <li><a title="Canadian Astronomy Data Centre<br />Centre Canadienne de Donn&eacute;e Astonimique" rel="external" href="http://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca">Canadian Astronomy Data Centre (CADC)</a></li>
-                  <li><a title="Canada's Advanced Research and Innovation Network" rel="external" href="http://www.canarie.ca">CANARIE</a></li>
-                  <li><a title="Compute / Calcul Canada" rel="external" href="http://www.computecanada.ca">Compute Canada</a></li>
-                  <li><a title="NRC / CNRC" rel="external" href="http://www.nrc-cnrc.gc.ca/">National Research Council of Canada (NRC)</a></li>
-                  <li><a title="CSA / ASC" rel="external" href="http://www.asc-csa.gc.ca/">Canadian Space Agency (CSA)</a></li>
+                  <li><a rel="external" href="http://www.canfar.net/about">CANFAR Project</a></li>
+                  <li><a rel="external" href="http://www.canfar.net/docs/home">Help</a></li>
                 </ul>
               </div>
+            </section>
+            <section>
+              <div class="span-2"></div>
+            </section>
+            <section>
+              <div class="span-2"></div>
             </section>
             <section>
               <div class="span-2">
-                <h4 class="canfar-col-head">Contact us</h4>
+                <h4 class="canfar-col-head">Contact</h4>
                 <ul>
-                  <li><a rel="external" href="http://www.canarie.ca/en/contact">Questions or comments?</a></li>
-                </ul>
-              </div>
-            </section>
-            <section>
-              <div class="span-2"><h4 class="canfar-col-head">News</h4>
-                <ul>
-                  <li><a rel="external" class="wb-icon-none" href="http://www.canarie.ca/templates/programs/network/pdf/CANFAR.pdf">Success Story</a></li>
-                </ul>
-              </div>
-            </section>
-            <section>
-              <div class="span-2"><h4 class="canfar-col-head">Stay connected</h4>
-                <ul>
-                  <li><a rel="external" href="http://www.youtube.com/user/canarienetwork">YouTube</a></li>
+                  <li><a rel="external" href="https://github.com/canfar">CANFAR on GitHub</a></li>
+                  <li><a href="mailto:canfar@uvic.ca">E-mail</a></li>
                 </ul>
               </div>
             </section>
@@ -113,7 +101,44 @@
 <!-- ScriptsEnd -->
 
 <!-- CustomScriptsStart -->
+<!-- Open CADC library to handle URIs. -->
+<script src="/cadcJS/javascript/cadc.uri.js" type="text/javascript"></script>
 
+<!-- CADC JavaScript to handle login/logout link. -->
+<script src="/en/resources/cadc.login.js" type="text/javascript"></script>
+
+<!-- CANFAR Script to handle widget logic. -->
+<script src="/canfar/javascript/canfar.widget-control.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+  $(document).ready(function()
+                    {
+                      var $alertContainer =
+                          $("#canfar-alert-container");
+                      var $widgetContainer =
+                          $("#canfar-widget-container");
+
+                      $alertContainer.hide();
+                      $widgetContainer.hide();
+
+                      var dashboardControl =
+                          new canfar.util.DashboardControl();
+
+                      // Load the CANFAR widgets if they're logged in.
+                      $.getJSON("/access/login/user", function(jsonData)
+                      {
+                        if (jsonData.loggedIn)
+                        {
+                          $widgetContainer.show();
+                          dashboardControl.initWidgets(jsonData.username);
+                        }
+                        else
+                        {
+                          $alertContainer.show();
+                        }
+                      });
+                    });
+</script>
 <!-- CustomScriptsEnd -->
 </body>
 </html>
