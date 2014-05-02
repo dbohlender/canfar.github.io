@@ -4,13 +4,6 @@ title: Tutorial
 permalink: /docs/tutorial/
 ---
 
-The goal of this tutorial is to show you how to:
-
-- Create a Virtual Machine on CANFAR
-- Make a very simple script to download a public astronomical image and detect sources
-- Store the detected sources into your VOSpace storage
-- Launch batch jobs while executing the same script on other astronomical images
-
 <div class="span-4 module-table-contents">
 	<h2>Table of contents</h2>
   <ul class="column-2">
@@ -25,6 +18,7 @@ The goal of this tutorial is to show you how to:
     <li><a href="#execute-it">Execute it</a></li>
   </ul>
 </div>
+<div class="clear"></div>
 
 ## Setup
 
