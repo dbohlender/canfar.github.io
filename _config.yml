@@ -8,7 +8,6 @@ support: /support/
 about: /about/
 url: http://canfar.github.io/
 baseurl: http://www.canfar.net
-basepath: /canfar-github
 description: Process astronomy data on the cloud
 login: http://www.canfar.phys.uvic.ca/canfar/
 exclude: docs_old
