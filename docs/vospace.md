@@ -149,4 +149,4 @@ WARNING: this is not a fully secure solution.
 
 ### VOSpace API and access with web clients
 
-VOSpace is a RESTful service with an API that call be called through standard web client such as curl or wget. Please refer to the [API Reference]([http://www.canfar.phys.uvic.ca/vospace) for more information. 
+VOSpace is a RESTful service with an API that call be called through standard web client such as curl or wget. Please refer to the [API Reference](http://www.canfar.phys.uvic.ca/vospace) for more information. 
