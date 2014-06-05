@@ -10,7 +10,7 @@
     <meta charset="utf-8"/>
     <!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW)
     wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-    <title><!--#echo encoding="none" var="pagetitle"--></title>
+    <title>{% site.name %}</title>
 
     <meta name="description"
           content="English description / Description en anglais"/>
@@ -57,19 +57,15 @@
   </head>
 
   <body>
-  <!--#if expr="${nav_menu_path}"-->
-    <div id="wb-body-sec">
-  <!--#else-->
     <div id="wb-body">
-  <!--#endif-->
-      <div id="wb-skip">
+        <div id="wb-skip">
         <ul id="wb-tphp">
           <li id="wb-skip1"><a href="#wb-cont">Skip to main content</a></li>
           <li id="wb-skip2"><a href="#wb-nav">Skip to footer</a></li>
         </ul>
       </div>
 
-      <!--#include virtual="/canfar/includes/_page_header.html"-->
+      {% include theme/page_header.html %}
 
       <div id="wb-core">
         <div id="wb-core-in" class="equalize">

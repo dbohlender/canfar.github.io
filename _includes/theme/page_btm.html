@@ -36,25 +36,10 @@
 </div>
 </div>
 
-<!--#if expr="${nav_menu_path}"-->
-<div id="wb-sec">
-  <div id="wb-sec-in">
-    <nav role="navigation"><h2 id="wb-leftnav">Navigation menu</h2>
-
-      <div class="wb-sec-def">
-        <!-- LeftNavStart -->
-        <!--#include virtual="${nav_menu_path}"-->
-        <!-- LeftNavEnd -->
-      </div>
-    </nav>
-  </div>
-</div>
-<!--#endif-->
-
 </div>
 </div>
 
-<!--#include virtual="/canfar/includes/_page_footer.html"-->
+{% include theme/page_footer.html %}
 </div>
 
 <!-- ScriptsStart -->
