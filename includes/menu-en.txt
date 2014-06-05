@@ -5,7 +5,7 @@ wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licenc
 <!-- DataAjaxFragmentStart -->
 <li>
   <section>
-    <h3><a rel="external" href="http://www.canfar.phys.uvic.ca">Portal</a></h3>
+    <h3><a rel="external" href="http://www.canfar.phys.uvic.ca/canfar">Portal</a></h3>
     <div class="mb-sm">
       <div class="span-2">
         <ul>
@@ -14,19 +14,38 @@ wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licenc
           <li><a rel="external" href="http://www.canfar.phys.uvic.ca/canfar/groups">Group Management</a></li>
         </ul>
       </div>
+      <div class="clear"></div>
+      <div class="mb-main-link">
+        <a rel="external" href="http://www.canfar.phys.uvic.ca/canfar">Portal - Main page</a>
+      </div>
     </div>
   </section>
 </li>
 <li>
-  <a href="/docs/home">Documentation</a>
+  <section>
+    <h3><a href="/docs/home">Documentation</a></h3>
+    <div class="mb-sm">
+      <div class="span-2">
+        <ul>
+          <li><a href="/docs/vospace/">VOSpace</a></li>
+          <li><a href="/docs/tutorial/">Tutorial</a></li>
+          <li><a href="/docs/vmaccess/">Virtual Machine Access</a></li>
+        </ul>
+      </div>
+      <div class="clear"></div>
+      <div class="mb-main-link">
+        <a rel="external" href="/docs/home">Documentation - Main page</a>
+      </div>
+    </div>
+  </section>
 </li>
 <li class="float-right">
   <div>
-    <a class="access_control_link" rel="external" href="http://www.canfar.phys.uvic.ca/canfar/login.html">Login</a>
-    <div class="profile_modal">
-      <a class="user_edit_profile" rel="external" href="http://www.canfar.phys.uvic.ca/en/auth/update.html">Edit Profile</a>
+    <a class="access_control_link" rel="external" href="/canfar/login.html">Login</a>
+    <div class="clear">
+      <a class="user_edit_profile" rel="external" href="/en/auth/update.html">Edit Profile</a>
       <br />
-      <a class="access_control_logout" rel="external" href="http://www.canfar.phys.uvic.ca/access/logout">Logout</a>
+      <a class="access_control_logout" rel="external" href="/access/logout">Logout</a>
       <br />
       <br />
       <a class="access_control_logout cancel" href="#">Cancel</a>
