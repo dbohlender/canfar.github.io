@@ -41,11 +41,11 @@ wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licenc
 </li>
 <li class="float-right">
   <div>
-    <a class="access_control_link" rel="external" href="/canfar/login.html">Login</a>
+    <a class="access_control_link" rel="external" href="http://www.canfar.phys.uvic.ca/canfar/login.html">Login</a>
     <div class="clear">
-      <a class="user_edit_profile" rel="external" href="/en/auth/update.html">Edit Profile</a>
+      <a class="user_edit_profile" rel="external" href="http://www.canfar.phys.uvic.ca/en/auth/update.html">Edit Profile</a>
       <br />
-      <a class="access_control_logout" rel="external" href="/access/logout">Logout</a>
+      <a class="access_control_logout" rel="external" href="http://www.canfar.phys.uvic.ca/access/logout">Logout</a>
       <br />
       <br />
       <a class="access_control_logout cancel" href="#">Cancel</a>
