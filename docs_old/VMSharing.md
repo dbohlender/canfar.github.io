@@ -32,6 +32,8 @@ Sometime, often really, providing a user with your VM is a handy way of saving e
     sudo su - john
     vcp vos:john/id_rsa.pub id_rsa.pub.john
     cat id_rsa.pub.john >> ~john/.ssh/authorized_keys
+    chown john:john ~john/.ssh/authorized_keys
+    chmod 644 ~john/.ssh/authorized_keys
 
 -   mary exits from john's aacount and saves her VM on her VOSpace:
 
