@@ -24,21 +24,21 @@ wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licenc
 </li>
 <li>
   <section>
-    <h3><a href="/docs/home">Documentation</a></h3>
+    <h3><a href="/demo.canfar.github.io/docs/home">Documentation</a></h3>
     <div class="mb-sm">
       <div class="span-2">
         <ul>
-          <li><a href="/docs/vospace/">VOSpace</a></li>
-          <li><a href="/docs/tutorial/">Tutorial</a></li>
-          <li><a href="/docs/batch/">Batch Processing</a></li>
-          <li><a href="/docs/vmod/#sharing">Sharing Virtual Machines</a></li>
-          <li><a href="/docs/vmod/#importing">Importing Virtual Machines</a></li>
-          <li><a href="/docs/vmod/#managing">Managing Virtual Machines</a></li>
+          <li><a href="/demo.canfar.github.io/docs/vospace/">VOSpace</a></li>
+          <li><a href="/demo.canfar.github.io/docs/tutorial/">Tutorial</a></li>
+          <li><a href="/demo.canfar.github.io/docs/batch/">Batch Processing</a></li>
+          <li><a href="/demo.canfar.github.io/docs/vmod/#sharing">Sharing Virtual Machines</a></li>
+          <li><a href="/demo.canfar.github.io/docs/vmod/#importing">Importing Virtual Machines</a></li>
+          <li><a href="/demo.canfar.github.io/docs/vmod/#managing">Managing Virtual Machines</a></li>
         </ul>
       </div>
       <div class="clear"></div>
       <div class="mb-main-link">
-        <a rel="external" href="/docs/home">Documentation - Main page</a>
+        <a rel="external" href="/demo.canfar.github.io/docs/home">Documentation - Main page</a>
       </div>
     </div>
   </section>
