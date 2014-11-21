@@ -32,6 +32,7 @@ wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licenc
           <li><a href="/docs/tutorial/">Tutorial</a></li>
           <li><a href="/docs/batch/">Batch Processing</a></li>
           <li><a href="/docs/vmod/#sharing">Sharing Virtual Machines</a></li>
+          <li><a href="/docs/vmod/#importing">Importing Virtual Machines</a></li>
           <li><a href="/docs/vmod/#managing">Managing Virtual Machines</a></li>
         </ul>
       </div>
