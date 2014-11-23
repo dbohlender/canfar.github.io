@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: Managing Virtual Machines
-permalink: /docs/managing/
+permalink: /docs/vmod/
 ---
 
 ## Prepare the command-line interface
