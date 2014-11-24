@@ -31,9 +31,9 @@ wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licenc
           <li><a href="/demo.canfar.github.io/docs/vospace/">VOSpace</a></li>
           <li><a href="/demo.canfar.github.io/docs/tutorial/">Tutorial</a></li>
           <li><a href="/demo.canfar.github.io/docs/batch/">Batch Processing</a></li>
-          <li><a href="/demo.canfar.github.io/docs/vmod/#sharing">Sharing Virtual Machines</a></li>
-          <li><a href="/demo.canfar.github.io/docs/vmod/#importing">Importing Virtual Machines</a></li>
-          <li><a href="/demo.canfar.github.io/docs/vmod/#managing">Managing Virtual Machines</a></li>
+          <li><a href="/demo.canfar.github.io/docs/managing/#share-an-image-with-another-tenant">Sharing Virtual Machines</a></li>
+          <li><a href="/demo.canfar.github.io/docs/managing/#import-an-image">Importing Virtual Machines</a></li>
+          <li><a href="/demo.canfar.github.io/docs/managing/">Managing Virtual Machines</a></li>
         </ul>
       </div>
       <div class="clear"></div>
