@@ -27,7 +27,15 @@ Click on **Access & Security** (left column of page), and then the **Security Gr
 
 ### Import an ssh public key
 
-Click on **Access & Security** and switch to the **Key Pairs** tab and click on the **Import Key Pair** button at the top-right. Choose a meaningful name for the key, and then copy and paste the contents of ```~/.ssh/id_rsa.pub``` from the machine you plan to ssh from into the **Public Key** window. If you have not yet created a key pair on your system, run ```ssh-keygen``` to generate one.
+Access to VMs is facilitated by SSH key pairs rather than less secure
+user name / password. A private key resides on your own computer, and
+the public key is copied to all machines that you wish to connect to.
+Click on **Access & Security**, switch to the **Key Pairs** tab and
+click on the **Import Key Pair** button at the top-right. Choose a
+meaningful name for the key, and then copy and paste the contents of
+```~/.ssh/id_rsa.pub``` from the machine you plan to ssh from into the
+**Public Key** window. If you have not yet created a key pair on your
+system, run **ssh-keygen** to generate one.
 
 **SG suggests link to ssh key generation doc**
 
@@ -39,13 +47,19 @@ Click on the **Floating IPs** tab. If there are no IPs listed, click on the **Al
 
 Switch to the **Instances** window (left-hand column), and then click on **+ Launch Instance**.
 
-In the **Details** tab choose a meaningful **Instance Name**. **Flavor** is the hardware profile for the VM. ```m1.small``` provides the minimal requirements for most VMs. **Availability Zone** should be left empty, and **Instance Count** 1 for this tutorial. Under **Instance Boot Source** select ```Boot from image```; an **Image Name** pull-down menu will appear. Using it, select an image, e.g., ```CentOS 7```, or one of your old VM images if they have been migrated for you,
+In the **Details** tab choose a meaningful **Instance Name**. **Flavor** is the hardware profile for the VM. ```m1.small``` provides the minimal requirements for most VMs, although in this example select ```c2.low``` which will provide an 80 GB *ephemeral partition* that will be used for batch processing. **Availability Zone** should be left empty, and **Instance Count** 1 for this tutorial. Under **Instance Boot Source** select ```Boot from image```; an **Image Name** pull-down menu will appear. Using it, select an image, e.g., ```CentOS 7```, or one of your old VM images if they have been migrated for you,
 
 In the **Access & Security** tab ensure that your public key is selected, and the ```default``` security group (with ssh rule added) is selected.
 
+In the **Post-Creation** tab you can specify [scripts](http://cloudinit.readthedocs.org/en/latest/topics/format.html) to perform additional configuration on the VM after it boots. In order to prepare a VM for batch processing, paste the following lines in the **Customization Script** window (note that it is also possible to perform this configuration at a later point by executing a script from within the running VM):
+{% highlight bash %}
+#include
+https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_config.yml
+{% endhighlight %}
+
 Finally, click the **Launch** button.
 
-### Interact with the VM
+### Connect to the VM and create CANFAR user
 
 After launching the VM you are returned to the **Instances** window. You can check the VM status once booted by clicking on its name (the **Console** tab of this window provides a VNC console in which you can monitor the boot process).
 
@@ -54,14 +68,94 @@ Before being able to ssh to your instance, you will need to attach the public IP
 Your ssh public key will have been injected into a **generic account** with a name like ```ec2-user```, ```cloud-user```, ```centos```, or ```ubuntu```, depending on the Linux distribution. To discover the name of this account, first attempt to connect as root:
 
 {% highlight bash %}
-$ ssh root@206.12.48.93
-Please login as the user "cloud-user" rather than the user "root".
+ssh root@206.12.48.93
+Please login as the user "centos" rather than the user "root".
 
-$ ssh cloud-user@206.12.48.93
-[cloud-user@new-instance ~]$
+ssh centos@206.12.48.93
 {% endhighlight %}
 
-If you require **root** access (e.g, to install software), prefix commands with ```sudo```.
+For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR user name (with a copy of the ssh public key so that you may connect):
+
+{% highlight bash %}
+sudo adduser [yourname] -G wheel
+sudo mkdir /home/[yourname]/.ssh
+sudo cp .ssh/authorized_keys /home/[yourname]/.ssh/
+sudo chown [yourname]:[yourname] /home/[yourname]/.ssh/authorized_keys
+sudo sh -c "echo \"[yourname] ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
+{% endhighlight %}
+
+Exit and re-connect as your new user:
+
+{% highlight bash %}
+exit
+logout
+Connection to 206.12.48.93 closed.
+ssh [yourname]@206.12.48.93
+{% endhighlight %}
+
+### Install software
+
+The VM operating system has only a set of minimal packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies.
+
+{% highlight bash %}
+sudo yum install wget
+wget http://www.astromatic.net/download/sextractor/sextractor-2.19.5-1.x86_64.rpm
+sudo rpm -i sextractor-2.19.5-1.x86_64.rpm
+{% endhighlight %}
+
+Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the funpack utility to uncompress data from CADC. Install it on your VM with the following commands:
+
+{% highlight bash %}
+sudo yum install epel-release
+sudo yum install fpack
+{% endhighlight %}
+
+{% include backToTop.html %}
+
+### Test
+
+We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavor with an *ephemeral partition*, and the customization script we specified mounted it at ```/ephemeral```. This partition is where batch processing will take place. For this interactive session, create a directory owned by your user, copy an image file there, uncompress it, and run SExtractor on it:
+
+{% highlight bash %}
+cd /ephemeral
+sudo mkdir work
+sudo chown [yourname]:[yourname] work
+cd work
+cp /usr/share/sextractor/default* .
+rm default.param
+for p in NUMBER MAG_AUTO X_IMAGE Y_IMAGE; do echo $p >> default.param; done
+wget -O 1056213p.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p'
+funpack 1056213p.fits.fz
+sex 1056213p.fits -CATALOG_NAME 1056213p.cat 
+{% endhighlight %}
+
+The image `1056213p.fits.fz` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
+
+{% include backToTop.html %}
+
+### Store the results
+
+We want to store the output catalogue `1056213p.cat` on a persistent storage medium because the ephemeral partition where it resides now will be wiped out when the VM shuts down. So we will use VOSpace to store the result. To access VOSpace, we need proxy authorization of your behalf to store files. This is accomplished using a `.netrc` file that contains you canfar user name and password, and then **getCert** can obtain an *X509 Proxy Certificate* using that name/password combination without any further user interaction.
+
+{% highlight bash %}
+echo "machine www.canfar.phys.uvic.ca login [yourname] password [yourpassword]" > ~/.netrc
+chmod 600 ~/.netrc
+sudo yum install python-pip
+sudo pip install -U vos
+getCert
+{% endhighlight %}
+
+Let's check that the VOSpace client works by copying the results to your VOSpace:
+
+{% highlight bash %}
+vcp 1056213p.cat vos:[yourname]
+{% endhighlight %}
+
+Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](
+Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui).
+
+{% include backToTop.html %}
+
 
 ### Booting a VM image migrated from the old system
 
@@ -74,7 +168,7 @@ As part of the migration to OpenStack from Nimbus, VM images were located in the
   * *The ssh public key is injected into a new generic account.* For example, if you had a Scientific Linux 5 VM, you will have your old user account in ```/home/[yourname]```, but OpenStack will have created a new account called ```ec2-user``` when the VM was instantiated, and copied the ssh public key into that account instead. Note that your old account is unchanged and may still be used. You can update the public keys for that old user using the one(s) injected into the generic account using **sudo**:
 
   {% highlight bash %}
-  [cloud-user@new-instance ~]$ cat .ssh/authorized_keys >> /home/[yourname]/.ssh/authorized_keys
+  cat .ssh/authorized_keys >> /home/[yourname]/.ssh/authorized_keys
   {% endhighlight %}
 
   You may then log out, and re-connect to your original account using the new ssh keypair.
@@ -83,122 +177,20 @@ As part of the migration to OpenStack from Nimbus, VM images were located in the
 
 ### Snapshot (save) a VM Instance
 
-Save the state of your VM by navigating to the **Instances** window, and clicking on the **Create Snapshot** button to the right of your VM instance's name. After selecting a name for the snapshot (can be identical to previous image names, as images also have unique UIDs associated with them), click the **Create Snapshot** button. It will eventually be saved and listed in the **Images** window, and will be available next time you launch an instance.
+Save the state of your VM by navigating to the **Instances** window, and clicking on the **Create Snapshot** button to the right of your VM instance's name. After selecting a name for the snapshot (it can be identical to previously existing image names, as images also have unique UIDs associated with them), click the **Create Snapshot** button. It will eventually be saved and listed in the **Images** window, and will be available next time you launch an instance.
 
 ### Shut down a VM Instance
 
 In the **Instances** window, select ```Terminate Instance``` in the **More** pull-down menu, and confirm.
 
-### Additional secionts?
+### Additional sections?
 
 * volumes
 * scratch space
-* create specific user counts for batch
-
 
 ## Batch processing
 
 **The following is old text and will slowly be re-worked into the new tutorial**
-
-### Create a Virtual Machine
-
-Let's create a VM called *vmdemo*. From the [CANFAR Processing Page](http://www.canfar.phys.uvic.ca/processing), login with your CADC credentials, and create a VM using the web interface:
-
-- Choose a **VM Name** - enter *vmdemo*
-- Choose a **Template VM** - the first one on the list works fine
-- Leave **Processing Cores**, **Memory** and **Staging Disk Space** to their default values
-- Copy the ssh key from the canfar login host you created above
-  `$HOME/.ssh/id_rsa.pub` to the **Public SSH Key** entry box
-- Click **Create**
-	
-Wait a few minutes for an email that will tell you your VM is ready and will give you a private IP address for the VM that you can access only from the CANFAR login host. Then click on **Running VMs**, or simply refresh the page if you were already on it: you should see your VM and the private IP.
-
-{% include backToTop.html %}
-
-### Install software
-
-You can use the ssh wrapper script to connect to the just created VM from the CANFAR login host:
-
-{% highlight bash %}
-vmssh vmdemo
-{% endhighlight %}
-
-or follow this [guide]({{site.basepath}}/docs/vmacess/) for other ways access the VM such as VNC.
-
-The VM operating system has only a set of minimal packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies. We will install it from source for illustration purpose:
-
-{% highlight bash %}
-wget http://www.astromatic.net/download/sextractor/sextractor-2.19.5.tar.gz
-tar xf sextractor-2.19.5.tar.gz
-cd sextractor-2.19.5
-./configure
-{% endhighlight %}
-
-As you can see, it fails on missing dependencies: the `fftw` libraries as reported by the configure command. If you only install the `fftw` libraries and run `./configure` again, you will see the `atlas` libraries are missing too. Fortunately they have already been packaged for RedHat based systems, which is what Scientific Linux is based on. So we can install them with the`yum` package manager:
-
-{% highlight bash %}
-sudo yum install fftw3-devel.x86_64 atlas-devel.x86_64
-{% endhighlight %}
-
-Now we can finish up our SExtractor installation
-
-{% highlight bash %}
-./configure
-make
-sudo make install
-{% endhighlight %}
-
-Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the [funpack](http://heasarc.nasa.gov/fitsio/fpack/) utility to uncompress data from CADC. Download and install it on your VM with the following commands:
-
-{% highlight bash %}
-wget http://heasarc.gsfc.nasa.gov/fitsio/fpack/bin/pc_linux_64bit/funpack
-sudo mv funpack /usr/local/bin
-sudo chmod a+x /usr/local/bin/funpack
-{% endhighlight %}
-
-{% include backToTop.html %}
-
-### Test
-
-We are now ready to do a simple test. Let's download a FITS image on scratch space (called *staging*), uncompress it and run SExtractor on it:
-
-{% highlight bash %}
-cd ${TMPDIR}
-cp -r ${HOME}/sextractor-2.8.6/config/default* .
-wget -O 1056213p.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData?archive=CFHT&amp;asf=true&amp;file_id=1056213p'
-funpack 1056213p.fits.fz
-sex 1056213p.fits -CATALOG_NAME 1056213p.cat 
-{% endhighlight %}
-
-The image `1056213p.fits.fz` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
-
-{% include backToTop.html %}
-
-### Store the results
-
-We want to store the output catalogue `1056213p.cat` on a persistent storage because the scratch space where it resides now will be wiped out when the VM shuts down. So we will use VOSpace to store the result. To access VOSpace, we need a proxy authorization of your behalf to store files. If you ran `canfarsetup` and answered yes to create a `.netrc` file, you can copy it from the CANFAR login host to your VM to automate CADC and canfar credentials calls:
-
-{% highlight bash %}
-scp canfar.dao.nrc.ca:.netrc ~/
-{% endhighlight %}
-
-On the VM, download a proxy certificate for 10 days with the following command:
-
-{% highlight bash %}
-getCert
-{% endhighlight %}
-
-Let's check that the VOSpace client works by copying the results to your VOSpace:
-
-{% highlight bash %}
-vcp 1056213p.cat vos:USER
-{% endhighlight %}
-
-Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui/%20VOSpace%20web%20interface). 
-
-{% include backToTop.html %}
-
-### Batch processing
 
 Now we want to automate the whole procedure above in a single script. Paste all the commands above into one BASH script:
 
@@ -227,28 +219,6 @@ Now let's test the newly created script with a different file ID. If the script 
 {% endhighlight %}
 
 Just as during the manual testing, verify the output, and the check with the VOSpace web interface on that the catalogue has been uploaded.
-
-{% include backToTop.html %}
-
-### Save the Virtual Machine
-
-To launch batch jobs to various clusters, you will need to store your software stack installed on your Virtual Machine. To do this, you simply save the full Virtual Machine into one file, then upload it to your VOSpace.
-	
-Your VOSpace directory needs to be public. Go to [your VOSpace](http://www.canfar.phys.uvic.ca/vosui) then one directory up, and change the permissions by clicking on the folder icon next to your VOSpace name.
-
-Before the first VM to save, you need to create the vmstore directory on you VOSpace where you will keep your VMs: 
-
-{% highlight bash %}
-vmkdir vos:USER/vmstore
-{% endhighlight %}
-
-Then save your VM with the following command:
-
-{% highlight bash %}
-sudo vmsave -t vmdemo -v USER
-{% endhighlight %}
-
-You will wait 4min until your brand new VM has been saved. You can then check the VM on [your VOSpace](http://www.canfar.phys.uvic.ca/vosui/), and go to the `vmstore` directory.
 
 {% include backToTop.html %}
 
