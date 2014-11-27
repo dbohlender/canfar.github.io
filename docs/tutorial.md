@@ -27,15 +27,7 @@ Click on **Access & Security** (left column of page), and then the **Security Gr
 
 ### Import an ssh public key
 
-Access to VMs is facilitated by SSH key pairs rather than less secure
-user name / password. A private key resides on your own computer, and
-the public key is copied to all machines that you wish to connect to.
-Click on **Access & Security**, switch to the **Key Pairs** tab and
-click on the **Import Key Pair** button at the top-right. Choose a
-meaningful name for the key, and then copy and paste the contents of
-```~/.ssh/id_rsa.pub``` from the machine you plan to ssh from into the
-**Public Key** window. If you have not yet created a key pair on your
-system, run **ssh-keygen** to generate one.
+Access to VMs is facilitated by SSH key pairs rather than less secure user name / password. A private key resides on your own computer, and the public key is copied to all machines that you wish to connect to. Click on **Access & Security**, switch to the **Key Pairs** tab and click on the **Import Key Pair** button at the top-right. Choose a meaningful name for the key, and then copy and paste the contents of ```~/.ssh/id_rsa.pub``` from the machine you plan to ssh from into the **Public Key** window. If you have not yet created a key pair on your system, run **ssh-keygen** to generate one.
 
 **SG suggests link to ssh key generation doc**
 
