@@ -127,7 +127,7 @@ The image `1056213p.fits.fz` is a Multi-Extension FITS file with 36 extensions, 
 
 ### Store the results
 
-We want to store the output catalogue `1056213p.cat` on a persistent storage medium because the ephemeral partition where it resides now will be wiped out when the VM shuts down. So we will use VOSpace to store the result. To access VOSpace, we need proxy authorization of your behalf to store files. This is accomplished using a `.netrc` file that contains you canfar user name and password, and then **getCert** can obtain an *X509 Proxy Certificate* using that name/password combination without any further user interaction.
+We want to store the output catalogue `1056213p.cat` on a persistent storage medium because the ephemeral partition where it resides now will be wiped out when the VM shuts down. So we will use VOSpace to store the result. To access VOSpace, we need proxy authorization of your behalf to store files. This is accomplished using a `.netrc` file that contains your CANFAR user name and password, and then **getCert** can obtain an *X509 Proxy Certificate* using that name/password combination without any further user interaction.
 
 {% highlight bash %}
 echo "machine www.canfar.phys.uvic.ca login [yourname] password [yourpassword]" > ~/.netrc
@@ -143,7 +143,6 @@ Let's check that the VOSpace client works by copying the results to your VOSpace
 vcp 1056213p.cat vos:[yourname]
 {% endhighlight %}
 
-Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](
 Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui).
 
 {% include backToTop.html %}
