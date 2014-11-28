@@ -115,7 +115,10 @@ sudo chown [yourname]:[yourname] work
 cd work
 cp /usr/share/sextractor/default* .
 rm default.param
-for p in NUMBER MAG_AUTO X_IMAGE Y_IMAGE; do echo $p >> default.param; done
+echo 'NUMBER
+MAG_AUTO
+X_IMAGE
+Y_IMAGE' > default.param
 wget -O 1056213p.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p'
 funpack 1056213p.fits.fz
 sex 1056213p.fits -CATALOG_NAME 1056213p.cat 
@@ -188,18 +191,24 @@ Now we want to automate the whole procedure above in a single script. Paste all 
 {% highlight bash %}
 #!/bin/bash
 cd ${TMPDIR}
-wget -O $1.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData?archive=CFHT&amp;asf=true&amp;file_id='$1
+wget -O $1.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData?archive=CFHT&asf=true&file_id='$1
 funpack  $1.fits.fz
-cp ~/sextractor-2.19.5/config/default.* .
+cp /usr/share/sextractor/default* .
+echo 'NUMBER
+MAG_AUTO
+X_IMAGE
+Y_IMAGE' > default.param
 sex $1.fits -CATALOG_NAME $1.cat 
-vcp $1.cat vos:USER;/
+getCert
+vcp $1.cat vos:[yourname]
 {% endhighlight %}
 
-Remember to substitute USER with your CADC user account.
-	
+Remember to substitute [yourname] with your CADC user account.
+
 This script runs all the commands, one after the other, and takes only one parameter represented by by the shell variable '$1', the file ID on the CADC CFHT archive. Save your script which we will name "mydemo.bash" and set it as executable: 
 
 {% highlight bash %}
+export TMPDIR=/ephemeral/work
 chmod +x mydemo.bash
 {% endhighlight %}
 
@@ -213,38 +222,32 @@ Just as during the manual testing, verify the output, and the check with the VOS
 
 {% include backToTop.html %}
 
-### Configure your processing
+### Configure your batch processing job
 
-Now we are ready to launch a bunch of batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to the VOSpace. On the CANFAR login host, copy over your `mydemo.bash` script. Get the VM IP address: 
+Now we are ready to launch a bunch of batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to VOSpace.
 
-{% highlight bash %}
-vmlist
-{% endhighlight %}
-
-Copy the returned IP and remote-copy your script:
+Assuming you have the `mydemo.bash` script on your local machine, copy it to the CANFAR batch host, and then log in:
 
 {% highlight bash %}
-scp VM_IP:mydemo.bash .
+scp mydemo.bash batch.canfar.net:
+ssh bash.canfar.net
 {% endhighlight %}
 
-You are done for the configuration part. If you don't need to run batch jobs, you can stop now. If you need to run batch jobs, you need to get used to the [HT condor](http://www.htcondor.org) scheduler. Let's make a condor submission script that will run the `mydemo.bash` script for each given CADC CFHT file id. We will do it for 3 CFHT images with the file ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify the configuration file listed below. Fire up your favorite editor to paste the following condor submission file:
+Batch jobs are scheduled using a system called [HT Condor](http://www.htcondor.org). Let's make a condor submission script that will run the `mydemo.bash` script for each given CADC CFHT file id. We will do it for 3 CFHT images with the file ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify the configuration file listed below. Fire up your favorite editor to paste the following condor submission file:
 
 {% highlight text %}
 Universe   = vanilla
 Executable = mydemo.bash
 should_transfer_files = YES
-when_to_transfer_output = ON_EXIT
+when_to_transfer_output = ON_EXIT_OR_EVICT
 RunAsOwner = True
 getenv = True
 transfer_output_files = /dev/null
-Requirements = VMType =?= "vmdemo" && \
-               Arch == "x86_64" && \
-               Memory >= 1024 && \
-               Cpus >=  1
-+VMLoc="http://www.canfar.phys.uvic.ca/data/pub/vospace/USER/vmstore/vmdemo.img.gz"
-+VMMem="1024"
-+VMCPUCores="1"
-+VMStorage="10"
+Requirements = VMType =?= "tutorial" && \
+               Arch == "x86_64"
+
++VMAMI          = "canfar:tutorial"
++VMInstanceType = "canfar:c2.low"
 
 Arguments = 1056215p
 Log = 1056215p.log
@@ -271,8 +274,16 @@ Again, make sure in the script above to substitute USER by your CADC username.
 
 ### Execute it
 
-Save the submission file as `mydemo.sub` and  submit your jobs to the condor job pool:
+Save the submission file as `mydemo.sub`.
 
+Source the OpenStack RC file, and enter your CANFAR password. This sets environment variables used by OpenStack:
+{% highlight bash %}
+. canfar-cadc-openrc.sh
+Please enter your OpenStack Password:
+{% endhighlight %}
+
+
+You can then submit your jobs to the condor job pool:
 {% highlight bash %}
 condor_submit mydemo.sub
 {% endhighlight %}
@@ -286,7 +297,7 @@ condor_q
 Check the status of your jobs:
 
 {% highlight bash %}
-condor_status USER
+condor_status [yourname]
 {% endhighlight %}
 
 If your job  is running (job status is R), you can connect to your running job:
@@ -301,8 +312,8 @@ and you'll end up in the `$TMPDIR`  directory. The interesting files are:
 - `_condor_stdout` on the VM will become `mydemo.out` on the login host
 - `condor_exec.exe` was your script `mydemo.bash`
 
-Once you have no more jobs on the queue, check the logs and output files `mydemo.*` on the login host, and check on your VOSpace browser all the 3 generated catalogues have been uploaded. 
-	
+Once you have no more jobs on the queue, check the logs and output files `mydemo.*` on the login host, and check on your VOSpace browser all the 3 generated catalogues have been uploaded.
+
 You are done!
 
 
