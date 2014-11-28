@@ -27,47 +27,97 @@ HTCondor is important to understand in order to manage and submit jobs.
 
 ## Writing a batch job
 
-CANFAR batch job is using HTCondor syntax. Assume there is a
-executable located in ${HOME}/myexec.bash
+First the job needs an executable. HTCondor needs a local executable
+(on the batch.canfar.net) that will be transfered to the VM and be
+executed. For example, if one wants to execute the `echo` command on
+the VM, the local script would contain:
+{% highlight text %}
+#!/bin/bash
+echo $*
+{% endhighlight %}
+Let's name the local script `myexec.bash`. We now have to choose a
+machine that will execute the transfered script. Assuming an image
+called "my_image" has been created following the.
+[VM management guide]({{site.basepath}}/docs/vmacess). Now to execute the command `echo` we
+need the smallest possible resource flavour that can boot the
+`my_image` VM, that is `m1.small` (assuming it was tested previously
+interactively). Open your favorite editor, and write a file
+`myjob.jdl`, containing:
 
 {% highlight text %}
 +VMAMI          = "canfar:my_image"
 +VMInstanceType = "canfar:m1.small"
 
-executable = echo
+executable = myexec.bash
+
 output     = myjob.out
 error      = myjob.err
 log        = myjob.log
 
 arguments = "Hello World"
 queue
-arguments = "Oh Canada"
-queue
 {% endhighlight %}
-
-If you need to process lots of jobs, we strongly recommand to read the
-documentation for writing condor submission files at [XXXX].
+Here are the explanations of the other parameters:
+- `output` will be the result of the `stdout` from the execution
+that will be transfered back to batch.canfar.net at the end of the
+job.
+- `error` is the corresponding `stderr`
+- `log` is a logging of `HTCondor` activities
+- `arguments` contains the arguments we want to pass to the
+`executable`
+- `queue` means "sends a job" with these `arguments` previously defined
 
 ## Managing Batch Jobs on the submission host
 
 ### Job Submission
-In this case, the submission files will have to reside on the CANFAR
-login portal. First, connect to the portal:
+In this case, the submission files and the `executable` will have to reside on the CANFAR
+login portal. Connect to the portal:
+
 {% highlight bash %}
 ssh USERNAME@batch.canfar.net
 {% endhighlight %}
-Then submit your job:
+
+Set up your password for your nefos project account (where your VM
+image is):
 {% highlight bash %}
-condor_submit myjob.jdl
+export OS_PASSWORD="my_password"
 {% endhighlight %}
-Count the dots, there should be as many as jobs you sent.
+
+Then share your VM with CANFAR, validate your submission file, and send the job all at once with the
+following command:
+
+{% highlight bash %}
+canfar_submit myjob.jdl
+{% endhighlight %}
+The job that was actually submitted is a validated condor submission file named `myjob_canfar.jdl`.
+
+If you want more control, decompose it in three steps:
+- First share your VM image with the CANFAR project (the one with a
+lot of resource allocation):
+
+{% highlight bash %}
+canfar_vm_share my_image
+{% endhighlight %}
+
+- then validate your job file:
+{% highlight bash %}
+canfar_valid_job myjob.jdl
+{% endhighlight %}
+
+- finally send the validated file with `HTCondor` directly:
+{% highlight bash %}
+condor_submit myjob_canfar.jdl
+{% endhighlight %}
+
 
 ### Checking Job Status
 `HTCondor` offers a great deal of command line tools to check the status
-of the VM and the job. Here is a list of the usual commands to 
+of the VM and the job.
 
 For a more exhaustive list of commands, we refere the reader to
-the official HTCondor documentation
+the official
+[HTCondor user documentation](http://research.cs.wisc.edu/htcondor/manual/v8.2/2_Users_Manual.html)
+or our [HTCondor cheat sheet[({{site.basepath}}/docs/vmacess]).
 
 See where your jobs stand on the global queue
 {% highlight bash %}
@@ -90,8 +140,4 @@ condor_status
 
 ## Managing Batch Jobs from your local computer using CANFAR web service
 
-## Troubleshooting your jobs
-
-## Advanced Batch Processing
-
-## HTCondor Cheat Sheet
+## Troubleshooting
