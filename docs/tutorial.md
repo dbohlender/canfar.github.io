@@ -6,14 +6,13 @@ permalink: /docs/tutorial/
 
 ## Introduction
 
-CANFAR computing resources are currently provided by an [OpenStack](www.openstack.org) cloud called Nefos, which is managed by WestGrid on behalf of Compute Canada. See the [Nefos QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access requests. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
+CANFAR computing resources are currently provided by an [OpenStack](http://www.openstack.org) cloud called Nefos, which is managed by WestGrid on behalf of Compute Canada. See the [Nefos QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access requests. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
 
 This tutorial demonstrates how to:
 
 * create, configure, and interact with Virtual Machines (VMs) using the graphical interface (Virtual Machine on Demand)
 
 * launch batch processing jobs from the CANFAR login host, using VMs created in the previous step.
-
 
 ## Virtual Machine on Demand
 
@@ -149,7 +148,6 @@ vcp 1056213p.cat vos:[yourname]
 Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui).
 
 {% include backToTop.html %}
-
 
 ### Booting a VM image migrated from the old system
 
