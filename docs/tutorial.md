@@ -201,7 +201,7 @@ getCert
 vcp $1.cat vos:[yourname]
 {% endhighlight %}
 
-Remember to substitute [yourname] with your CADC user account.
+Remember to substitute [yourname] with your CANFAR user account.
 
 This script runs all the commands, one after the other, and takes only one parameter represented by by the shell variable '$1', the file ID on the CADC CFHT archive. Save your script which we will name "mydemo.bash" and set it as executable: 
 
@@ -266,7 +266,7 @@ Error = 1056217p.err
 Queue
 {% endhighlight %}
 
-Again, make sure in the script above to substitute USER by your CADC username.
+Again, make sure in the script above to substitute USER by your CANFAR username.
 
 {% include backToTop.html %}
 
