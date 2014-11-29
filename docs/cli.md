@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: cli
+title: Virtual Machine Command-line Interface
 permalink: /docs/cli/
 ---
 
