@@ -6,7 +6,7 @@ permalink: /docs/tutorial/
 
 ## Introduction
 
-CANFAR computing resources are currently provided by an [OpenStack](http://www.openstack.org) cloud called Nefos, which is managed by WestGrid on behalf of Compute Canada. See the [Nefos QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access requests. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
+CANFAR computing resources are currently provided by an [OpenStack](http://www.openstack.org) which is managed by WestGrid on behalf of Compute Canada. See the [QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access requests. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
 
 This tutorial demonstrates how to:
 
@@ -16,7 +16,7 @@ This tutorial demonstrates how to:
 
 ## Virtual Machine on Demand
 
-VM on demand is provided by the OpenStack dashboard at Nefos. [Log into the dashboard](https://nefos.westgrid.ca). Provide your CANFAR username with a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password.
+VM on demand is provided by the OpenStack dashboard at WestGrid. [Log into the dashboard](https://west.cloud.computecanada.ca). Provide your CANFAR username with a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password.
 
 Each resource allocation corresponds to a **tenant**, and typically there will be one tenant per CANFAR project. A pull-down menu near the top-left allows you to select different tenants that you are a member of.
 
