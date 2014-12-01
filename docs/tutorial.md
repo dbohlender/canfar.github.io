@@ -6,7 +6,7 @@ permalink: /docs/tutorial/
 
 ## Introduction
 
-CANFAR computing resources are currently provided by an [OpenStack](http://www.openstack.org) which is managed by WestGrid on behalf of Compute Canada. See the [QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access requests. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
+CANFAR computing resources are currently provided by an [OpenStack cloud](http://www.openstack.org) which is managed by WestGrid on behalf of Compute Canada. See the [QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access requests. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
 
 This tutorial demonstrates how to:
 
@@ -18,7 +18,7 @@ This tutorial demonstrates how to:
 
 VM on demand is provided by the OpenStack dashboard at WestGrid. [Log into the dashboard](https://west.cloud.computecanada.ca). Provide your CANFAR username with a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password.
 
-Each resource allocation corresponds to a **tenant**, and typically there will be one tenant per CANFAR project. A pull-down menu near the top-left allows you to select different tenants that you are a member of.
+Each resource allocation corresponds to a **tenant**, and typically there will be one tenant per CANFAR project. A user may be a member of multiple tenants, and a tenant may have multiple users. A pull-down menu near the top-left allows you to select between the different tenants that you are a member of.
 
 ### Update security group to allow ssh access
 
@@ -38,7 +38,7 @@ Click on the **Floating IPs** tab. If there are no IPs listed, click on the **Al
 
 Switch to the **Instances** window (left-hand column), and then click on **+ Launch Instance**.
 
-In the **Details** tab choose a meaningful **Instance Name**. **Flavor** is the hardware profile for the VM. ```m1.small``` provides the minimal requirements for most VMs, although in this example select ```c2.low``` which will provide an 80 GB *ephemeral partition* that will be used for batch processing. **Availability Zone** should be left empty, and **Instance Count** 1 for this tutorial. Under **Instance Boot Source** select ```Boot from image```; an **Image Name** pull-down menu will appear. Using it, select an image, e.g., ```CentOS 7```, or one of your old VM images if they have been migrated for you,
+In the **Details** tab choose a meaningful **Instance Name**. **Flavor** is the hardware profile for the VM. ```c2.low``` provides the minimal requirements for most VMs. Note that it provides an 80 GB *ephemeral partition* that will be used as scratch space for batch processing. **Availability Zone** should be left empty, and **Instance Count** 1 for this tutorial. Under **Instance Boot Source** select ```Boot from image```; an **Image Name** pull-down menu will appear. Using it, select an image. For this tutorial, select ```CentOS```.
 
 In the **Access & Security** tab ensure that your public key is selected, and the ```default``` security group (with ssh rule added) is selected.
 
@@ -120,7 +120,7 @@ X_IMAGE
 Y_IMAGE' > default.param
 wget -O 1056213p.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p'
 funpack 1056213p.fits.fz
-sex 1056213p.fits -CATALOG_NAME 1056213p.cat 
+sex 1056213p.fits -CATALOG_NAME 1056213p.cat
 {% endhighlight %}
 
 The image `1056213p.fits.fz` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
@@ -147,44 +147,9 @@ vcp 1056213p.cat vos:[yourname]
 
 Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui).
 
-{% include backToTop.html %}
+### Write an automated processing script
 
-### Booting a VM image migrated from the old system
-
-As part of the migration to OpenStack from Nimbus, VM images were located in the personal VOSpaces of existing CANFAR users and then converted and copied into OpenStack tenants. Please note the following:
-
-  * *VM images are stored in the tenant, not a personal VOSpace.* If several users are a member of the same tenant they need to keep track of the different VM images that they have created.
-
-  * *The size of the root partition is not dynamic.* If your old VM (from ```vos:[yourname]/vmstore```) had a size of 10 G, you will need to select a flavor with a root partition of at least that size. However, if you select a flavor with a much larger size (e.g., 50 G), the instantiated VM will still only use 10 G.
-
-  * *The ssh public key is injected into a new generic account.* For example, if you had a Scientific Linux 5 VM, you will have your old user account in ```/home/[yourname]```, but OpenStack will have created a new account called ```ec2-user``` when the VM was instantiated, and copied the ssh public key into that account instead. Note that your old account is unchanged and may still be used. You can update the public keys for that old user using the one(s) injected into the generic account using **sudo**:
-
-  {% highlight bash %}
-  cat .ssh/authorized_keys >> /home/[yourname]/.ssh/authorized_keys
-  {% endhighlight %}
-
-  You may then log out, and re-connect to your original account using the new ssh keypair.
-
-  * *The /staging partition is only properly mounted for batch processing.* You may see ```/staging``` on a migrated VM, but it will not have any additional space beyond what is in the root partition.
-
-### Snapshot (save) a VM Instance
-
-Save the state of your VM by navigating to the **Instances** window, and clicking on the **Create Snapshot** button to the right of your VM instance's name. After selecting a name for the snapshot (it can be identical to previously existing image names, as images also have unique UIDs associated with them), click the **Create Snapshot** button. It will eventually be saved and listed in the **Images** window, and will be available next time you launch an instance.
-
-### Shut down a VM Instance
-
-In the **Instances** window, select ```Terminate Instance``` in the **More** pull-down menu, and confirm.
-
-### Additional sections?
-
-* volumes
-* scratch space
-
-## Batch processing
-
-**The following is old text and will slowly be re-worked into the new tutorial**
-
-Now we want to automate the whole procedure above in a single script. Paste all the commands above into one BASH script:
+Now we want to automate the whole procedure above in a single script, in preparation for batch processing. Paste the following commands into one BASH script in your home directory:
 
 {% highlight bash %}
 #!/bin/bash
@@ -196,21 +161,22 @@ echo 'NUMBER
 MAG_AUTO
 X_IMAGE
 Y_IMAGE' > default.param
-sex $1.fits -CATALOG_NAME $1.cat 
+sex $1.fits -CATALOG_NAME $1.cat
+fi
 getCert
 vcp $1.cat vos:[yourname]
 {% endhighlight %}
 
 Remember to substitute [yourname] with your CANFAR user account.
 
-This script runs all the commands, one after the other, and takes only one parameter represented by by the shell variable '$1', the file ID on the CADC CFHT archive. Save your script which we will name "mydemo.bash" and set it as executable: 
+This script runs all the commands, one after the other, and takes only one parameter represented by by the shell variable '$1', the file ID on the CADC CFHT archive. Save your script which we will name "mydemo.bash" and set it as executable:
 
 {% highlight bash %}
 export TMPDIR=/ephemeral/work
 chmod +x mydemo.bash
 {% endhighlight %}
 
-Now let's test the newly created script with a different file ID. If the script is on your home directory type: 
+Now let's test the newly created script with a different file ID. If the script is on your home directory type:
 
 {% highlight bash %}
 ~/mydemo.bash 1056214p
@@ -220,9 +186,24 @@ Just as during the manual testing, verify the output, and the check with the VOS
 
 {% include backToTop.html %}
 
-### Configure your batch processing job
+### Snapshot (save) the VM Instance
+
+Save the state of your VM by navigating to the **Instances** window, and clicking on the **Create Snapshot** button to the right of your VM instance's name. After selecting a name for the snapshot, e.g., ```tutorial``` (note: in general pick a unique name to avoid conflicts with other users!), click the **Create Snapshot** button. It will eventually be saved and listed in the **Images** window, and will be available next time you launch an instance.
+
+### Shut down the VM Instance
+
+In the **Instances** window, select ```Terminate Instance``` in the **More** pull-down menu, and confirm.
+
+### Additional sections?
+
+* volumes
+* scratch space
+
+## Batch processing
 
 Now we are ready to launch a bunch of batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to VOSpace.
+
+### Configure your batch processing job
 
 Assuming you have the `mydemo.bash` script on your local machine, copy it to the CANFAR batch host, and then log in:
 
@@ -239,7 +220,6 @@ Executable = mydemo.bash
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
 RunAsOwner = True
-getenv = True
 transfer_output_files = /dev/null
 Requirements = VMType =?= "tutorial" && \
                Arch == "x86_64"
@@ -280,7 +260,6 @@ Source the OpenStack RC file, and enter your CANFAR password. This sets environm
 Please enter your OpenStack Password:
 {% endhighlight %}
 
-
 You can then submit your jobs to the condor job pool:
 {% highlight bash %}
 condor_submit mydemo.sub
@@ -316,3 +295,24 @@ You are done!
 
 
 {% include backToTop.html %}
+
+## Notes
+
+### Using a VM image migrated from the old system
+
+Rather than configuring a new VM, users of the old system may use their old VMs. As part of the migration to OpenStack from Nimbus, VM images were located in the  personal VOSpaces of existing CANFAR users and then converted and copied into OpenStack tenants. Please note the following:
+
+  * *VM images are stored in the tenant, not a personal VOSpace.* If several users are a member of the same tenant they need to keep track of the different VM images that they have created.
+
+  * *The size of the root partition is not dynamic.* If your old VM (from ```vos:[yourname]/vmstore```) had a size of 10 G, you will need to select a flavor with a root partition of at least that size. However, if you select a flavor with a much larger size (e.g., 50 G), the instantiated VM will still only use 10 G.
+
+  * *The ssh public key is injected into a new generic account.* For example, if you had a Scientific Linux 5 VM, you will have your old user account in ```/home/[yourname]```, but OpenStack will have created a new account called ```ec2-user``` when the VM was instantiated, and copied the ssh public key into that account instead. Note that your old account is unchanged and may still be used. You can update the public keys for that old user using the one(s) injected into the generic account using **sudo**:
+
+  {% highlight bash %}
+  cat .ssh/authorized_keys >> /home/[yourname]/.ssh/authorized_keys
+  {% endhighlight %}
+
+  You may then log out, and re-connect to your original account using the new ssh keypair.
+
+  * *The /staging partition is only properly mounted for batch processing.* You may see ```/staging``` on a migrated VM, but it will not have any additional space beyond what is in the root partition.
+
