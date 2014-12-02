@@ -70,7 +70,6 @@ For batch processing to work, it is presently necessary for you to create an acc
 sudo adduser --gecos "" [username] # will prompt you to set password
 sudo adduser [username] sudo
 sudo mkdir /home/[username]/.ssh
-sudo chown echapin:echapin /home/echapin/.ssh
 sudo chmod 700 /home/[username]/.ssh
 sudo cp .ssh/authorized_keys /home/[username]/.ssh/
 sudo chown -R [username]:[username] /home/[username]/.ssh
