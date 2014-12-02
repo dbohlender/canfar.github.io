@@ -22,7 +22,8 @@ Each resource allocation corresponds to a **tenant**, and typically there will b
 
 ### Update security group to allow ssh access
 
-Click on **Access & Security** (left column of page), and then the **Security Groups** tab. Click on the **Manage Rules** button next to the default group. Click on the **+ Add Rule** button near the top-right. Select **SSH** at the bottom of the **Rule** pull-down menu, and then click on **Add** at the bottom-right. **This operation is only required once for the initial setup of the tenant**.
+Click on **Access & Security** (left column of page), and then the **Security Groups** tab. Click on the **Manage Rules** button next to the default group. If you see a rule with **Ingress** Direction, **22(SSH)** Port Range and **0.0.0.0/0 (CIDR)** Remote, then that means someone in your project already set up the ssh port for you. If you don't see it, add a new rule following these instructions.
+Click on the **+ Add Rule** button near the top-right. Select **SSH** at the bottom of the **Rule** pull-down menu, and then click on **Add** at the bottom-right. **This operation is only required once for the initial setup of the tenant**.
 
 ### Import an ssh public key
 
