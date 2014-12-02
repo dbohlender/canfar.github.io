@@ -80,7 +80,7 @@ canfar_vm_share my_image
 
 - then validate your job file:
 {% highlight bash %}
-canfar_valid_job myjob.jdl
+canfar_job_validate myjob.jdl
 {% endhighlight %}
 
 - finally send the validated file with `HTCondor` directly:
