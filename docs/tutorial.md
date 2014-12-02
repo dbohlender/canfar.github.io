@@ -67,9 +67,10 @@ ssh ubuntu@[floating_ip]
 For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR username (with a copy of the ssh public key so that you may connect):
 
 {% highlight bash %}
+sudo adduser --gecos "" [username] # will prompt you to set password
 sudo adduser [username] sudo
-sudo passwd [username] # your CANFAR password
 sudo mkdir /home/[username]/.ssh
+sudo chown echapin:echapin /home/echapin/.ssh
 sudo chmod 700 /home/[username]/.ssh
 sudo cp .ssh/authorized_keys /home/[username]/.ssh/
 sudo chown -R [username]:[username] /home/[username]/.ssh
