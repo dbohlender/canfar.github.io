@@ -92,6 +92,19 @@ The VM operating system has only a set of minimal packages. For this tutorial, w
 sudo apt-get install sextractor
 {% endhighlight %}
 
+Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the funpack utility to uncompress data from CADC. Install it on your VM with the following commands:
+
+{% highlight bash %}
+sudo apt-get install gcc make
+wget ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/cfitsio3370.tar.gz
+tar xvfz cfitsio3370.tar.gz
+cd cfitsio
+./configure
+sudo make install
+make funpack
+sudo cp funpack /usr/local/bin
+{% endhighlight }
+
 {% include backToTop.html %}
 
 ### Test
@@ -109,8 +122,9 @@ echo 'NUMBER
 MAG_AUTO
 X_IMAGE
 Y_IMAGE' > default.param
-wget http://www.canfar.phys.uvic.ca/data/pub/CFHT/1056213p.fits
-sex 1056213p.fits -CATALOG_NAME 1056213p.cat
+wget -O 1056213p.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p'
+funpack 1056213p.fits.fz
+sextractor 1056213p.fits -CATALOG_NAME 1056213p.cat
 {% endhighlight %}
 
 The image `1056213p.fits` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
