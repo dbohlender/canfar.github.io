@@ -103,7 +103,7 @@ cd cfitsio
 sudo make install
 make funpack
 sudo cp funpack /usr/local/bin
-{% endhighlight }
+{% endhighlight %}
 
 {% include backToTop.html %}
 
