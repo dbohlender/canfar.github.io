@@ -60,10 +60,10 @@ Before being able to ssh to your instance, you will need to attach the public IP
 Your ssh public key will have been injected into a **generic account** with a name like ```ec2-user```, ```cloud-user```, ```centos```, or ```ubuntu```, depending on the Linux distribution. To discover the name of this account, first attempt to connect as root:
 
 {% highlight bash %}
-ssh root@206.12.48.93
+ssh root@[your_floating_ip]
 Please login as the user "centos" rather than the user "root".
 
-ssh centos@206.12.48.93
+ssh centos@[your_floating_ip]
 {% endhighlight %}
 
 For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR user name (with a copy of the ssh public key so that you may connect):
@@ -71,8 +71,10 @@ For batch processing to work, it is presently necessary for you to create an acc
 {% highlight bash %}
 sudo adduser [yourname] -G wheel
 sudo mkdir /home/[yourname]/.ssh
+sudo chmod 700 /home/[yourname]/.ssh
 sudo cp .ssh/authorized_keys /home/[yourname]/.ssh/
 sudo chown [yourname]:[yourname] /home/[yourname]/.ssh/authorized_keys
+sudo chmod 600 /home/[yourname]/.ssh/authorized_keys
 sudo sh -c "echo \"[yourname] ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
 {% endhighlight %}
 
@@ -80,9 +82,7 @@ Exit and re-connect as your new user:
 
 {% highlight bash %}
 exit
-logout
-Connection to 206.12.48.93 closed.
-ssh [yourname]@206.12.48.93
+ssh [yourname]@[your_floating_ip]
 {% endhighlight %}
 
 ### Install software
