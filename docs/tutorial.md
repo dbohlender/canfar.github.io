@@ -16,7 +16,7 @@ This tutorial demonstrates how to:
 
 ## Virtual Machine on Demand
 
-To manage the VMs with OpenStack, we suggest using the  dashboard at Compute Canada [Log into the dashboard](https://west.cloud.computecanada.ca). Provide your CANFAR username with a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password.
+To manage the VMs with OpenStack, we suggest using the  dashboard at Compute Canada [Log into the dashboard](https://west.cloud.computecanada.ca). Provide your CANFAR username, and add it with a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password. We will refer the CANFAR username as ```[username]```.
 
 Each resource allocation corresponds to an OpenStack **project**. A user may be a member of multiple project, and a project usually has multiple users. A pull-down menu near the top-left allows you to select between the different projects that you are a member of.
 
@@ -64,15 +64,15 @@ Please login as the user "ubuntu" rather than the user "root".
 ssh ubuntu@[floating_ip]
 {% endhighlight %}
 
-For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR username (with a copy of the ssh public key so that you may connect) which we refere below as ``[username]``:
+For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR username (with a copy of the ssh public key so that you may connect):
 
 {% highlight bash %}
 sudo adduser [username] sudo
-sudo passwd [username] # your CANFAR password 
+sudo passwd [username] # your CANFAR password
 sudo mkdir /home/[username]/.ssh
 sudo chmod 700 /home/[username]/.ssh
 sudo cp .ssh/authorized_keys /home/[username]/.ssh/
-sudo chown [username]:[username] /home/[username]/.ssh/authorized_keys
+sudo chown -R [username]:[username] /home/[username]/.ssh
 sudo chmod 600 /home/[username]/.ssh/authorized_keys
 sudo sh -c "echo \"[username] ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
 {% endhighlight %}
@@ -92,17 +92,11 @@ The VM operating system has only a set of minimal packages. For this tutorial, w
 sudo apt-get install sextractor
 {% endhighlight %}
 
-Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the funpack utility to uncompress data from CADC. Install it on your VM with the following commands:
-
-{% highlight bash %}
-sudo apt-get install ftools
-{% endhighlight %}
-
 {% include backToTop.html %}
 
 ### Test
 
-We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavor with an *ephemeral partition*, and the customization script we specified mounted it at ```/ephemeral```. This partition is where batch processing will take place. For this interactive session, create a directory owned by your user, copy an image file there, uncompress it, and run SExtractor on it:
+We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavor with an *ephemeral partition*, and the customization script we specified mounted it at ```/ephemeral```. This partition is where batch processing will take place. For this interactive session, create a directory owned by your user, copy an image file there, and run SExtractor on it:
 
 {% highlight bash %}
 cd /ephemeral
@@ -115,12 +109,11 @@ echo 'NUMBER
 MAG_AUTO
 X_IMAGE
 Y_IMAGE' > default.param
-wget -O 1056213p.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p'
-funpack 1056213p.fits.fz
+wget http://www.canfar.phys.uvic.ca/data/pub/CFHT/1056213p.fits
 sex 1056213p.fits -CATALOG_NAME 1056213p.cat
 {% endhighlight %}
 
-The image `1056213p.fits.fz` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
+The image `1056213p.fits` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
 
 {% include backToTop.html %}
 
@@ -151,6 +144,7 @@ Now we want to automate the whole procedure above in a single script, in prepara
 {% highlight bash %}
 #!/bin/bash
 cd ${TMPDIR}
+source /home/[user]/.bashrc
 wget http://www.canfar.phys.uvic.ca/data/pub/CFHT/${1}.fits
 cp /usr/share/sextractor/default* .
 echo 'NUMBER
