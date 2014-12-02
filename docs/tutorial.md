@@ -122,7 +122,7 @@ echo 'NUMBER
 MAG_AUTO
 X_IMAGE
 Y_IMAGE' > default.param
-wget -O 1056213p.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p'
+wget -O 1056213p.fits.fz "http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p"
 funpack 1056213p.fits.fz
 sextractor 1056213p.fits -CATALOG_NAME 1056213p.cat
 {% endhighlight %}
@@ -153,27 +153,27 @@ Verify that the file is properly uploaded by pointing your browser to the [VOSpa
 
 ### Write an automated processing script
 
-Now we want to automate the whole procedure above in a single script, in preparation for batch processing. Paste the following commands into one BASH script in your home directory:
+Now we want to automate the whole procedure above in a single script, in preparation for batch processing. Paste the following commands into one BASH script named ```mytutorial.bash`` in your home directory:
 
 {% highlight bash %}
 #!/bin/bash
 cd ${TMPDIR}
 source /home/[user]/.bashrc
-wget http://www.canfar.phys.uvic.ca/data/pub/CFHT/${1}.fits
+wget -O ${1}.fits.fz "http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=${1}"
+funpack ${1}.fits.fz
 cp /usr/share/sextractor/default* .
 echo 'NUMBER
 MAG_AUTO
 X_IMAGE
 Y_IMAGE' > default.param
-sex ${1}.fits -CATALOG_NAME ${1}.cat
-fi
+sextractor ${1}.fits -CATALOG_NAME ${1}.cat
 getCert
 vcp ${1}.cat vos:[username]
 {% endhighlight %}
 
 Remember to substitute [username] with your CANFAR user account.
 
-This script runs all the commands, one after the other, and takes only one parameter represented by by the shell variable '${1}', the file ID on the CFHT exposure. Save your script which we will name ``mytutorial.bash`` and set it as executable:
+This script runs all the commands, one after the other, and takes only one parameter represented by by the shell variable '${1}', the file ID on the CFHT exposure. Save your script and set it as executable:
 
 {% highlight bash %}
 chmod +x mytutorial.bash
