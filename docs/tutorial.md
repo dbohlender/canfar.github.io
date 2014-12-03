@@ -89,6 +89,7 @@ ssh [username]@[floating_ip]
 The VM operating system has only a set of minimal packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies.
 
 {% highlight bash %}
+sudo apt-get update
 sudo apt-get install sextractor
 {% endhighlight %}
 
@@ -100,7 +101,6 @@ wget ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/cfitsio3370.tar.gz
 tar xvfz cfitsio3370.tar.gz
 cd cfitsio
 ./configure
-sudo make install
 make funpack
 sudo cp funpack /usr/local/bin
 {% endhighlight %}
@@ -214,15 +214,18 @@ Batch jobs are scheduled using a system called [HTCondor](http://www.htcondor.or
 
 {% highlight text %}
 Universe   = vanilla
-Executable = mytutorial.bash
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
 RunAsOwner = True
 transfer_output_files = /dev/null
-Requirements = VMType =?= "tutorial" && Arch == "x86_64"
 
-+VMAMI          = "canfar:tutorial"
+Requirements = VMType =?= "[snapshot_name]" && Arch == "x86_64"
+
++VMAMI          = "canfar:[snapshot_name]"
 +VMInstanceType = "canfar:c2.low"
++VMAMIConfig    = /usr
+
+Executable = mytutorial.bash
 
 Arguments = 1056215p
 Log = 1056215p.log
@@ -242,6 +245,8 @@ Output = 1056217p.out
 Error = 1056217p.err
 Queue
 {% endhighlight %}
+
+```[snapshot_name]`` has to be replaced by the name of the snapshot you used during the VM configuration above.
 
 {% include backToTop.html %}
 
