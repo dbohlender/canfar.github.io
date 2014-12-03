@@ -257,7 +257,7 @@ Please enter your OpenStack Password:
 
 You can then submit your jobs to the condor job pool:
 {% highlight bash %}
-condor_submit mytutorial.sub
+canfar_submit mytutorial.sub
 {% endhighlight %}
 
 Count the dots, there should be 3. Wait a couple minutes. Find where your jobs stand on the queue: 
