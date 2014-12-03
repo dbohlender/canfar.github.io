@@ -223,7 +223,7 @@ Requirements = VMType =?= "[snapshot_name]" && Arch == "x86_64"
 
 +VMAMI          = "canfar:[snapshot_name]"
 +VMInstanceType = "canfar:c2.low"
-+VMAMIConfig    = /usr
++VMAMIConfig    = "https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_config.yml"
 
 Executable = mytutorial.bash
 
