@@ -64,7 +64,7 @@ Please login as the user "ubuntu" rather than the user "root".
 ssh ubuntu@[floating_ip]
 {% endhighlight %}
 
-For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR username (with a copy of the ssh public key so that you may connect):
+For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR username (with a copy of the ssh public key so that you may connect). Remember "[username]" is your CANFAR username (without "-canfar").
 
 {% highlight bash %}
 sudo adduser --gecos "" [username] # will prompt you to set password
@@ -158,8 +158,8 @@ Now we want to automate the whole procedure above in a single script, in prepara
 {% highlight bash %}
 #!/bin/bash
 cd ${TMPDIR}
-source /home/[user]/.bashrc
-wget -O ${1}.fits.fz "http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=${1}"
+source /home/[username]/.bashrc
+wget http://www.canfar.phys.uvic.ca/data/pub/CFHT/${1}.fits.fz
 funpack ${1}.fits.fz
 cp /usr/share/sextractor/default* .
 echo 'NUMBER
