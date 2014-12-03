@@ -206,8 +206,8 @@ Now we are ready to launch a bunch of batch processing jobs creating catalogues 
 Assuming you have the `mytutorial.bash` script on your local machine, copy it to the CANFAR batch host, and then log in:
 
 {% highlight bash %}
-scp mytutorial.bash batch.canfar.net:
-ssh bash.canfar.net
+scp mytutorial.bash [username]@batch.canfar.net:
+ssh [username]@batch.canfar.net
 {% endhighlight %}
 
 Batch jobs are scheduled using a system called [HTCondor](http://www.htcondor.org). Let's write a submission script that will run the `mytutorial.bash` script for each given CADC CFHT file id. We will do it for 3 CFHT images with the file ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify the configuration file listed below. Fire up your favorite editor to paste the following submission file:
