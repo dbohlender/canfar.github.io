@@ -24,7 +24,7 @@ The web user interface should be fairly easy to use. The only part that is not c
 
 ## The command line client
 
-The VOspace can also be accessed via some commands on a terminal or a script. They are part of the [vos](https://github.com/ijiraq/cadcVOFS) command line client.
+The VOspace can also be accessed via some commands on a terminal or a script. They are part of the [vos](https://github.com/canfar/vos) command line client.
 
 ### Installation
 
@@ -72,7 +72,7 @@ export DYLD_FALLBACK_LIBRARY_PATH=/usr/local/lib
 
 ### Using the VOSpace client command line tools
 
-Try the following commands, substituting your CADC VOSpace in for VOSPACE (most CANFAR users have VOSpace that is the same name as their CADC user name. There are also project VOSpaces):
+Try the following commands, substituting your CANFAR VOSpace in for VOSPACE (most CANFAR users have VOSpace that is the same name as their CANFAR user name. There are also project VOSpaces):
 
 {% highlight bash %}
 # lists the contents to the root directory of VOSPACE
@@ -126,7 +126,7 @@ umount /path/to/a/directory          # OS-X
 {% endhighlight %}
 
 
-### Retrieving your CADC X509 certificates
+### Retrieving your CANFAR X509 certificates
  
 To access a VOSpace, the command line client needs a certificate. These certificates are created for you when you request an account, and you can get a short-lived proxy of this certificate to access your data with the "getCert" command line, distributed with the vos client:
 
@@ -134,15 +134,10 @@ To access a VOSpace, the command line client needs a certificate. These certific
 getCert
 {% endhighlight %}
 
-In batch processing, you might want to use the getCert at the start of every job. To avoid interactivity asking for your CADC username/password, add a `$HOME/.netrc` file containing these lines:
+In batch processing, you might want to use the getCert at the start of every job. To avoid interactivity asking for your CANFAR username/password, add a `$HOME/.netrc` file containing these lines:
 
 {% highlight text %}
 machine www.canfar.phys.uvic.ca USER password PASSWORD
-machine www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
-machine www1.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
-machine www2.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
-machine www3.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
-machine www4.cadc-ccda.hia-iha.nrc-cnrc.gc.ca login USER password PASSWORD
 {% endhighlight %}
 
 WARNING: this is not a fully secure solution.

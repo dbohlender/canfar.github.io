@@ -4,225 +4,228 @@ title: Tutorial
 permalink: /docs/tutorial/
 ---
 
-<div class="span-4 module-table-contents">
-	<h2>Table of contents</h2>
-  <ol class="column-2">
-    <li><a href="#setup">Setup</a></li>
-    <li><a href="#create-a-virtual-machine">Create the Virtual Machine</a></li>
-    <li><a href="#install-software">Install software</a></li>
-    <li><a href="#test">Test</a></li>
-    <li><a href="#store-the-results">Store the results</a></li>
-    <li><a href="#batch-processing">Batch processing</a></li>
-    <li><a href="#save-the-virtual-machine">Save the Virtual Machine</a></li>
-    <li><a href="#configure-your-processing">Configure your processing</a></li>
-    <li><a href="#execute-it">Execute it</a></li>
-  </ol>
-</div>
-<div class="clear"></div>
+## Introduction
 
-## Setup
+CANFAR computing resources are currently provided by an [OpenStack cloud](http://www.openstack.org) which is managed by Compute Canada. See the [QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access request. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
 
-If you have not already [registered]({{site.basepath}}/docs/register), please do so.  Then connect to to the canfar login host with the CADC `USERNAME` and password:
+This tutorial demonstrates how to:
 
+* create, configure, and interact with Virtual Machines (VMs) using the graphical interface
+
+* launch batch processing jobs from the CANFAR login host, using VMs created in the previous step.
+
+## Virtual Machine on Demand
+
+To manage the VMs with OpenStack, we suggest using the  dashboard at Compute Canada [Log into the dashboard](https://west.cloud.computecanada.ca). Provide your CANFAR username, and add it with a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password. We will refer the CANFAR username as ```[username]```.
+
+Each resource allocation corresponds to an OpenStack **project**. A user may be a member of multiple project, and a project usually has multiple users. A pull-down menu near the top-left allows you to select between the different projects that you are a member of.
+
+### Update security group to allow ssh access
+
+Click on **Access & Security** (left column of page), and then the **Security Groups** tab. Click on the **Manage Rules** button next to the default group. If you see a rule with **Ingress** Direction, **22(SSH)** Port Range and **0.0.0.0/0 (CIDR)** Remote, then that means someone in your project already set up the ssh port for you. If you don't see it, add a new rule following these instructions.
+Click on the **+ Add Rule** button near the top-right. Select **SSH** at the bottom of the **Rule** pull-down menu, and then click on **Add** at the bottom-right. **This operation is only required once for the initial setup of the tenant**.
+
+### Import an ssh public key
+
+Access to VMs is facilitated by SSH key pairs rather than less secure user name / password. A private key resides on your own computer, and the public key is copied to all machines that you wish to connect to. Click on **Access & Security**, switch to the **Key Pairs** tab and click on the **Import Key Pair** button at the top-right. Choose a meaningful name for the key, and then copy and paste the contents of ```~/.ssh/id_rsa.pub``` from the machine you plan to ssh from into the **Public Key** window. If you have not yet created a key pair on your system, run **ssh-keygen** on this local machine to generate one or follow this [documentation](https://help.github.com/articles/generating-ssh-keys/) for example.
+
+### Allocate public IP address to tenant
+
+You will need to connect to your VM via a public IP. Click on the **Floating IPs** tab. If there are no IPs listed, click on the **Allocate IP to Project** button at the top-right. Each project will typically have one public IP. If you have already allocated all of your IPs, this button will read "Quota Exceeded".
+
+### Launch a VM Instance
+
+Switch to the **Instances** window (left-hand column), and then click on **+ Launch Instance**.
+
+In the **Details** tab choose a meaningful **Instance Name**. **Flavor** is the hardware profile for the VM. ```c2.low``` provides the minimal requirements for most VMs. Note that it provides an 80 GB *ephemeral partition* that will be used as scratch space for batch processing. **Availability Zone** should be left empty, and **Instance Count** 1 for this tutorial. Under **Instance Boot Source** select ```Boot from image```; an **Image Name** pull-down menu will appear. Using it, select an image. For this tutorial, select ```ubuntu-server-14.04-amd64```.
+
+In the **Access & Security** tab ensure that your public key is selected, and the ```default``` security group (with ssh rule added) is selected.
+
+In the **Post-Creation** tab you can specify [scripts](http://cloudinit.readthedocs.org/en/latest/topics/format.html) to perform additional configuration on the VM after it boots. In order to prepare a VM for batch processing, paste the following lines in the **Customization Script** window (note that it is also possible to perform this configuration at a later point by executing a script from within the running VM):
 {% highlight bash %}
-ssh USERNAME@canfar.dao.nrc.ca
+#include
+https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_config.yml
 {% endhighlight %}
 
-If this is your first time logging in to this machine, run the following script to make your life easier using VOSpace and certificates:
+Finally, click the **Launch** button.
+
+### Connect to the VM and create CANFAR user
+
+After launching the VM you are returned to the **Instances** window. You can check the VM status once booted by clicking on its name (the **Console** tab of this window provides a basic console in which you can monitor the boot process).
+
+Before being able to ssh to your instance, you will need to attach the public IP address to it. Return to the **Instances** window and select **Associate Floating IP** from the **More** pull-down menu. Select the address that was allocated and the new VM instance in the **Port to be associated** menu, and click on **Associate**.
+
+Your ssh public key will have been injected into a **generic account** with a name like ```ec2-user```, ```cloud-user```, ```centos```, or ```ubuntu```, depending on the Linux distribution. To discover the name of this account, first attempt to connect as root:
 
 {% highlight bash %}
-canfarsetup
+ssh root@[floating_ip]
+Please login as the user "ubuntu" rather than the user "root".
+
+ssh ubuntu@[floating_ip]
 {% endhighlight %}
 
-It will generate a proxy for your [X.509 certificate](http://en.wikipedia.org/wiki/X.509) in `$HOME/.ssl/cadcproxy.pem` to access your VOSpace, a `$HOME/.netrc` file to automatically connect to CANFAR web services, and an ssh key pair `$HOME/.ssh/id_rsa.*` to access your Virtual Machines (VMs).
-The canfar login host is a bastion host or jump host. You need to connect to it to access your VMs, the VMs are not accessible from outside the CADC internal network.
-
-{% include backToTop.html %}
-
-## Create a Virtual Machine
-
-Let's create a VM called *vmdemo*. From the [CANFAR Processing Page](http://www.canfar.phys.uvic.ca/processing), login with your CADC credentials, and create a VM using the web interface:
-
-- Choose a **VM Name** - enter *vmdemo*
-- Choose a **Template VM** - the first one on the list works fine
-- Leave **Processing Cores**, **Memory** and **Staging Disk Space** to their default values
-- Copy the ssh key from the canfar login host you created above
-  `$HOME/.ssh/id_rsa.pub` to the **Public SSH Key** entry box
-- Click **Create**
-	
-Wait a few minutes for an email that will tell you your VM is ready and will give you a private IP address for the VM that you can access only from the CANFAR login host. Then click on **Running VMs**, or simply refresh the page if you were already on it: you should see your VM and the private IP.
-
-{% include backToTop.html %}
-
-## Install software
-
-You can use the ssh wrapper script to connect to the just created VM from the CANFAR login host:
+For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR username (with a copy of the ssh public key so that you may connect). Remember "[username]" is your CANFAR username (without "-canfar").
 
 {% highlight bash %}
-vmssh vmdemo
+sudo adduser --gecos "" [username] # will prompt you to set password
+sudo adduser [username] sudo
+sudo mkdir /home/[username]/.ssh
+sudo chmod 700 /home/[username]/.ssh
+sudo cp .ssh/authorized_keys /home/[username]/.ssh/
+sudo chown -R [username]:[username] /home/[username]/.ssh
+sudo chmod 600 /home/[username]/.ssh/authorized_keys
+sudo sh -c "echo \"[username] ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
 {% endhighlight %}
 
-or follow this [guide]({{site.basepath}}/docs/vmacess/) for other ways access the VM such as VNC.
-
-The VM operating system has only a set of minimal packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies. We will install it from source for illustration purpose:
+Exit and re-connect as your new user:
 
 {% highlight bash %}
-wget http://www.astromatic.net/download/sextractor/sextractor-2.19.5.tar.gz
-tar xf sextractor-2.19.5.tar.gz
-cd sextractor-2.19.5
+exit
+ssh [username]@[floating_ip]
+{% endhighlight %}
+
+### Install software
+
+The VM operating system has only a set of minimal packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies.
+
+{% highlight bash %}
+sudo apt-get update
+sudo apt-get install sextractor
+{% endhighlight %}
+
+Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the funpack utility to uncompress data from CADC. Install it on your VM with the following commands:
+
+{% highlight bash %}
+sudo apt-get install gcc make
+wget ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/cfitsio3370.tar.gz
+tar xvfz cfitsio3370.tar.gz
+cd cfitsio
 ./configure
-{% endhighlight %}
-
-As you can see, it fails on missing dependencies: the `fftw` libraries as reported by the configure command. If you only install the `fftw` libraries and run `./configure` again, you will see the `atlas` libraries are missing too. Fortunately they have already been packaged for RedHat based systems, which is what Scientific Linux is based on. So we can install them with the`yum` package manager:
-
-{% highlight bash %}
-sudo yum install fftw3-devel.x86_64 atlas-devel.x86_64
-{% endhighlight %}
-
-Now we can finish up our SExtractor installation
-
-{% highlight bash %}
-./configure
-make
-sudo make install
-{% endhighlight %}
-
-Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the [funpack](http://heasarc.nasa.gov/fitsio/fpack/) utility to uncompress data from CADC. Download and install it on your VM with the following commands:
-
-{% highlight bash %}
-wget http://heasarc.gsfc.nasa.gov/fitsio/fpack/bin/pc_linux_64bit/funpack
-sudo mv funpack /usr/local/bin
-sudo chmod a+x /usr/local/bin/funpack
+make funpack
+sudo cp funpack /usr/local/bin
 {% endhighlight %}
 
 {% include backToTop.html %}
 
-## Test
+### Test
 
-We are now ready to do a simple test. Let's download a FITS image on scratch space (called *staging*), uncompress it and run SExtractor on it:
+We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavor with an *ephemeral partition*, and the customization script we specified mounted it at ```/ephemeral```. This partition is where batch processing will take place. For this interactive session, create a directory owned by your user, copy an image file there, and run SExtractor on it:
 
 {% highlight bash %}
-cd ${TMPDIR}
-cp -r ${HOME}/sextractor-2.8.6/config/default* .
-wget -O 1056213p.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData?archive=CFHT&amp;asf=true&amp;file_id=1056213p'
+cd /ephemeral
+sudo mkdir work
+sudo chown [username]:[username] work
+cd work
+cp /usr/share/sextractor/default* .
+rm default.param
+echo 'NUMBER
+MAG_AUTO
+X_IMAGE
+Y_IMAGE' > default.param
+wget -O 1056213p.fits.fz "http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p"
 funpack 1056213p.fits.fz
-sex 1056213p.fits -CATALOG_NAME 1056213p.cat 
+sextractor 1056213p.fits -CATALOG_NAME 1056213p.cat
 {% endhighlight %}
 
-The image `1056213p.fits.fz` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
+The image `1056213p.fits` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
 
 {% include backToTop.html %}
 
-## Store the results
+### Store the results
 
-We want to store the output catalogue `1056213p.cat` on a persistent storage because the scratch space where it resides now will be wiped out when the VM shuts down. So we will use VOSpace to store the result. To access VOSpace, we need a proxy authorization of your behalf to store files. If you ran `canfarsetup` and answered yes to create a `.netrc` file, you can copy it from the CANFAR login host to your VM to automate CADC and canfar credentials calls:
-
-{% highlight bash %}
-scp canfar.dao.nrc.ca:.netrc ~/
-{% endhighlight %}
-
-On the VM, download a proxy certificate for 10 days with the following command:
+We want to store the output catalogue `1056213p.cat` on a persistent storage medium because the ephemeral partition where it resides now will be wiped out when the VM shuts down. So we will use VOSpace to store the result. To access VOSpace, we need proxy authorization of your behalf to store files. This is accomplished using a `.netrc` file that contains your CANFAR user name and password, and then **getCert** can obtain an *X509 Proxy Certificate* using that name/password combination without any further user interaction.
 
 {% highlight bash %}
+echo "machine www.canfar.phys.uvic.ca login [username] password [password]" > ~/.netrc
+chmod 600 ~/.netrc
+sudo apt-get install python-pip
+sudo pip install -U vos
 getCert
 {% endhighlight %}
 
 Let's check that the VOSpace client works by copying the results to your VOSpace:
 
 {% highlight bash %}
-vcp 1056213p.cat vos:USER
+vcp 1056213p.cat vos:[username]
 {% endhighlight %}
 
-Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui/%20VOSpace%20web%20interface). 
+Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui).
 
-{% include backToTop.html %}
+### Write an automated processing script
 
-## Batch processing
-
-Now we want to automate the whole procedure above in a single script. Paste all the commands above into one BASH script:
+Now we want to automate the whole procedure above in a single script, in preparation for batch processing. Paste the following commands into one BASH script named ```mytutorial.bash`` in your home directory:
 
 {% highlight bash %}
 #!/bin/bash
 cd ${TMPDIR}
-wget -O $1.fits.fz 'http://www.cadc.hia.nrc.gc.ca/getData?archive=CFHT&amp;asf=true&amp;file_id='$1
-funpack  $1.fits.fz
-cp ~/sextractor-2.19.5/config/default.* .
-sex $1.fits -CATALOG_NAME $1.cat 
-vcp $1.cat vos:USER;/
+source /home/[username]/.bashrc
+wget http://www.canfar.phys.uvic.ca/data/pub/CFHT/${1}.fits.fz
+funpack ${1}.fits.fz
+cp /usr/share/sextractor/default* .
+echo 'NUMBER
+MAG_AUTO
+X_IMAGE
+Y_IMAGE' > default.param
+sextractor ${1}.fits -CATALOG_NAME ${1}.cat
+getCert
+vcp ${1}.cat vos:[username]
 {% endhighlight %}
 
-Remember to substitute USER with your CADC user account.
-	
-This script runs all the commands, one after the other, and takes only one parameter represented by by the shell variable '$1', the file ID on the CADC CFHT archive. Save your script which we will name "mydemo.bash" and set it as executable: 
+Remember to substitute [username] with your CANFAR user account.
+
+This script runs all the commands, one after the other, and takes only one parameter represented by by the shell variable '${1}', the file ID on the CFHT exposure. Save your script and set it as executable:
 
 {% highlight bash %}
-chmod +x mydemo.bash
+chmod +x mytutorial.bash
 {% endhighlight %}
 
-Now let's test the newly created script with a different file ID. If the script is on your home directory type: 
+Now let's test the newly created script with a different file ID. If the script is on your home directory type:
 
-{% highlight bash %}
-~/mydemo.bash 1056214p
+{% highlight bash %} 
+TMPDIR=/ephemeral/work ~/mytutorial.bash 1056214p
 {% endhighlight %}
 
 Just as during the manual testing, verify the output, and the check with the VOSpace web interface on that the catalogue has been uploaded.
 
 {% include backToTop.html %}
 
-## Save the Virtual Machine
+### Snapshot (save) the VM Instance
 
-To launch batch jobs to various clusters, you will need to store your software stack installed on your Virtual Machine. To do this, you simply save the full Virtual Machine into one file, then upload it to your VOSpace.
-	
-Your VOSpace directory needs to be public. Go to [your VOSpace](http://www.canfar.phys.uvic.ca/vosui) then one directory up, and change the permissions by clicking on the folder icon next to your VOSpace name.
+Save the state of your VM by navigating to the **Instances** window, and clicking on the **Create Snapshot** button to the right of your VM instance's name. After selecting a name for the snapshot, e.g., ```tutorial``` (note: in general pick a unique name to avoid conflicts with other users!), click the **Create Snapshot** button. It will eventually be saved and listed in the **Images** window, and will be available next time you launch an instance.
 
-Before the first VM to save, you need to create the vmstore directory on you VOSpace where you will keep your VMs: 
+### Shut down the VM Instance
 
-{% highlight bash %}
-vmkdir vos:USER/vmstore
-{% endhighlight %}
+In the **Instances** window, select ```Terminate Instance``` in the **More** pull-down menu, and confirm.
 
-Then save your VM with the following command:
+## Batch processing
 
-{% highlight bash %}
-sudo vmsave -t vmdemo -v USER
-{% endhighlight %}
+Now we are ready to launch a bunch of batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to VOSpace.
 
-You will wait 4min until your brand new VM has been saved. You can then check the VM on [your VOSpace](http://www.canfar.phys.uvic.ca/vosui/), and go to the `vmstore` directory.
+### Configure your batch processing job
 
-{% include backToTop.html %}
-
-## Configure your processing
-
-Now we are ready to launch a bunch of batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to the VOSpace. On the CANFAR login host, copy over your `mydemo.bash` script. Get the VM IP address: 
+Assuming you have the `mytutorial.bash` script on your local machine, copy it to the CANFAR batch host, and then log in:
 
 {% highlight bash %}
-vmlist
+scp mytutorial.bash [username]@batch.canfar.net:
+ssh [username]@batch.canfar.net
 {% endhighlight %}
 
-Copy the returned IP and remote-copy your script:
-
-{% highlight bash %}
-scp VM_IP:mydemo.bash .
-{% endhighlight %}
-
-You are done for the configuration part. If you don't need to run batch jobs, you can stop now. If you need to run batch jobs, you need to get used to the [HT condor](http://www.htcondor.org) scheduler. Let's make a condor submission script that will run the `mydemo.bash` script for each given CADC CFHT file id. We will do it for 3 CFHT images with the file ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify the configuration file listed below. Fire up your favorite editor to paste the following condor submission file:
+Batch jobs are scheduled using a system called [HTCondor](http://www.htcondor.org). Let's write a submission script that will run the `mytutorial.bash` script for each given CADC CFHT file id. We will do it for 3 CFHT images with the file ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify the configuration file listed below. Fire up your favorite editor to paste the following submission file:
 
 {% highlight text %}
 Universe   = vanilla
-Executable = mydemo.bash
 should_transfer_files = YES
-when_to_transfer_output = ON_EXIT
+when_to_transfer_output = ON_EXIT_OR_EVICT
 RunAsOwner = True
-getenv = True
 transfer_output_files = /dev/null
-Requirements = VMType =?= "vmdemo" && \
-               Arch == "x86_64" && \
-               Memory >= 1024 && \
-               Cpus >=  1
-+VMLoc="http://www.canfar.phys.uvic.ca/data/pub/vospace/USER/vmstore/vmdemo.img.gz"
-+VMMem="1024"
-+VMCPUCores="1"
-+VMStorage="10"
+
+Requirements = VMType =?= "[snapshot_name]" && Arch == "x86_64"
+
++VMAMI          = "canfar:[snapshot_name]"
++VMInstanceType = "canfar:c2.low"
++VMAMIConfig    = "https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_config.yml"
+
+Executable = mytutorial.bash
 
 Arguments = 1056215p
 Log = 1056215p.log
@@ -243,16 +246,23 @@ Error = 1056217p.err
 Queue
 {% endhighlight %}
 
-Again, make sure in the script above to substitute USER by your CADC username.
+```[snapshot_name]`` has to be replaced by the name of the snapshot you used during the VM configuration above.
 
 {% include backToTop.html %}
 
-## Execute it
+### Execute it
 
-Save the submission file as `mydemo.sub` and  submit your jobs to the condor job pool:
+Save the submission file as `mytutorial.sub`.
 
+Source the OpenStack RC project file, and enter your CANFAR password. This sets environment variables used by OpenStack:
 {% highlight bash %}
-condor_submit mydemo.sub
+. canfar-[project]-openrc.sh
+Please enter your OpenStack Password:
+{% endhighlight %}
+
+You can then submit your jobs to the condor job pool:
+{% highlight bash %}
+canfar_submit mytutorial.sub
 {% endhighlight %}
 
 Count the dots, there should be 3. Wait a couple minutes. Find where your jobs stand on the queue: 
@@ -264,7 +274,7 @@ condor_q
 Check the status of your jobs:
 
 {% highlight bash %}
-condor_status USER
+condor_status [username]
 {% endhighlight %}
 
 If your job  is running (job status is R), you can connect to your running job:
@@ -273,14 +283,36 @@ If your job  is running (job status is R), you can connect to your running job:
 condor_ssh_to_job JOB_ID
 {% endhighlight %}
 
-and you'll end up in the `$TMPDIR`  directory. The interesting files are:
+and you'll end up in the `$TMPDIR`  directory, but a different one than during interactive session. The interesting files are:
 
-- `_condor_stderr` on the VM will become `mydemo.err` on the login host
-- `_condor_stdout` on the VM will become `mydemo.out` on the login host
-- `condor_exec.exe` was your script `mydemo.bash`
+- `_condor_stderr` on the VM will become `mytutorial.err` on the login host
+- `_condor_stdout` on the VM will become `mytutorial.out` on the login host
+- `condor_exec.exe` was your script `mytutorial.bash`
 
-Once you have no more jobs on the queue, check the logs and output files `mydemo.*` on the login host, and check on your VOSpace browser all the 3 generated catalogues have been uploaded. 
-	
+Once you have no more jobs on the queue, check the logs and output files `mytutorial.*` on the login host, and check on your VOSpace browser all the 3 generated catalogues have been uploaded.
+
 You are done!
 
+
 {% include backToTop.html %}
+
+## Notes
+
+### Using a VM image migrated from the old system
+
+Rather than configuring a new VM, users of the old system may use their old VMs. As part of the migration, VM images were located in the  personal VOSpace of existing CANFAR users and then converted and copied into OpenStack projects. Please note the following:
+
+  * *VM images are stored in the project, not a personal VOSpace.* If several users are members of the same project they need to keep track of the different VM images that they have created.
+
+  * *The size of the root partition is not dynamic.* If your old VM (from ```vos:[username]/vmstore```) had a size of 10 G, you will need to select a flavor with a root partition of at least that size. However, if you select a flavor with a much larger size (e.g., 40 G), the instantiated VM will still only use 10 G.
+
+  * *The ssh public key is injected into a new generic account.* For example, if you had a Scientific Linux 5 VM, you will have your old user account in ```/home/[username]```, but OpenStack will have created a new account called ```ec2-user``` when the VM was instantiated, and copied the ssh public key into that account instead. Note that your old account is unchanged and may still be used. You can update the public keys for that old user using the one(s) injected into the generic account using **sudo**:
+
+  {% highlight bash %}
+  cat .ssh/authorized_keys >> /home/[username]/.ssh/authorized_keys
+  {% endhighlight %}
+
+  You may then log out, and re-connect to your original account using the new ssh keypair.
+
+  * *The /staging partition is only properly mounted for batch processing.* You may see ```/staging``` on a migrated VM, but it will not have any additional space beyond what is in the root partition.
+

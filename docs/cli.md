@@ -1,21 +1,20 @@
 ---
 layout: docs
-title: Managing Virtual Machines
-permalink: /docs/managing/
+title: Virtual Machine Command-line Interface
+permalink: /docs/cli/
 ---
 
-## Prepare the command-line interface
-
-There are multiple methods for interacting with an OpenStack
-cloud including the [dashboard](http://www.openstack.org/software/openstack-dashboard/), [command-line interface (CLI)](http://docs.openstack.org/user-guide/content/ch_cli.html), and a [Python API](http://docs.openstack.org/developer/python-novaclient/api.html), all of which are based on an underlying [RESTful API](http://developer.openstack.org/api-ref.html).
+There are multiple methods for interacting with an OpenStack cloud including the [dashboard](http://www.openstack.org/software/openstack-dashboard/), [command-line interface (CLI)](http://docs.openstack.org/user-guide/content/ch_cli.html), and a [Python API](http://docs.openstack.org/developer/python-novaclient/api.html), all of which are based on an underlying [RESTful API](http://developer.openstack.org/api-ref.html).
 
 A good starting point for programatic interactions with OpenStack is the CLI, which we introduce here. Some tutorials that go into greater depth may be found [here](http://www.cybera.ca/projects/cloud-resources/rapid-access-cloud/documentation).
 
-### Install clients
+## Install clients
 
-The CLI clients can be installed though the package systems of modern Linux distributions. Here we will use **nova** and **glance** (the compute and image services, respectively).
+The CLI clients described in this document are available on the CANFAR login host ```batch.canfar.net```. However, as disk space is limited, it is advisable to install the clients on your own machine.
 
-For Debian-based distribution (e.g., Ubuntu):
+The easiest method is to use the package system of a modern Linux distribution. Here we will use **nova** and **glance** (the compute and image services, respectively).
+
+For Debian-based distributions (e.g., Ubuntu):
 {% highlight bash %}
 $ sudo apt-get install python-novaclient python-glanceclient
 {% endhighlight %}
@@ -34,10 +33,14 @@ $ sudo pip install python-novaclient python-glanceclient
 
 The OpenStack CLI uses environment variables to store the URLs for services, user credentials, and the active tenant. The simplest way to set these variables is by sourcing an **openrc** file, which may be obtained from the dashboard for your particular tenant. In the **Access & Security** panel switch to the **API Access** tab and then click on **Download OpenStack RC File** at the top-right.
 
-## Interact with the image service
+## Import virtual machine images
+
+Virtual machine images reside in the OpenStack cloud's image repository, and are accessed through the image service, **glance**. All images are associated with an OpenStack **tenant** (synonymous with **project** in OpenStack terminology), which is a single resource allocation. Within the CANFAR ecosystem, OpenStack tenants also correspond to **CANFAR groups with processing privileges**. Users may be members of multiple CANFAR processing groups, and each group may have multiple CANFAR users.
 
 ### List virtual machine images
-List VM images available to the current tenant (including public images, images shared with this tenant, and private images):
+
+A VM image is normally only accessible to members of its tenant. However, there are a number of public images that are provided as a base upon which all users may build more complicated VMs. To list the images (both public and private) accessible to members of the currently-selected tenant:
+
 {% highlight bash %}
 $ glance image-list
 +--------------------------------------+-----------------------------------+-------------+------------------+-------------+--------+
@@ -45,7 +48,6 @@ $ glance image-list
 +--------------------------------------+-----------------------------------+-------------+------------------+-------------+--------+
 | 7524b433-7f3f-4c0b-808b-09420791baae | CentOS 6.5 Base                   | qcow2       | bare             | 344457216   | active |
 | a4728b62-d15f-4e10-8475-1481ea3037d4 | CentOS 7                          | qcow2       | bare             | 339471872   | active |
-| 501deaf8-9101-4a95-adfd-9e70fda8458b | Test Image                        | qcow2       | bare             | 255263232   | active |
 | 79c972b6-7aa6-47a5-8b46-404552a65d1e | ubuntu-server-14.04-amd64         | qcow2       | bare             | 255787520   | active |
 | e8bc9e1d-495c-4d17-90fb-68d9d6a128c1 | uCernVM-devel.1.18-2              | raw         | bare             | 20971520    | active |
 | 24ea1c95-968b-4914-b3c9-a754e342bd6b | ucernvm-prod.1.18-2               | raw         | bare             | 20971520    | active |
@@ -53,26 +55,43 @@ $ glance image-list
 +--------------------------------------+-----------------------------------+-------------+------------------+-------------+--------+
 {% endhighlight %}
 
+### Requirements
+
+Prior to importing images from an external source, you should be aware that there are a [number of requirements](http://docs.openstack.org/image-guide/content/ch_openstack_images.html) in order for them to work properly with OpenStack. Starting with one of the public base images is always a good idea, although modern cloud images from major Linux distributions will often work without modifications. In addition, previously-created images for the old CANFAR processing system (images stored in user VOSpace) have already been migrated for compatibility, and should have been uploaded to the image service on your behalf.
+
+### Upload a virtual machine image
+
+Once you have an image ready, it can be uploaded to the image service directly from the local filesystem. For example:
+{% highlight bash %}
+$ glance image-create --name=new_vm --container-format=bare --disk-format=qcow2 < new_vm.qcow2
+{% endhighlight %}
+Here, the image disk format is **QCOW2** which compresses empty portions of the image, saving file transfer and instantiation time. A [number of formats are supported](http://docs.openstack.org/image-guide/content/image-formats.html), and a good tool for converting between them is [qemu-img](http://docs.openstack.org/image-guide/content/ch_converting.html).
+
 ### Download a virtual machine image
-Download the CentOS 6.5 Base image to a local file called centos6.5_base.qcow2 (note ID of the image in the output of ```glance image-list```):
+
+Images may also be downloaded to the local filesystem. For example, download the CentOS 6.5 Base image to a local file called ```centos6.5_base.qcow2``` (note ```ID``` of the image in the output of ```glance image-list```, and we have also chosen a file extension matching the ```Disk Format```):
 {% highlight bash %}
 $ glance image-download --file centos6.5_base.qcow2 7524b433-7f3f-4c0b-808b-09420791baae
 {% endhighlight %}
 
-### Upload a virtual machine image
-Copy a virtual image file named ```new_vm.qcow2``` from the local file system to the image service:
-{% highlight bash %}
-$ glance image-create --name=new_vm --container-format=bare --disk-format=qcow2 < new_vm.qcow2
-{% endhighlight %}
+## Sharing virtual machine images
+
+There are multiple ways to share access to your VM images. In addition to simply downloading the image from the image service and providing it to a collaborator (who may they upload it to their own tenants), there are other options that do not require making new copies.
 
 ### Share an image with another tenant
-If you wish to make a virtual machine image available to another tenant (read-only), it can be shared by "adding members" to that VM's metadata:
+
+If another user already has a CANFAR group with processing privileges (and corresponding OpenStack tenant), you can simply make the VM visible (read-only) to their tenant, enabling them to launch their own instances.
+First, request the ```TENANT_ID``` for the target tenant. Then, "add members" to your VM's metadata:
 {% highlight bash %}
 $ glance member-create <IMAGE> <TENANT_ID>
 {% endhighlight %}
-where ```IMAGE``` can be either the ID or the name (output of ```glance image-list```) of the image, and ```TENANT_ID``` is the ID of the target tenant (i.e., ```OS_TENANT_ID``` in openrc file).
+where ```IMAGE``` can be either the ID or the name (output of ```glance image-list```) of the image in question, and ```TENANT_ID``` is the ID of the target tenant (i.e., ```OS_TENANT_ID``` in the other user's openrc file). If using the dashboard, these images will be visible from the target tenant in the **Images** window under the **Shared with Me** tab.
 
-## Launching and interacting with virtual machine instances
+### Add users to CANFAR processing group
+
+Another option is to add a user to your CANFAR processing group through the [group management pages](http://www.canfar.phys.uvic.ca/canfar/groups/). Note, however, that *all* images in your tenant, as well as your VMOD (interactive) processing allocation will also be available to them.
+
+## Managing virtual machine instances
 
 ### Preparation
 Before launching an instance of a virtual machine, some preparation is needed:
