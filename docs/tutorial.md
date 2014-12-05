@@ -18,7 +18,7 @@ This tutorial demonstrates how to:
 
 To manage the VMs with OpenStack, we suggest using the  dashboard at Compute Canada [Log into the dashboard](https://west.cloud.computecanada.ca). Provide your CANFAR username, and add it with a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password. We will refer the CANFAR username as ```[username]```.
 
-Each resource allocation corresponds to an OpenStack **project**. A user may be a member of multiple project, and a project usually has multiple users. A pull-down menu near the top-left allows you to select between the different projects that you are a member of.
+Each resource allocation corresponds to an OpenStack **tenant** or **project** (these two names are used interchangeably). A user may be a member of multiple projects, and a project usually has multiple users. A pull-down menu near the top-left allows you to select between the different projects that you are a member of.
 
 ### Update security group to allow ssh access
 
@@ -219,12 +219,6 @@ when_to_transfer_output = ON_EXIT_OR_EVICT
 RunAsOwner = True
 transfer_output_files = /dev/null
 
-Requirements = VMType =?= "[snapshot_name]" && Arch == "x86_64"
-
-+VMAMI          = "canfar:[snapshot_name]"
-+VMInstanceType = "canfar:c2.low"
-+VMAMIConfig    = "https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_config.yml"
-
 Executable = mytutorial.bash
 
 Arguments = 1056215p
@@ -246,10 +240,6 @@ Error = 1056217p.err
 Queue
 {% endhighlight %}
 
-```[snapshot_name]`` has to be replaced by the name of the snapshot you used during the VM configuration above.
-
-{% include backToTop.html %}
-
 ### Execute it
 
 Save the submission file as `mytutorial.sub`.
@@ -262,10 +252,14 @@ Please enter your OpenStack Password:
 
 You can then submit your jobs to the condor job pool:
 {% highlight bash %}
-canfar_submit mytutorial.sub
+canfar_submit mytutorial.sub [tenant_name]:[snapshot_name] c2.low
 {% endhighlight %}
 
-Count the dots, there should be 3. Wait a couple minutes. Find where your jobs stand on the queue: 
+```[snapshot_name]``` has to be replaced by the name of the snapshot you used during the VM configuration above, and ```[tenant_name]``` is the name of the tenant where that image is stored. Note that the environment variable ```$OS_TENANT_NAME``` that was set by  ```. canfar-[project]-openrc.sh``` can be used for ```[tenant-name]```, provided you saved the image in that same tenant. Finally, ```c2.low``` is the flavor for the VM(s) that will execute the jobs.
+
+{% include backToTop.html %}
+
+Count the dots, there should be 3. Wait a couple minutes. Find where your jobs stand on the queue:
 
 {% highlight bash %}
 condor_q
