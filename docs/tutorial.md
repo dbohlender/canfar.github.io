@@ -4,8 +4,6 @@ title: Tutorial
 permalink: /docs/tutorial/
 ---
 
-<a id="top" name="top" href="#" class="wb-invisible"></a>
-
 <div class="span-4 module-table-contents">
 	<h2>Table of contents</h2>
   <ol class="column-2">
