@@ -17,13 +17,13 @@ permalink: /docs/tutorial/
 
 ## Introduction
 
-CANFAR computing resources are currently provided by an [OpenStack cloud](http://www.openstack.org) which is managed by Compute Canada. See the [QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access request. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
+CANFAR computing resources are currently provided by an [OpenStack cloud](http://www.openstack.org) which is managed by Compute Canada. See the [QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access requests. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
 
 This tutorial demonstrates how to:
 
 * create, configure, and interact with Virtual Machines (VMs) using the graphical interface
 
-* launch batch processing jobs from the CANFAR login host, using VMs created in the previous step.
+* launch batch processing jobs from the CANFAR batch host, using VMs created in the previous step.
 
 {% include backToTop.html %}
 
@@ -191,7 +191,7 @@ scp [username]@[floating_ip]:mytutorial.bash .
 
 ### Install HTCondor for Batch
 
-Batch jobs are scheduled using a software package called [HTCondor](http://www.htcondor.org). HTCondor will dynamically launch jobs on the VMs (workers), connecting to the batch processing head node (the central manager). A minimal HTCondor daemon needs to run on the VM, and you need to install HTCondor. In order to install HTCondor (which provides a minimal HTCondor daemon to execute jobs) run this script:
+Batch jobs are scheduled using a software package called [HTCondor](http://www.htcondor.org). HTCondor will dynamically launch jobs on the VMs (workers), connecting to the batch processing head node (the central manager). In order to install HTCondor (which provides a minimal HTCondor daemon to execute jobs) run this script:
 {% highlight bash %}
 curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_scheduler_setup.bash -o cloud_scheduler_setup.bash
 sudo bash cloud_scheduler_setup.bash
@@ -291,11 +291,11 @@ condor_ssh_to_job JOB_ID
 
 and you will end up in the `$TMPDIR`  directory, but a different (dynamically created) one than during interactive session. The interesting files are:
 
-- `_condor_stderr` on the VM will become `mytutorial.err` on the login host
-- `_condor_stdout` on the VM will become `mytutorial.out` on the login host
+- `_condor_stderr` on the VM will become `mytutorial.err` on the batch host
+- `_condor_stdout` on the VM will become `mytutorial.out` on the batch host
 - `condor_exec.exe` was your script `mytutorial.bash`
 
-Once you have no more jobs in the queue, check the logs and output files `mytutorial.*` on the login host, and check on your VOSpace browser. All 3 of the generated catalogues should have been uploaded.
+Once you have no more jobs in the queue, check the logs and output files `mytutorial.*` on the batch host, and check on your VOSpace browser. All 3 of the generated catalogues should have been uploaded.
 
 You are done!
 
