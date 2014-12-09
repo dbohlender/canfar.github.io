@@ -205,6 +205,8 @@ Save the state of your VM by navigating to the **Instances** window of the dashb
 
 In the **Instances** window, select ```Terminate Instance``` in the **More** pull-down menu, and confirm.
 
+{% include backToTop.html %}
+
 ## Batch Processing
 
 Now we are ready to launch batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to VOSpace.
