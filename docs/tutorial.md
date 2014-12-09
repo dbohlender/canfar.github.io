@@ -4,6 +4,17 @@ title: Tutorial
 permalink: /docs/tutorial/
 ---
 
+<div class="span-4 module-table-contents">
+	<h2>Table of contents</h2>
+  <ol class="column-2">
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#virtual-machine-on-demand">Virtual Machine on Demand</a></li>
+    <li><a href="#batch-processing">Batch Processing</a></li>
+    <li><a href="#notes">Notes</a></li>
+  </ol>
+</div>
+<div class="clear"></div>
+
 ## Introduction
 
 CANFAR computing resources are currently provided by an [OpenStack cloud](http://www.openstack.org) which is managed by Compute Canada. See the [QuickStart Guide](https://www.westgrid.ca/support/quickstart/Nefos) for a brief introduction, noting that **CANFAR users already have accounts** and do not need to make separate access request. If you do not have a CANFAR account [register for one here]({{site.basepath}}/docs/register).
@@ -13,6 +24,8 @@ This tutorial demonstrates how to:
 * create, configure, and interact with Virtual Machines (VMs) using the graphical interface
 
 * launch batch processing jobs from the CANFAR login host, using VMs created in the previous step.
+
+{% include backToTop.html %}
 
 ## Virtual Machine on Demand
 
@@ -94,8 +107,6 @@ make funpack
 sudo cp funpack /usr/local/bin
 {% endhighlight %}
 
-{% include backToTop.html %}
-
 ### Test the Software
 
 We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavour with an *ephemeral partition*, and the customization script we specified mounted it at ```/ephemeral```. This partition is where batch jos will be executed. For this interactive session, create a directory owned by your user, copy an astronomical image there, and run SExtractor on it:
@@ -116,8 +127,6 @@ sextractor 1056213p.fits -CATALOG_NAME 1056213p.cat
 {% endhighlight %}
 
 The image `1056213p.fits` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
-
-{% include backToTop.html %}
 
 ### Store the Results
 
@@ -180,8 +189,6 @@ Finally, make a copy of the script on your local machine so that it will be avai
 scp [username]@[floating_ip]:mytutorial.bash .
 {% endhighlight %}
 
-{% include backToTop.html %}
-
 ### Install HTCondor for Batch
 
 Batch jobs are scheduled using a software package called [HTCondor](http://www.htcondor.org). HTCondor will dynamically launch jobs on the VMs (workers), connecting to the batch processing head node (the central manager). A minimal HTCondor daemon needs to run on the VM, and you need to install HTCondor. In order to install HTCondor (which provides a minimal HTCondor daemon to execute jobs) run this script:
@@ -198,7 +205,7 @@ Save the state of your VM by navigating to the **Instances** window of the dashb
 
 In the **Instances** window, select ```Terminate Instance``` in the **More** pull-down menu, and confirm.
 
-## Batch processing
+## Batch Processing
 
 Now we are ready to launch batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to VOSpace.
 
@@ -262,8 +269,6 @@ canfar_submit mytutorial.sub [project_name]:[snapshot_name] c2.low
 
 ```[snapshot_name]``` has to be replaced by the name of the snapshot you used during the VM configuration above, and ```[project_name]``` is the name of the project where that image is stored. Note that the environment variable ```$OS_TENANT_NAME``` that was set by  ```. canfar-[project]-openrc.sh``` can be used for ```[project_name]```, provided you saved the image in that same project. Finally, ```c2.low``` is the flavor for the VM(s) that will execute the jobs.
 
-{% include backToTop.html %}
-
 After submitting, wait a couple of minutes. Check where your jobs stand in the queue:
 
 {% highlight bash %}
@@ -312,3 +317,4 @@ Rather than configuring a new VM, users of the old system may use their old VMs.
 
 - *The old /staging partition is now replaced by /ephemeral for batch processing.* You may see ```/staging``` on a migrated VM, but it will not have any additional space beyond what is in the root partition.
 
+{% include backToTop.html %}
