@@ -41,15 +41,9 @@ In the **Details** tab choose a meaningful **Instance Name**. **Flavor** is the 
 
 In the **Access & Security** tab ensure that your public key is selected, and the ```default``` security group (with ssh rule added) is selected.
 
-In the **Post-Creation** tab you can specify [scripts](http://cloudinit.readthedocs.org/en/latest/topics/format.html) to perform additional configuration on the VM after it boots. In order to prepare a VM for batch processing, paste the following lines in the **Customization Script** window (note that it is also possible to perform this configuration at a later point by executing a script from within the running VM):
-{% highlight bash %}
-#include
-https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_config.yml
-{% endhighlight %}
-
 Finally, click the **Launch** button.
 
-### Connect to the VM and create CANFAR user
+### Connect to the VM
 
 After launching the VM you are returned to the **Instances** window. You can check the VM status once booted by clicking on its name (the **Console** tab of this window provides a basic console in which you can monitor the boot process).
 
@@ -64,41 +58,36 @@ Please login as the user "ubuntu" rather than the user "root".
 ssh ubuntu@[floating_ip]
 {% endhighlight %}
 
-For batch processing to work, it is presently necessary for you to create an account on the VM with your CANFAR username (with a copy of the ssh public key so that you may connect). Remember "[username]" is your CANFAR username (without "-canfar").
+### Create a User
+
+You might need to create a different user than the default one, and for batch processing to work, it is presently necessary for you to create a user on the VM, matched with your CANFAR username. You can use a wrapper script for this:
 
 {% highlight bash %}
-sudo adduser --gecos "" [username] # will prompt you to set password
-sudo adduser [username] sudo
-sudo mkdir /home/[username]/.ssh
-sudo chmod 700 /home/[username]/.ssh
-sudo cp .ssh/authorized_keys /home/[username]/.ssh/
-sudo chown -R [username]:[username] /home/[username]/.ssh
-sudo chmod 600 /home/[username]/.ssh/authorized_keys
-sudo sh -c "echo \"[username] ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers"
+curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/canfar_create_user.bash -o canfar_create_user.bash
+sudo bash canfar_create_user.bash [username]
 {% endhighlight %}
 
-Exit and re-connect as your new user:
+Now, exit the VM, and re-connect with your CANFAR username instead of ubuntu:
 
 {% highlight bash %}
 exit
 ssh [username]@[floating_ip]
 {% endhighlight %}
 
-### Install software
+### Install Software
 
-The VM operating system has only a set of minimal packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies.
+The VM operating system has only a set of minimal packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies. So let's install it system-wide.
 
 {% highlight bash %}
 sudo apt-get update
 sudo apt-get install sextractor
 {% endhighlight %}
 
-Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor reads uncompressed images only, so we also need the funpack utility to uncompress data from CADC. Install it on your VM with the following commands:
+We also need to read FITS images. Most FITS images from CADC come Rice-compressed with a `fz` extension. SExtractor only reads uncompressed images, so we also need the ```funpack``` utility to uncompress data from CADC. Install it on your VM with the following commands:
 
 {% highlight bash %}
 sudo apt-get install gcc make
-wget ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/cfitsio3370.tar.gz
-tar xvfz cfitsio3370.tar.gz
+curl ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/cfitsio3370.tar.gz | tar xfz - 
 cd cfitsio
 ./configure
 make funpack
@@ -107,9 +96,9 @@ sudo cp funpack /usr/local/bin
 
 {% include backToTop.html %}
 
-### Test
+### Test the Software
 
-We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavor with an *ephemeral partition*, and the customization script we specified mounted it at ```/ephemeral```. This partition is where batch processing will take place. For this interactive session, create a directory owned by your user, copy an image file there, and run SExtractor on it:
+We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavour with an *ephemeral partition*, and the customization script we specified mounted it on ```/ephemeral```. This partition is where batch jos will be performed. For this interactive session, create a directory owned by your user, copy an image file there, and run SExtractor on it:
 
 {% highlight bash %}
 cd /ephemeral
@@ -122,8 +111,7 @@ echo 'NUMBER
 MAG_AUTO
 X_IMAGE
 Y_IMAGE' > default.param
-wget -O 1056213p.fits.fz "http://www.cadc.hia.nrc.gc.ca/getData/?archive=CFHT&asf=true&file_id=1056213p"
-funpack 1056213p.fits.fz
+curl -L http://www.canfar.phys.uvic.ca/data/pub/CFHT/1056213p.fits.fz | funpack -O 1056213p.fits -
 sextractor 1056213p.fits -CATALOG_NAME 1056213p.cat
 {% endhighlight %}
 
@@ -131,9 +119,9 @@ The image `1056213p.fits` is a Multi-Extension FITS file with 36 extensions, eac
 
 {% include backToTop.html %}
 
-### Store the results
+### Store the Results
 
-We want to store the output catalogue `1056213p.cat` on a persistent storage medium because the ephemeral partition where it resides now will be wiped out when the VM shuts down. So we will use VOSpace to store the result. To access VOSpace, we need proxy authorization of your behalf to store files. This is accomplished using a `.netrc` file that contains your CANFAR user name and password, and then **getCert** can obtain an *X509 Proxy Certificate* using that name/password combination without any further user interaction.
+We want to store the output catalogue `1056213p.cat` on a persistent storage medium, accessible from other places, and the storage on the VM might be wiped out when the VM shuts down, depending on its flavour. So we will use VOSpace to store the result. To access VOSpace, we need proxy authorization of your behalf to store files. This is accomplished using a `.netrc` file that contains your CANFAR user name and password, and then **getCert** can obtain an *X509 Proxy Certificate* using that name/password combination without any further user interaction.
 
 {% highlight bash %}
 echo "machine www.canfar.phys.uvic.ca login [username] password [password]" > ~/.netrc
@@ -151,7 +139,7 @@ vcp 1056213p.cat vos:[username]
 
 Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui).
 
-### Write an automated processing script
+### Write an Automated Processing Script
 
 Now we want to automate the whole procedure above in a single script, in preparation for batch processing. Paste the following commands into one BASH script named ```mytutorial.bash`` in your home directory:
 
@@ -159,8 +147,7 @@ Now we want to automate the whole procedure above in a single script, in prepara
 #!/bin/bash
 cd ${TMPDIR}
 source /home/[username]/.bashrc
-wget http://www.canfar.phys.uvic.ca/data/pub/CFHT/${1}.fits.fz
-funpack ${1}.fits.fz
+curl -L http://www.canfar.phys.uvic.ca/data/pub/CFHT/${1}.fits.fz | funpack -O ${1}.fits -
 cp /usr/share/sextractor/default* .
 echo 'NUMBER
 MAG_AUTO
@@ -179,19 +166,27 @@ This script runs all the commands, one after the other, and takes only one param
 chmod +x mytutorial.bash
 {% endhighlight %}
 
-Now let's test the newly created script with a different file ID. If the script is on your home directory type:
+Now let's test the newly created script with a different file ID. If the script is on your home directory, type:
 
 {% highlight bash %} 
 TMPDIR=/ephemeral/work ~/mytutorial.bash 1056214p
 {% endhighlight %}
 
-Just as during the manual testing, verify the output, and the check with the VOSpace web interface on that the catalogue has been uploaded.
+Just as during the manual testing, verify the output, and check with the VOSpace web interface that the catalogue has been uploaded.
 
 {% include backToTop.html %}
 
+### Install HTCondor for Batch
+
+Batch jobs are scheduled using the [HTCondor](http://www.htcondor.org) software. HTCondor will dynamically launch jobs on the VMs (workers), connecting to the batch processing head node (the central manager). So a minimal HTCondor daemon needs to run on the VM, and you need to install HTCondor. Run this script to install HTCondor and configure it properly:
+{% highlight bash %}
+curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_scheduler_setup.bash -o cloud_scheduler_setup.bash
+sudo bash cloud_scheduler_setup.bash
+{% endhighlight %}
+
 ### Snapshot (save) the VM Instance
 
-Save the state of your VM by navigating to the **Instances** window, and clicking on the **Create Snapshot** button to the right of your VM instance's name. After selecting a name for the snapshot, e.g., ```tutorial``` (note: in general pick a unique name to avoid conflicts with other users!), click the **Create Snapshot** button. It will eventually be saved and listed in the **Images** window, and will be available next time you launch an instance.
+Save the state of your VM by navigating to the **Instances** window, and click on the **Create Snapshot** button to the right of your VM instance's name. After selecting a name for the snapshot, e.g., ```tutorial```, click the **Create Snapshot** button. It will eventually be saved and listed in the **Images** window, and will be available next time you launch an instance.
 
 ### Shut down the VM Instance
 
@@ -199,7 +194,7 @@ In the **Instances** window, select ```Terminate Instance``` in the **More** pul
 
 ## Batch processing
 
-Now we are ready to launch a bunch of batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to VOSpace.
+Now we are ready to launch batch processing jobs creating catalogues of various CFHT Megacam images and uploading the catalogues to VOSpace.
 
 ### Configure your batch processing job
 
@@ -210,7 +205,7 @@ scp mytutorial.bash [username]@batch.canfar.net:
 ssh [username]@batch.canfar.net
 {% endhighlight %}
 
-Batch jobs are scheduled using a system called [HTCondor](http://www.htcondor.org). Let's write a submission script that will run the `mytutorial.bash` script for each given CADC CFHT file id. We will do it for 3 CFHT images with the file ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify the configuration file listed below. Fire up your favorite editor to paste the following submission file:
+Let's write a submission file that will transfer the `mytutorial.bash` script to the execution host (a copy of your snapshot VM), and for each given CADC CFHT file id, will run a job. We will do it for 3 CFHT images with the file ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify the configuration file listed below. Fire up your favorite editor to paste the following submission file:
 
 {% highlight text %}
 Universe   = vanilla
