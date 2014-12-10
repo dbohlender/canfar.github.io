@@ -123,7 +123,7 @@ Before launching an instance of a virtual machine, some preparation is needed:
 * Create a **keypair**. Your public key will be injected into a generic user account to give you access to the VM.
 * Allocate an **IP address** to your tenant.
 
-The [CANFAR tutorial](tutorial/#virtual-machine-on-demand) describes these steps using the dashboard. The equivalent steps from the command line are covered in [this tutorial](https://docs.google.com/document/d/1zxnuyi1NoO-Hi52OWpmQZKu4dD3DipvZB-fy91mZ18Q/edit#heading=h.3znysh7).
+The [CANFAR tutorial](../tutorial/#virtual-machine-on-demand) describes these steps using the dashboard. The equivalent steps from the command line are covered in [this tutorial](https://docs.google.com/document/d/1zxnuyi1NoO-Hi52OWpmQZKu4dD3DipvZB-fy91mZ18Q/edit#heading=h.3znysh7).
 
 ### Launch the instance
 
