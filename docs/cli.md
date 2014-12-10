@@ -3,7 +3,12 @@ layout: docs
 title: Virtual Machine Command-line Interface
 permalink: /docs/cli/
 ---
-
+<style>
+h2
+{
+  color: #145E91;
+}
+</style>
 <div class="span-4 module-table-contents">
 	<h2>Table of contents</h2>
   <ol class="column-2">
