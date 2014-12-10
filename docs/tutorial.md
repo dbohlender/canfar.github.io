@@ -76,7 +76,7 @@ ssh ubuntu@[floating_ip]
 You might need to create a different user than the default one, and for batch processing to work, it is presently necessary for you to create a user on the VM with your CANFAR username. You can use a wrapper script for this:
 
 {% highlight bash %}
-curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/canfar_create_user.bash -o canfar_create_user.bash
+curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/scripts/canfar_create_user.bash -o canfar_create_user.bash
 sudo bash canfar_create_user.bash [username]
 {% endhighlight %}
 
