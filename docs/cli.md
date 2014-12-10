@@ -210,6 +210,7 @@ You can then **ssh** to the VM. If you do not know the name of the generic user 
 ssh root@[floating ip]
 Please login as the user "cloud-user" rather than the user "root".
 ```
+
 ```
 ssh cloud-user@[floating ip]
 ```
