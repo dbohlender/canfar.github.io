@@ -151,6 +151,7 @@ nova flavor-list
 Note that ```Disk``` is the size of the root partition in GB. ```Ephemeral``` is an additional (typically large) block device that provides fast temporary storage. **c2.low** is the smallest usable flavor for most Linux images.
 
 Next, launch an instance:
+
 ```
 nova boot --flavor c2.low --image 007e7156-964e-43b6-ab7c-bdc86a922365 --security_groups "default" --key_name "mykey" "new_instance"
 +--------------------------------------+-----------------------------------------------------+
@@ -187,6 +188,7 @@ nova boot --flavor c2.low --image 007e7156-964e-43b6-ab7c-bdc86a922365 --securit
 where possible image IDs can be obtained with ```glance image-list```, security groups with ```nova secgroup-list```, and keypairs with ```nova keypair-list```.
 
 Check the status of running instances:
+
 ```
 nova list
 +--------------------------------------+--------------+--------+------------+-------------+-----------------------------------------------+
