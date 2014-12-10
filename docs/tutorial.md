@@ -193,8 +193,8 @@ scp [username]@[floating_ip]:mytutorial.bash .
 
 Batch jobs are scheduled using a software package called [HTCondor](http://www.htcondor.org). HTCondor will dynamically launch jobs on the VMs (workers), connecting to the batch processing head node (the central manager). In order to install HTCondor (which provides a minimal HTCondor daemon to execute jobs) run this script:
 {% highlight bash %}
-curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/cloud_scheduler_setup.bash -o cloud_scheduler_setup.bash
-sudo bash cloud_scheduler_setup.bash
+curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/vm_config/canfar_batch_setup.bash -o canfar_batch_setup.bash
+sudo bash canfar_batch_setup.bash
 {% endhighlight %}
 
 ### Snapshot (save) the VM Instance
@@ -269,7 +269,7 @@ You can then submit your jobs to the condor job pool:
 canfar_submit mytutorial.sub [project_name]:[snapshot_name] c2.low
 {% endhighlight %}
 
-```[snapshot_name]``` has to be replaced by the name of the snapshot you used during the VM configuration above, and ```[project_name]``` is the name of the project where that image is stored. Note that the environment variable ```$OS_TENANT_NAME``` that was set by  ```. canfar-[project]-openrc.sh``` can be used for ```[project_name]```, provided you saved the image in that same project. Finally, ```c2.low``` is the flavor for the VM(s) that will execute the jobs.
+```[snapshot_name]``` has to be replaced by the name of the snapshot you used during the VM configuration above, and ```[project_name]``` is the name of the project where that image is stored. Note that the environment variable ```$OS_TENANT_NAME``` that was set by  ```. canfar-[project]-openrc.sh``` can be used for ```[project_name]```, provided you saved the image in that same project. Finally, ```c2.low``` is the flavor for the VM(s) that will execute the jobs. If you wish to use a different flavor, they are visible through the dashboard when [launching an instance](#launch-a-vm-instance), or using the [nova command-line client](/docs/cli/#launch-the-instance).
 
 After submitting, wait a couple of minutes. Check where your jobs stand in the queue:
 
@@ -282,18 +282,6 @@ Check the status of your jobs:
 {% highlight bash %}
 condor_status [username]
 {% endhighlight %}
-
-If your job is running (job status is `R`), you can connect to your running job:
-
-{% highlight bash %}
-condor_ssh_to_job JOB_ID
-{% endhighlight %}
-
-and you will end up in the `$TMPDIR`  directory, but a different (dynamically created) one than during interactive session. The interesting files are:
-
-- `_condor_stderr` on the VM will become `mytutorial.err` on the batch host
-- `_condor_stdout` on the VM will become `mytutorial.out` on the batch host
-- `condor_exec.exe` was your script `mytutorial.bash`
 
 Once you have no more jobs in the queue, check the logs and output files `mytutorial.*` on the batch host, and check on your VOSpace browser. All 3 of the generated catalogues should have been uploaded.
 
