@@ -3,7 +3,8 @@ layout: docs
 title: Virtual Machine Command-line Interface
 permalink: /docs/cli/
 ---
-<div class="span-4 module-table-contents">
+
+<div class="span-4 module-table-contents margin-top-large">
 	<h2>Table of contents</h2>
   <ol class="column-2">
     <li><a href="#introduction">Introduction</a></li>
@@ -23,7 +24,7 @@ A good starting point for programatic interactions with OpenStack is the CLI, wh
 
 {% include backToTop.html %}
 
-<h2 class="color-accent" style="border-bottom: 1px solid #DDD;">Install Clients</h2>
+## Install Clients
 
 The CLI clients described in this document are available on the CANFAR batch host ```batch.canfar.net```. However, as disk space is limited, it is advisable to install the clients on your own machine.
 
