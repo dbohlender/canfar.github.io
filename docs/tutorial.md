@@ -269,7 +269,7 @@ You can then submit your jobs to the condor job pool:
 canfar_submit mytutorial.sub [project_name]:[snapshot_name] c2.low
 {% endhighlight %}
 
-```[snapshot_name]``` has to be replaced by the name of the snapshot you used during the VM configuration above, and ```[project_name]``` is the name of the project where that image is stored. Note that the environment variable ```$OS_TENANT_NAME``` that was set by  ```. canfar-[project]-openrc.sh``` can be used for ```[project_name]```, provided you saved the image in that same project. Finally, ```c2.low``` is the flavor for the VM(s) that will execute the jobs. If you wish to use a different flavor, they are visible through the dashboard when [launching an instance](#launch-a-vm-instance), or using the [nova command-line client](cli/#launch-the-instance).
+```[snapshot_name]``` has to be replaced by the name of the snapshot you used during the VM configuration above, and ```[project_name]``` is the name of the project where that image is stored. Note that the environment variable ```$OS_TENANT_NAME``` that was set by  ```. canfar-[project]-openrc.sh``` can be used for ```[project_name]```, provided you saved the image in that same project. Finally, ```c2.low``` is the flavor for the VM(s) that will execute the jobs. If you wish to use a different flavor, they are visible through the dashboard when [launching an instance](#launch-a-vm-instance), or using the [nova command-line client](../cli/#launch-the-instance).
 
 After submitting, wait a couple of minutes. Check where your jobs stand in the queue:
 
