@@ -31,9 +31,9 @@ The CLI clients described in this document are available on the CANFAR batch hos
 The easiest method is to use the package system of a modern Linux distribution. In this document we will use the **nova** and **glance** clients (for the compute and image services, respectively).
 
 For Debian-based distributions (e.g., Ubuntu):
-{% highlight bash %}
+```
 sudo apt-get install python-novaclient python-glanceclient
-{% endhighlight %}
+```
 
 For Redhat Enterprise-based distributions (e.g., Scientific Linux, CentOS):
 ```
@@ -41,9 +41,9 @@ sudo yum install python-novaclient python-glanceclient
 ```
 
 Alternatively, to get the latest versions, install using **pip** (which may first require installation of the ```python-pip``` package using either ```apt-get``` or ```yum``` as above):
-{% highlight bash %}
+```
 sudo pip install python-novaclient python-glanceclient
-{% endhighlight %}
+```
 
 ### Setup the environment
 
@@ -59,7 +59,7 @@ Virtual machine images reside in the OpenStack cloud's image repository, and are
 
 A VM image is normally only accessible to members of its tenant. However, there are a number of public images that are provided as a base upon which all users may build more complicated VMs. To list the images (both public and private) accessible to members of the current tenant:
 
-{% highlight bash %}
+```
 glance image-list
 +--------------------------------------+-----------------------------------+-------------+------------------+-------------+--------+
 | ID                                   | Name                              | Disk Format | Container Format | Size        | Status |
@@ -71,7 +71,7 @@ glance image-list
 | 24ea1c95-968b-4914-b3c9-a754e342bd6b | ucernvm-prod.1.18-2               | raw         | bare             | 20971520    | active |
 | ac787d9b-bb34-4741-b4a4-4a8126a44225 | Windows Server 2012 R2 Evaluation | raw         | bare             | 17182752768 | active |
 +--------------------------------------+-----------------------------------+-------------+------------------+-------------+--------+
-{% endhighlight %}
+```
 
 ### Requirements
 
@@ -80,17 +80,17 @@ Prior to importing images from an external source, become familiar with the [req
 ### Upload a virtual machine image
 
 Once you have an image ready, it can be uploaded to the image service directly from the local filesystem. For example:
-{% highlight bash %}
+```
 glance image-create --name=new_vm --container-format=bare --disk-format=qcow2 < new_vm.qcow2
-{% endhighlight %}
+```
 Here, the image disk format is **QCOW2** which compresses empty portions of the image, saving both file transfer and instantiation time. A [number of formats are supported](http://docs.openstack.org/image-guide/content/image-formats.html), and a good tool for converting between them is [qemu-img](http://docs.openstack.org/image-guide/content/ch_converting.html).
 
 ### Download a virtual machine image
 
 Images may also be downloaded to the local filesystem. For example, download the ```CentOS 6.5 Base``` image to a local file called ```centos6.5_base.qcow2``` (note ```ID``` of the image in the output of ```glance image-list```, and we have also chosen a file extension matching the ```Disk Format```):
-{% highlight bash %}
+```
 glance image-download --file centos6.5_base.qcow2 7524b433-7f3f-4c0b-808b-09420791baae
-{% endhighlight %}
+```
 
 {% include backToTop.html %}
 
@@ -103,9 +103,9 @@ There are multiple ways to share your VM images. In addition to simply downloadi
 If another user already has a CANFAR group with processing privileges (and corresponding OpenStack tenant), you can simply make the VM visible (read-only) to their tenant, enabling them to launch their own instances.
 
 First, request the ```tenant_id``` for the target tenant (i.e., ```OS_TENANT_ID``` in the other user's openrc file). Then, **add members** to your VM's metadata:
-{% highlight bash %}
+```
 glance member-create [image] [tenant_id]
-{% endhighlight %}
+```
 where ```[image]``` can be either the ID or the name (output of ```glance image-list```) of the image in question. If using the dashboard, these images will then be visible from the target tenant in the **Images** window under the **Shared with Me** tab, as well as ```glance image-list``` from the command line.
 
 ### Add users to your CANFAR processing group
@@ -129,7 +129,7 @@ The [CANFAR tutorial](../tutorial/#virtual-machine-on-demand) describes these st
 
 You will need to select a **flavor** (hardware profile) for the instance. List available flavors:
 
-{% highlight bash %}
+```
 nova flavor-list
 +--------------------------------------+---------+-----------+------+-----------+------+-------+-------------+-----------+
 | ID                                   | Name    | Memory_MB | Disk | Ephemeral | Swap | VCPUs | RXTX_Factor | Is_Public |
@@ -147,11 +147,11 @@ nova flavor-list
 | d816ae8b-ab7d-403d-ae5f-f457b775903d | c16.hi  | 184320    | 20   | 780       |      | 16    | 1.0         | True      |
 | e7346bd7-cae6-41e3-9235-5f18ba36edf1 | c16.low | 61440     | 20   | 780       |      | 16    | 1.0         | True      |
 +--------------------------------------+---------+-----------+------+-----------+------+-------+-------------+-----------+
-{% endhighlight %}
+```
 Note that ```Disk``` is the size of the root partition in GB. ```Ephemeral``` is an additional (typically large) block device that provides fast temporary storage. **c2.low** is the smallest usable flavor for most Linux images.
 
 Next, launch an instance:
-{% highlight bash %}
+```
 nova boot --flavor c2.low --image 007e7156-964e-43b6-ab7c-bdc86a922365 --security_groups "default" --key_name "mykey" "new_instance"
 +--------------------------------------+-----------------------------------------------------+
 | Property                             | Value                                               |
@@ -183,42 +183,42 @@ nova boot --flavor c2.low --image 007e7156-964e-43b6-ab7c-bdc86a922365 --securit
 | updated                              | 2014-11-23T04:22:42Z                                |
 | user_id                              | echapin-canfar                                      |
 +--------------------------------------+-----------------------------------------------------+
-{% endhighlight %}
+```
 where possible image IDs can be obtained with ```glance image-list```, security groups with ```nova secgroup-list```, and keypairs with ```nova keypair-list```.
 
 Check the status of running instances:
-{% highlight bash %}
+```
 nova list
 +--------------------------------------+--------------+--------+------------+-------------+-----------------------------------------------+
 | ID                                   | Name         | Status | Task State | Power State | Networks                                      |
 +--------------------------------------+--------------+--------+------------+-------------+-----------------------------------------------+
 | de7afe99-a559-4744-bab7-fbc30e85fcfc | new_instance | ACTIVE | -          | Running     | CANFAROps_network=192.168.20.89               |
 +--------------------------------------+--------------+--------+------------+-------------+-----------------------------------------------+
-{% endhighlight %}
+```
 
 ### ssh to running instance
 
 Assign a floating IP so that you can access it:
-{% highlight bash %}
+```
 nova floating-ip-associate new_instance [floating ip]
-{% endhighlight %}
+```
 Available values of ```[floating ip]``` can be listed using ```nova floating-ip-list```. If you wish to disassociate the IP (in order to make it available for another VM), use ```nova floating-ip-disassociate```.
 
 You can then **ssh** to the VM. If you do not know the name of the generic user account into which your SSH key has been injected, initially try to enter as root and it will tell you the correct name:
-{% highlight bash %}
+```
 ssh root@[floating ip]
 Please login as the user "cloud-user" rather than the user "root".
 
 ssh cloud-user@[floating ip]
-{% endhighlight %}
+```
 
 ### snapshot a running instance
 
 A snapshot of a running instance produces a new virtual machine image reflecting the current state of the instance (execute from outside of the instance):
 
-{% highlight bash %}
+```
 nova image-create new_instance new_image
-{% endhighlight %}
+```
 
 It will then be visible to ```glance image-list``` with the name ```new_image```.
 
@@ -226,8 +226,8 @@ It will then be visible to ```glance image-list``` with the name ```new_image```
 
 Shut down the instance:
 
-{% highlight bash %}
+```
 nova stop new_instance
-{% endhighlight %}
+```
 
 {% include backToTop.html %}
