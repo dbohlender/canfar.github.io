@@ -8,7 +8,7 @@ permalink: /docs/tutorial/
 	<h2>Table of contents</h2>
   <ol class="column-2">
     <li><a href="#introduction">Introduction</a></li>
-    <li><a href="#virtual-machine-on-demand">Virtual Machine on Demand</a></li>
+    <li><a href="#interactive-virtual-machine">Interactive Virtual Machine</a></li>
     <li><a href="#batch-processing">Batch Processing</a></li>
     <li><a href="#notes">Notes</a></li>
   </ol>
@@ -27,7 +27,7 @@ This tutorial demonstrates how to:
 
 {% include backToTop.html %}
 
-## Virtual Machine on Demand
+## Interactive Virtual Machine
 
 To manage the VMs with OpenStack, we suggest using the  dashboard at Compute Canada. [Log into the dashboard](https://west.cloud.computecanada.ca). Provide your CANFAR username, adding a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password. We will refer the CANFAR username (excluding the ```-canfar``` suffix which is only used for logging into the dashboard) as ```[username]``` throughout this document.
 
