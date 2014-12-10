@@ -24,8 +24,6 @@ A good starting point for programatic interactions with OpenStack is the CLI, wh
 
 {% include backToTop.html %}
 
-<br />
-
 ## Install Clients
 
 The CLI clients described in this document are available on the CANFAR batch host ```batch.canfar.net```. However, as disk space is limited, it is advisable to install the clients on your own machine.
@@ -38,16 +36,16 @@ sudo apt-get install python-novaclient python-glanceclient
 {% endhighlight %}
 
 For Redhat Enterprise-based distributions (e.g., Scientific Linux, CentOS):
-{% highlight bash %}
+```
 sudo yum install python-novaclient python-glanceclient
-{% endhighlight %}
+```
 
 Alternatively, to get the latest versions, install using **pip** (which may first require installation of the ```python-pip``` package using either ```apt-get``` or ```yum``` as above):
 {% highlight bash %}
 sudo pip install python-novaclient python-glanceclient
 {% endhighlight %}
 
-#### Setup the environment
+### Setup the environment
 
 The OpenStack CLI uses environment variables to store the URLs for services, user credentials, and the active tenant. The simplest way to set these variables is by sourcing an **openrc** file, which may be obtained from the dashboard for your particular tenant. In the **Access & Security** panel switch to the **API Access** tab and then click on **Download OpenStack RC File** at the top-right.
 
