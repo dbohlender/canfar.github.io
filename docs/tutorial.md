@@ -109,12 +109,19 @@ sudo cp funpack /usr/local/bin
 
 ### Test the Software
 
-We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavour with an *ephemeral partition*, and the customization script we specified mounted it at ```/ephemeral```. This partition is where batch jos will be executed. For this interactive session, create a directory owned by your user, copy an astronomical image there, and run SExtractor on it:
+We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavour with an *ephemeral partition*. First, execute the following script to mount this device at `/ephemeral` and create a work directory to mimic the batch processing environment (note that this will be done automatically for batch jobs):
 
 {% highlight bash %}
+curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/scripts/canfar_mount_ephemeral.bash -o canfar_mount_ephemeral.bash
+sudo bash canfar_mount_ephemeral.bash
 cd /ephemeral
 sudo mkdir work
 sudo chown [username]:[username] work
+{% endhighlight %}
+
+Next, enter the directory, copy an astronomical image there, and run SExtractor on it:
+
+{% highlight bash %}
 cd work
 cp /usr/share/sextractor/default* .
 rm default.param
