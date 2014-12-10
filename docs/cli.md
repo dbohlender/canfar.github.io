@@ -205,10 +205,12 @@ nova floating-ip-associate new_instance [floating ip]
 Available values of ```[floating ip]``` can be listed using ```nova floating-ip-list```. If you wish to disassociate the IP (in order to make it available for another VM), use ```nova floating-ip-disassociate```.
 
 You can then **ssh** to the VM. If you do not know the name of the generic user account into which your SSH key has been injected, initially try to enter as root and it will tell you the correct name:
+
 ```
 ssh root@[floating ip]
 Please login as the user "cloud-user" rather than the user "root".
-
+```
+```
 ssh cloud-user@[floating ip]
 ```
 
