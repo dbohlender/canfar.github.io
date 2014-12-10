@@ -101,11 +101,12 @@ There are multiple ways to share your VM images. In addition to simply downloadi
 ### Share an image with another tenant
 
 If another user already has a CANFAR group with processing privileges (and corresponding OpenStack tenant), you can simply make the VM visible (read-only) to their tenant, enabling them to launch their own instances.
-First, request the ```TENANT_ID``` for the target tenant. Then, **add members** to your VM's metadata:
+
+First, request the ```tenant_id``` for the target tenant (i.e., ```OS_TENANT_ID``` in the other user's openrc file). Then, **add members** to your VM's metadata:
 {% highlight bash %}
-$ glance member-create <IMAGE> <TENANT_ID>
+glance member-create [image] [tenant_id]
 {% endhighlight %}
-where ```IMAGE``` can be either the ID or the name (output of ```glance image-list```) of the image in question, and ```TENANT_ID``` is the ID of the target tenant (i.e., ```OS_TENANT_ID``` in the other user's openrc file). If using the dashboard, these images will be visible from the target tenant in the **Images** window under the **Shared with Me** tab.
+where ```[image]``` can be either the ID or the name (output of ```glance image-list```) of the image in question. If using the dashboard, these images will then be visible from the target tenant in the **Images** window under the **Shared with Me** tab, as well as ```glance image-list``` from the command line.
 
 ### Add users to your CANFAR processing group
 
@@ -130,21 +131,28 @@ You will need to select a **flavor** (hardware profile) for the instance. List a
 
 {% highlight bash %}
 nova flavor-list
-+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+
-| ID | Name      | Memory_MB | Disk | Ephemeral | Swap | VCPUs | RXTX_Factor | Is_Public |
-+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+
-| 1  | m1.tiny   | 512       | 1    | 0         |      | 1     | 1.0         | True      |
-| 2  | m1.small  | 2048      | 20   | 0         |      | 1     | 1.0         | True      |
-| 3  | m1.medium | 4096      | 40   | 0         |      | 2     | 1.0         | True      |
-| 4  | m1.large  | 8192      | 80   | 0         |      | 4     | 1.0         | True      |
-| 5  | m1.xlarge | 16384     | 160  | 0         |      | 8     | 1.0         | True      |
-+----+-----------+-----------+------+-----------+------+-------+-------------+-----------+
++--------------------------------------+---------+-----------+------+-----------+------+-------+-------------+-----------+
+| ID                                   | Name    | Memory_MB | Disk | Ephemeral | Swap | VCPUs | RXTX_Factor | Is_Public |
++--------------------------------------+---------+-----------+------+-----------+------+-------+-------------+-----------+
+| 13efd2a1-2fd8-48c4-822f-ce9bdc0e0004 | c16.med | 122880    | 20   | 780       |      | 16    | 1.0         | True      |
+| 23090fc1-bdf7-433e-9804-a7ec3d11de08 | c2.med  | 15360     | 20   | 80        |      | 2     | 1.0         | True      |
+| 3fb8ebe8-b42b-40a5-b1b8-943461e258c6 | c2.hi   | 23040     | 20   | 80        |      | 2     | 1.0         | True      |
+| 5112ed51-d263-4cc7-8b0f-7ef4782f783c | c4.hi   | 46080     | 20   | 180       |      | 4     | 1.0         | True      |
+| 6c1ed3eb-6341-470e-92b7-5142014e7c5e | c2.low  | 7680      | 20   | 80        |      | 2     | 1.0         | True      |
+| 72009191-d893-4a07-871c-7f6e50b4e110 | c8.med  | 61440     | 20   | 380       |      | 8     | 1.0         | True      |
+| 8061864c-722b-4f79-83af-91c3a835bd48 | c4.low  | 15360     | 20   | 180       |      | 4     | 1.0         | True      |
+| 8953676d-def7-4290-b239-4a14311fbb69 | c8.low  | 30720     | 20   | 380       |      | 8     | 1.0         | True      |
+| a0cff077-097e-4931-a902-5aeb3a02ed05 | c4.med  | 30720     | 20   | 180       |      | 4     | 1.0         | True      |
+| a55036b9-f40c-4781-a293-789647c063d7 | c8.hi   | 92160     | 20   | 380       |      | 8     | 1.0         | True      |
+| d816ae8b-ab7d-403d-ae5f-f457b775903d | c16.hi  | 184320    | 20   | 780       |      | 16    | 1.0         | True      |
+| e7346bd7-cae6-41e3-9235-5f18ba36edf1 | c16.low | 61440     | 20   | 780       |      | 16    | 1.0         | True      |
++--------------------------------------+---------+-----------+------+-----------+------+-------+-------------+-----------+
 {% endhighlight %}
-Note that ```Disk``` is the size of the root partition in GB. **m1.small** is the smallest usable flavor for most Linux images.
+Note that ```Disk``` is the size of the root partition in GB. ```Ephemeral``` is an additional (typically large) block device that provides fast temporary storage. **c2.low** is the smallest usable flavor for most Linux images.
 
 Next, launch an instance:
 {% highlight bash %}
-nova boot --flavor m1.small --image 007e7156-964e-43b6-ab7c-bdc86a922365 --security_groups "default" --key_name "mykey" "new_instance"
+nova boot --flavor c2.low --image 007e7156-964e-43b6-ab7c-bdc86a922365 --security_groups "default" --key_name "mykey" "new_instance"
 +--------------------------------------+-----------------------------------------------------+
 | Property                             | Value                                               |
 +--------------------------------------+-----------------------------------------------------+
@@ -160,7 +168,7 @@ nova boot --flavor m1.small --image 007e7156-964e-43b6-ab7c-bdc86a922365 --secur
 | adminPass                            | Ksy63C6dNYZp                                        |
 | config_drive                         |                                                     |
 | created                              | 2014-11-23T04:22:43Z                                |
-| flavor                               | m1.small (2)                                        |
+| flavor                               | c2.low (2)                                          |
 | hostId                               |                                                     |
 | id                                   | de7afe99-a559-4744-bab7-fbc30e85fcfc                |
 | image                                | migrated_sl6 (007e7156-964e-43b6-ab7c-bdc86a922365) |
@@ -192,17 +200,16 @@ nova list
 
 Assign a floating IP so that you can access it:
 {% highlight bash %}
-nova floating-ip-associate new_instance 206.12.48.93
+nova floating-ip-associate new_instance [floating ip]
 {% endhighlight %}
-Available IP addresses can be listed using ```nova floating-ip-list```. If you wish to disassociate the IP (in order to make it available for another VM), use ```nova floating-ip-disassociate```.
+Available values of ```[floating ip]``` can be listed using ```nova floating-ip-list```. If you wish to disassociate the IP (in order to make it available for another VM), use ```nova floating-ip-disassociate```.
 
-Then you can **ssh** to the VM. If you do not know the name of the generic user account into which your SSH key has been injected, initially try to enter as root and it will tell you the correct name:
+You can then **ssh** to the VM. If you do not know the name of the generic user account into which your SSH key has been injected, initially try to enter as root and it will tell you the correct name:
 {% highlight bash %}
-ssh root@206.12.48.93
+ssh root@[floating ip]
 Please login as the user "cloud-user" rather than the user "root".
 
-ssh cloud-user@206.12.48.93
-[cloud-user@new-instance ~]$
+ssh cloud-user@[floating ip]
 {% endhighlight %}
 
 ### snapshot a running instance
