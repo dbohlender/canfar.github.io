@@ -4,7 +4,7 @@ title: Virtual Machine Command-line Interface
 permalink: /docs/cli/
 ---
 
-<div class="span-4 module-table-contents margin-top-large">
+<div class="span-4 module-table-contents">
 	<h2>Table of contents</h2>
   <ol class="column-2">
     <li><a href="#introduction">Introduction</a></li>
