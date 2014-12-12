@@ -76,7 +76,7 @@ canfar_submit myjob.jdl [tenant_name]:[snapshot_name] c2.low
 ### Checking Job Status
 `HTCondor` offers a great deal of command line tools to check the status of the VM and the job.
 For a more exhaustive list of commands, we refere the reader to the official [HTCondor user documentation](http://research.cs.wisc.edu/htcondor/manual/v8.2/2_Users_Manual.html)
-or our [HTCondor cheat sheet]({{site.basepath}}/docs/vmacess]).
+or a very good overview and cheat sheet on [SIEpedia](http://www.iac.es/sieinvens/siepedia/pmwiki.php?n=HOWTOs.Condor).
 
 See where your jobs stand on the global queue
 
@@ -92,12 +92,9 @@ See why your job 11.3 is still idle (job status is "I"):
 condor_q -better-analyze 11.3 
 {% endhighlight %}
 
-Check the status of the execution hosts (VMs):
+Check to see if your VMs are joining the pool of execution hosts:
 
 {% highlight bash %}
 condor_status 
 {% endhighlight %}
 
-## Managing Batch Jobs from your local computer using CANFAR web service
-
-## Troubleshooting
