@@ -6,35 +6,39 @@ permalink: /docs/batch/
 
 Batch processing is a standard way to queue and run large amount of tasks while sharing the resources with other groups. In CANFAR, we provide a batch processing system which users can access either through a minimal http service, or with many more features using a login portal to launch and manage processing jobs.
 
-## Batch Framwork on the CANFAR clouds
+## Batch Framework on the CANFAR clouds
 
 CANFAR scheduling system is orcherstrated with the [HTCondor](http://www.htcondor.org) high throughput computing software, and the [cloud-scheduler](http://www.cloudscheduler.org) to allow multi-clusters (multi-clouds) batch processing.
 
-For a typical CANFAR user, `HTCondor` will be similar to a lot like other queue scheduling software that can be found on High Performance Computing platforms, such as PBS/Torque, Sun Grid Engine, or Slurm.
+For a typical CANFAR user, `HTCondor` will be similar use as other scheduling software that can be found on High Performance Computing platforms, such as PBS/Torque, Sun Grid Engine, or Slurm.
 Most users will not have to care about the cloud scheduler since it runs in the background launching VMs while monitoring the jobs queues, but HTCondor is important to understand in order to manage and submit jobs.
 
-## Writing a batch job
+## Writing a Batch Job 
 
-First the job needs an executable. HTCondor needs a local executable (on the batch.canfar.net) that will be transfered to the VM and be executed. For example, if one wants to execute the `echo` command on the VM, the local script would contain:
+Running a job with CANFAR means executing a program on a Virtual Machine. So first thing is to write a script that HTCondor will forward to the VM and execute it. So it has to be a local executable. For example, if one wants to execute the `echo` command on the VM, the local script could contain:
 
 {% highlight bash %}
 #!/bin/bash
 echo $*
 {% endhighlight %}
 
-Let's name the local script `myexec.bash`. We now have to choose a machine that will execute the transfered script. Assuming an image called `my_image` has been created following the. [VM management guide]({{site.basepath}}/docs/vmacess). Now to execute the command `echo` we need the smallest possible resource flavour that can boot the `my_image` VM, that is `m1.small` (assuming it was tested previously interactively). Open your favorite editor, and write a file `myjob.jdl`, containing:
+Let's name the local script `myexec.bash`. We now have to choose a machine that will execute the transfered script. Let's assume an image is called `my_image` has been created following the [tutorial]({{site.basepath}}/docs/tutorial). Now to execute the command `ls` we need the smallest possible resource flavour that can boot the `my_image` VM, that is `c1.low`. Open your favorite editor, and  write a file `myjob.jdl`. A typical job will be like this:
 
 {% highlight text %}
-+VMAMI          = "canfar:my_image"
-+VMInstanceType = "canfar:m1.small"
+Universe   = vanilla
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT_OR_EVICT
+RunAsOwner = True
+
+transfer_output_files = /dev/null
 
 executable = myexec.bash
 
-output     = myjob.out
-error      = myjob.err
-log        = myjob.log
-
 arguments = "Hello World"
+output     = hello.out
+error      = hello.err
+log        = hello.log
+
 queue
 {% endhighlight %}
 
@@ -44,55 +48,35 @@ that will be transfered back to batch.canfar.net at the end of the
 job.
 - `error` is the corresponding `stderr`
 - `log` is a logging of `HTCondor` activities
-- `arguments` contains the arguments we want to pass to the
-`executable`
-- `queue` means "sends a job" with these `arguments` previously defined
+- `arguments` contains the arguments we want to pass to the `executable`
+- `queue` means "sends a job" with the `arguments` previously defined
 
 ## Managing Batch Jobs on the submission host
 
 ### Job Submission
-In this case, the submission files and the `executable` will have to reside on the CANFAR batch login node. Connect to the batch node:
+In this case, the submission files and the executable will have to reside on the CANFAR batch login node. Connect to the batch node with your CANFAR username (refered as`[username]`):
 
 {% highlight bash %}
-ssh USERNAME@batch.canfar.net
+ssh [username]@batch.canfar.net
 {% endhighlight %}
 
-Set up your password for your nefos project account (where your VM image is):
+Then you will need to source your credentials to access your tenant's VMs:
 
 {% highlight bash %}
-export OS_PASSWORD="my_password"
+. canfar-[tenantname]-openrc.sh
 {% endhighlight %}
 
-Then share your VM with CANFAR, validate your submission file, and send the job all at once with the following command:
-
+This file is the same as the one you can download from your tenant, when clicking in the **API Access** tab from your [dashboard](https://west.cloud.computecanada.ca/dashboard/project/access_and_security/).
+Now to submit the job, there is a special wrapper script that will share your VM with CANFAR, add some boiler plate lines for the cloud-scheduler, validate and submit the job. Instead of running `condor_submit`, you run:
 {% highlight bash %}
-canfar_submit myjob.jdl
-{% endhighlight %}
-
-The job that was actually submitted is a validated condor submission file named `myjob_canfar.jdl` (Job Description Language).
-
-If you want more control, decompose it in three steps:
-- First share your VM image with the CANFAR project (the one with a lot of resource allocation):
-
-{% highlight bash %}
-canfar_vm_share my_image
-{% endhighlight %}
-
-- then validate your job file:
-{% highlight bash %}
-canfar_job_validate myjob.jdl
-{% endhighlight %}
-
-- finally send the validated file with `HTCondor` directly:
-{% highlight bash %}
-condor_submit myjob_canfar.jdl
+canfar_submit myjob.jdl [tenant_name]:[snapshot_name] c2.low
 {% endhighlight %}
 
 
 ### Checking Job Status
 `HTCondor` offers a great deal of command line tools to check the status of the VM and the job.
 For a more exhaustive list of commands, we refere the reader to the official [HTCondor user documentation](http://research.cs.wisc.edu/htcondor/manual/v8.2/2_Users_Manual.html)
-or our [HTCondor cheat sheet]({{site.basepath}}/docs/vmacess]).
+or a very good overview and cheat sheet on [SIEpedia](http://www.iac.es/sieinvens/siepedia/pmwiki.php?n=HOWTOs.Condor).
 
 See where your jobs stand on the global queue
 
@@ -108,12 +92,9 @@ See why your job 11.3 is still idle (job status is "I"):
 condor_q -better-analyze 11.3 
 {% endhighlight %}
 
-Check the status of the execution hosts (VMs):
+Check to see if your VMs are joining the pool of execution hosts:
 
 {% highlight bash %}
 condor_status 
 {% endhighlight %}
 
-## Managing Batch Jobs from your local computer using CANFAR web service
-
-## Troubleshooting
