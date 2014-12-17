@@ -65,71 +65,84 @@ Before being able to ssh to your instance, you will need to attach the public IP
 Your ssh public key will have been injected into a **generic account** with a name like ```ec2-user```, ```cloud-user```, ```centos```, or ```ubuntu```, depending on the Linux distribution. To discover the name of this account, first attempt to connect as root:
 
 ```ssh root@[floating_ip]```
-```Please login as the user "ubuntu" rather than the user "root".```
 <br />
+```Please login as the user "ubuntu" rather than the user "root".```
+<br /><br />
 ```ssh ubuntu@[floating_ip]```
 
 ### Create a User
 
 You might need to create a different user than the default one, and for batch processing to work, it is presently necessary for you to create a user on the VM with your CANFAR username. You can use a wrapper script for this:
 
-```
-curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/scripts/canfar_create_user.bash -o canfar_create_user.bash
-sudo bash canfar_create_user.bash [username]
-```
+```curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/scripts/canfar_create_user.bash -o canfar_create_user.bash```
+<br />
+```sudo bash canfar_create_user.bash [username]```
 
 Now, exit the VM, and re-connect with your CANFAR username instead of ubuntu:
 
-```
-exit
-ssh [username]@[floating_ip]
-```
+```exit```
+<br />
+```ssh [username]@[floating_ip]```
 
 ### Install Software
 
 The VM operating system has only a minimal set of packages. For this tutorial, we need the [SExtractor](http://www.astromatic.net/software/sextractor) package to create catalogues of stars and galaxies. So let's install it system-wide.
 
-```
-sudo apt-get update
-sudo apt-get install sextractor
-```
+```sudo apt-get update```
+<br />
+```sudo apt-get install sextractor```
+<br />
 
 We also need to read FITS images. Most FITS images from CADC come Rice-compressed with an `fz` extension. SExtractor only reads uncompressed images, so we also need the ```funpack``` utility to uncompress these data. Install it on your VM with the following commands:
 
-```
-sudo apt-get install gcc make
-curl ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/cfitsio3370.tar.gz | tar xfz - 
-cd cfitsio
-./configure
-make funpack
-sudo cp funpack /usr/local/bin
-```
+```sudo apt-get install gcc make```
+<br />
+```curl ftp://heasarc.gsfc.nasa.gov/software/fitsio/c/cfitsio3370.tar.gz | tar xfz -```
+<br />
+```cd cfitsio```
+<br />
+```./configure```
+<br />
+```make funpack```
+<br />
+```sudo cp funpack /usr/local/bin```
+<br />
 
 ### Test the Software
 
 We are now ready to do a simple test. Let's download a FITS image to our scratch space. When we instantiated the VM we chose a flavour with an *ephemeral partition*. First, execute the following script to mount this device at `/ephemeral` and create a work directory to mimic the batch processing environment (note that this will be done automatically for batch jobs):
 
-```
-curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/scripts/canfar_mount_ephemeral.bash -o canfar_mount_ephemeral.bash
-sudo bash canfar_mount_ephemeral.bash
-cd /ephemeral
-sudo mkdir work
-sudo chown [username]:[username] work
-```
+```curl https://raw.githubusercontent.com/canfar/openstack-sandbox/master/scripts/canfar_mount_ephemeral.bash -o canfar_mount_ephemeral.bash```
+<br />
+```sudo bash canfar_mount_ephemeral.bash```
+<br />
+```cd /ephemeral```
+<br />
+```sudo mkdir work```
+<br />
+```sudo chown [username]:[username] work```
+<br />
 
 Next, enter the directory, copy an astronomical image there, and run SExtractor on it:
 
-```
-cd work
-cp /usr/share/sextractor/default* .
-rm default.param
-echo 'NUMBER
-MAG_AUTO
-X_IMAGE
-Y_IMAGE' > default.param
-curl -L http://www.canfar.phys.uvic.ca/data/pub/CFHT/1056213p.fits.fz | funpack -O 1056213p.fits -
-sextractor 1056213p.fits -CATALOG_NAME 1056213p.cat
-```
+```cd work```
+<br />
+```cp /usr/share/sextractor/default* .```
+<br />
+```rm default.param```
+<br />
+```echo 'NUMBER```
+<br />
+```MAG_AUTO```
+<br />
+```X_IMAGE```
+<br />
+```Y_IMAGE' > default.param```
+<br />
+```curl -L http://www.canfar.phys.uvic.ca/data/pub/CFHT/1056213p.fits.fz | funpack -O 1056213p.fits -```
+<br />
+```sextractor 1056213p.fits -CATALOG_NAME 1056213p.cat```
+<br />
 
 The image `1056213p.fits` is a Multi-Extension FITS file with 36 extensions, each containing data from one CCD from the CFHT Megacam camera.
 
@@ -137,19 +150,21 @@ The image `1056213p.fits` is a Multi-Extension FITS file with 36 extensions, eac
 
 We want to store the output catalogue `1056213p.cat` at a persistent, externally-accessible location (all data stored on the VM and ephemeral partition since the last time it was saved are normally **wiped out** when the VM shuts down). We will use VOSpace to store the result. For an automated procedure to access VOSpace on your behalf, your proxy authorization must be present on the VM. This is accomplished using a `.netrc` file that contains your CANFAR user name and password, and then **getCert** can obtain an *X509 Proxy Certificate* using that name/password combination without any further user interaction.
 
-```
-echo "machine www.canfar.phys.uvic.ca login [username] password [password]" > ~/.netrc
-chmod 600 ~/.netrc
-sudo apt-get install python-pip
-sudo pip install -U vos
-getCert
-```
+```echo "machine www.canfar.phys.uvic.ca login [username] password [password]" > ~/.netrc```
+<br />
+```chmod 600 ~/.netrc```
+<br />
+```sudo apt-get install python-pip```
+<br />
+```sudo pip install -U vos```
+<br />
+```getCert```
+<br />
 
 Let's check that the VOSpace client works by copying the results to your VOSpace:
 
-```
-vcp 1056213p.cat vos:[username]
-```
+```vcp 1056213p.cat vos:[username]```
+<br />
 
 Verify that the file is properly uploaded by pointing your browser to the [VOSpace browser interface](http://www.canfar.phys.uvic.ca/vosui).
 
