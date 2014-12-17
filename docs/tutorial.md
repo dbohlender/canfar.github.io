@@ -64,12 +64,10 @@ Before being able to ssh to your instance, you will need to attach the public IP
 
 Your ssh public key will have been injected into a **generic account** with a name like ```ec2-user```, ```cloud-user```, ```centos```, or ```ubuntu```, depending on the Linux distribution. To discover the name of this account, first attempt to connect as root:
 
-```
-ssh root@[floating_ip]
-Please login as the user "ubuntu" rather than the user "root".
-
-ssh ubuntu@[floating_ip]
-```
+```ssh root@[floating_ip]```
+```Please login as the user "ubuntu" rather than the user "root".```
+<br />
+```ssh ubuntu@[floating_ip]```
 
 ### Create a User
 
