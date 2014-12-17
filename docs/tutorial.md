@@ -229,7 +229,7 @@ ssh [username]@batch.canfar.net
 
 Let's write a submission file that will transfer the `mytutorial.bash` script to the execution host (a copy of your snapshot VM), and for each given CADC CFHT file id, will run a job. We will do it for 3 CFHT images with the file ids 1056215p, 1056216p and 1056217p. For this tutorial you will modify the configuration file listed below. Fire up your favorite editor and paste the following text into a submission file:
 
-{% highlight text %}
+```
 Universe   = vanilla
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT_OR_EVICT
