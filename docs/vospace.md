@@ -96,7 +96,7 @@ vchmod g+w vos:VOSPACE/foo/bar.txt 'GROUP1, GROUP2, GROUP3'
 # For a list of GROUP names visit the [Group Managemnet Service](http://www.canfar.phys.uvic.ca/canfar/groups/) 
 {% endhighlight %}
 
-Details on these commands can be found via the `--help` option, e.g. `vls --help`. And if you want to see a more verbose output, try `vls -v vos:USER`.  Currently the following commands are defined: vcat vchmod vcp vln vlock vls vmkdir vmv vrm vrmdir vsync  vtag
+Details on these commands can be found via the `--help` option, e.g. `vls --help`. And if you want to see a more verbose output, try `vls -v vos:USER`.  Currently the following commands are defined: `vcat` `vchmod` `vcp` `vln` `vlock` `vls` `vmkdir` `vmv` `vrm` `vrmdir` `vsync`  `vtag`
 
 ### Using the VOSpace FUSE file system
 
