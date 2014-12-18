@@ -87,6 +87,8 @@ vmkdir vos:VOSPACE/bar
 vmv vos:VOSPACE/bar vos:VOSPACE/foo/
 # changes the name of file bar to bar2 on the VOSpace
 vmv vos:VOSPACE/foo/bar vos:VOSPACE/foo/bar2
+# chnage permissions on a file
+vchmod
 {% endhighlight %}
 
 Details on these commands can be found via the `--help` option, e.g. `vls --help`. And if you want to see a more verbose output, try `vls -v vos:USER`
