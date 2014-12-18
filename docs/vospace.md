@@ -79,6 +79,10 @@ Try the following commands, substituting your CANFAR VOSpace in for VOSPACE (mos
 vls vos:VOSPACE
 # copies the bar file to the root node of VOSPACE
 vcp ${HOME}/bar vos:VOSPACE
+# wildcards also work
+vcp vos:VOSPACE/foo/*.txt .
+# Our you can do FITS cutouts at the service side
+vcp vos:VOSPACE/image.fits[1:100,1:100] .
 # removes the bar file from VOSPACE
 vrm vos:VOSPACE/foo
 # creates a new container node (directory) called foo in VOSPACE
@@ -87,11 +91,12 @@ vmkdir vos:VOSPACE/bar
 vmv vos:VOSPACE/bar vos:VOSPACE/foo/
 # changes the name of file bar to bar2 on the VOSpace
 vmv vos:VOSPACE/foo/bar vos:VOSPACE/foo/bar2
-# chnage permissions on a file
-vchmod
+# provide group write permission on a VOSpace location (can be a dirtory or file). Can due up-to 4 groups
+vchmod g+w vos:VOSPACE/foo/bar.txt 'GROUP1, GROUP2, GROUP3'
+# For a list of GROUP names visit the [Group Managemnet Service](http://www.canfar.phys.uvic.ca/canfar/groups/) 
 {% endhighlight %}
 
-Details on these commands can be found via the `--help` option, e.g. `vls --help`. And if you want to see a more verbose output, try `vls -v vos:USER`
+Details on these commands can be found via the `--help` option, e.g. `vls --help`. And if you want to see a more verbose output, try `vls -v vos:USER`.  Currently the following commands are defined: vcat vchmod vcp vln vlock vls vmkdir vmv vrm vrmdir vsync  vtag
 
 ### Using the VOSpace FUSE file system
 
