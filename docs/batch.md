@@ -6,8 +6,6 @@ permalink: /docs/batch/
 
 Batch processing is a standard way to queue and run large amount of tasks while sharing the resources with other groups. In CANFAR, we provide a batch processing system which users can access either through a minimal http service, or with many more features using a login portal to launch and manage processing jobs.
 
-CANFAR Vandilization.
-
 ## Batch Framework on the CANFAR clouds
 
 CANFAR scheduling system is orcherstrated with the [HTCondor](http://www.htcondor.org) high throughput computing software, and the [cloud-scheduler](http://www.cloudscheduler.org) to allow multi-clusters (multi-clouds) batch processing.
