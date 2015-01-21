@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Tutorial
+title: Processing Tutorial
 permalink: /docs/tutorial/
 ---
 
