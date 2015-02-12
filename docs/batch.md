@@ -73,13 +73,13 @@ ssh [username]@batch.canfar.net
 Then you will need to source your credentials to access your tenant's VMs:
 
 {% highlight bash %}
-. canfar-[tenantname]-openrc.sh
+. canfar-[tenant_name]-openrc.sh
 {% endhighlight %}
 
 This file is the same as the one you can download from your tenant, when clicking in the **API Access** tab from your [dashboard](https://west.cloud.computecanada.ca/dashboard/project/access_and_security/).
 Now to submit the job, there is a special wrapper script that will share your VM with CANFAR, add some boiler plate lines for the cloud-scheduler, validate and submit the job. Instead of running `condor_submit`, you run:
 {% highlight bash %}
-canfar_submit myjob.jdl [tenant_name]:[snapshot_name] c2.low
+canfar_submit myjob.jdl [snapshot_name] c2.low
 {% endhighlight %}
 
 

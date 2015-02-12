@@ -31,20 +31,20 @@ This tutorial demonstrates how to:
 
 To manage the VMs with OpenStack, we suggest using the  dashboard at Compute Canada. [Log into the dashboard](https://west.cloud.computecanada.ca). Provide your CANFAR username, adding a ```-canfar``` suffix, e.g, ```janesmith-canfar```, and your usual CANFAR password. We will refer the CANFAR username (excluding the ```-canfar``` suffix which is only used for logging into the dashboard) as ```[username]``` throughout this document.
 
-Each resource allocation corresponds to an OpenStack **tenant** or **project** (these two names are used interchangeably). A user may be a member of multiple projects, and a project usually has multiple users. A pull-down menu near the top-left allows you to select between the different projects that you are a member of.
+Each resource allocation corresponds to an OpenStack **tenant** or **project** (these two names are used interchangeably). A user may be a member of multiple tenants, and a tenant usually has multiple users. A pull-down menu near the top-left allows you to select between the different tenants that you are a member of.
 
 ### Update security group to allow ssh access
 
-Click on **Access & Security** (left column of page), and then the **Security Groups** tab. Click on the **Manage Rules** button next to the default group. If you see a rule with **Ingress** Direction, **22(SSH)** Port Range and **0.0.0.0/0 (CIDR)** Remote, then that means someone in your project already set up the ssh port for you. If you don't see it, add a new rule following these instructions.
-Click on the **+ Add Rule** button near the top-right. Select **SSH** at the bottom of the **Rule** pull-down menu, and then click on **Add** at the bottom-right. **This operation is only required once for the initial setup of the project**.
+Click on **Access & Security** (left column of page), and then the **Security Groups** tab. Click on the **Manage Rules** button next to the default group. If you see a rule with **Ingress** Direction, **22(SSH)** Port Range and **0.0.0.0/0 (CIDR)** Remote, then that means someone in your tenant already set up the ssh port for you. If you don't see it, add a new rule following these instructions.
+Click on the **+ Add Rule** button near the top-right. Select **SSH** at the bottom of the **Rule** pull-down menu, and then click on **Add** at the bottom-right. **This operation is only required once for the initial setup of the tenant**.
 
 ### Import an ssh public key
 
 Access to VMs is facilitated by SSH key pairs rather than less secure user name / password. A private key resides on your own computer, and the public key is copied to all machines that you wish to connect to. Click on **Access & Security**, switch to the **Key Pairs** tab and click on the **Import Key Pair** button at the top-right. Choose a meaningful name for the key, and then copy and paste the contents of ```~/.ssh/id_rsa.pub``` from the machine you plan to ssh from into the **Public Key** window. If you have not yet created a key pair on your system, run **ssh-keygen** on this local machine to generate one or follow this [documentation](https://help.github.com/articles/generating-ssh-keys/) for example.
 
-### Allocate public IP address to project
+### Allocate public IP address to a tenant
 
-You will need to connect to your VM via a public IP. Click on the **Floating IPs** tab. If there are no IPs listed, click on the **Allocate IP to Project** button at the top-right. Each project will typically have one public IP. If you have already allocated all of your IPs, this button will read "Quota Exceeded".
+You will need to connect to your VM via a public IP. Click on the **Floating IPs** tab. If there are no IPs listed, click on the **Allocate IP to Project** button at the top-right. Each tenant/project will typically have one public IP. If you have already allocated all of your IPs, this button will read "Quota Exceeded".
 
 ### Launch a VM Instance
 
@@ -258,18 +258,18 @@ Again, be sure to substitue the correct value for `[username]`. It is important 
 
 Save the submission file as `mytutorial.sub`.
 
-Source the OpenStack RC project file, and enter your CANFAR password. This sets environment variables used by OpenStack (only required once per login session):
+Source the OpenStack RC tenant file, and enter your CANFAR password. This sets environment variables used by OpenStack (only required once per login session):
 
 ```
-. canfar-[project]-openrc.sh
+. canfar-[tenant]-openrc.sh
 Please enter your OpenStack Password:
 ```
 
 You can then submit your jobs to the condor job pool:
 
-```canfar_submit mytutorial.sub [project_name]:[snapshot_name] c2.low```
+```canfar_submit mytutorial.sub [snapshot_name] c2.low```
 
-```[snapshot_name]``` has to be replaced by the name of the snapshot you used during the VM configuration above, and ```[project_name]``` is the name of the project where that image is stored. Note that the environment variable ```$OS_TENANT_NAME``` that was set by  ```. canfar-[project]-openrc.sh``` can be used for ```[project_name]```, provided you saved the image in that same project. Finally, ```c2.low``` is the flavor for the VM(s) that will execute the jobs. If you wish to use a different flavor, they are visible through the dashboard when [launching an instance](#launch-a-vm-instance), or using the [nova command-line client](../cli/#launch-the-instance).
+```[snapshot_name]``` has to be replaced by the name of the snapshot you used during the VM configuration above, and ```c2.low``` is the flavor for the VM(s) that will execute the jobs. If you wish to use a different flavor, they are visible through the dashboard when [launching an instance](#launch-a-vm-instance), or using the [nova command-line client](../cli/#launch-the-instance).
 
 After submitting, wait a couple of minutes. Check where your jobs stand in the queue:
 
@@ -289,9 +289,9 @@ You are done!
 
 ### Using a VM image migrated from the old system
 
-Rather than configuring a new VM, users of the old system may use their old VMs. As part of the migration, VM images were located in the  personal VOSpaces of existing CANFAR users and then converted and copied into OpenStack projects. Please note the following:
+Rather than configuring a new VM, users of the old system may use their old VMs. As part of the migration, VM images were located in the  personal VOSpaces of existing CANFAR users and then converted and copied into OpenStack tenant. Please note the following:
 
-- *VM images are stored in the project, not a personal VOSpace.* If several users are members of the same project they need to keep track of the different VM images that they have created.
+- *VM images are stored in the tenant, not a personal VOSpace.* If several users are members of the same tenant they need to keep track of the different VM images that they have created.
 
 - *The size of the root partition is not dynamic.* For example, if your old VM (from ```vos:[username]/vmstore```) had a size of 10 G, you will need to select a flavor with a root partition of at least that size. However, if you select a flavor with a much larger size (e.g., 40 G), the instantiated VM will still only be able to use 10 G.
 
