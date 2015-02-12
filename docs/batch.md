@@ -51,6 +51,16 @@ job.
 - `arguments` contains the arguments we want to pass to the `executable`
 - `queue` means "sends a job" with the `arguments` previously defined
 
+
+### Multi jobs per VM or Multi-threading
+
+By default, a batch scheduled VM will spawn the same amount of jobs as there are CPUs in the requested flavour. A c2.low flavour will launch a 2 cores VM, thus launch 2 jobs per VM.  It could be more efficient, and request an 8 cores flavours that will spawn 8 jobs per VM. The I/O will also be improved, since job separation will be done at HTCondor level instead at the hypervisor. However if you need the whole VM for your job, such as in multi-threading, you will need extra requirements. In this case use one of the following parameter in your job submission file:
+- request_memory = XXX
+- request_cpus = XXX
+- request_disk = XXX
+You can also add a different request parameter per job. The VMs will be dynamically partioned into jobs to maximally fit the VM flavour.
+See the [submission manual page](http://research.cs.wisc.edu/htcondor/manual/current/condor_submit.html) for reference on the HTCondor request parameters.
+
 ## Managing Batch Jobs on the submission host
 
 ### Job Submission
