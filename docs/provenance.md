@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: CANFAR Provenance
-permalink: /docs/home/
+permalink: /docs/home/provenance
 ---
 
 ### CANFAR Provenance
