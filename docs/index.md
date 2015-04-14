@@ -4,7 +4,7 @@ title: CANFAR
 permalink: /docs/home/
 ---
 
-<h1>CANFAR Documentation</h2>
+<h1>CANFAR Documentation</h1>
 
 [VOSpace](http://www.canfar.net/docs/vospace/)
 
