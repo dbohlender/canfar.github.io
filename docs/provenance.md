@@ -16,4 +16,4 @@ scripted and run in a parallel test environment prior to software release.
 Platform and service documentation are coupled with software releases.  Service-specific documentation
 can be found at the base URL of the service or by appending /service/doc to the base URL.
 
-Source code is licensed under the [GNU General Public License](http://www.gnu.org/licenses/gpl.html).
+CANFAR source code is licensed under the [GNU General Public License](http://www.gnu.org/licenses/gpl.html).  CANFAR adheres to the licensing statements in any third-party software packages that are used.
