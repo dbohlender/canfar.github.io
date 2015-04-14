@@ -4,9 +4,9 @@ title: CANFAR
 permalink: /docs/home/
 ---
 
-<h1>CANFAR Documentation</h1>
+## CANFAR Documentation
 
-[VOSpace](http://www.canfar.net/docs/vospace/)
+[VOSpace Documentation](http://www.canfar.net/docs/vospace/)
 
 [Processing Tutorial](http://www.canfar.net/docs/tutorial/)
 
@@ -20,6 +20,6 @@ permalink: /docs/home/
 
 [Managing Virtual Machine Instances](http://www.canfar.net/docs/cli/#managing-virtual-machine-instances)
 
-<h1>CANFAR Support</h1>
+## CANFAR Support
 
 Please email canfar@uvic.ca for help.
