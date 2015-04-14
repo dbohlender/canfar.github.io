@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: CANFAR Provenance
+title: CANFAR
 permalink: /docs/provenance/
 ---
 
