@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: CANFAR Welcome
+title: Welcome to CANFAR
 permalink: /docs/home/
 ---
 
