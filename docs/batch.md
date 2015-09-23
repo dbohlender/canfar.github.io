@@ -59,10 +59,12 @@ Here are the explanations of the other parameters:
 
 By default, a batch scheduled VM will spawn the same amount of jobs as there are CPUs in the requested flavour. A c8-30gb-380 flavour will launch an 8 cores VM, thus launch 8 jobs per VM. Most of the time it is more efficient to request fairly large flavours to spawn multiple concurrent jobs per VM. Imagine a bare metal node with 16 cores: the overhead of running two 8 cores VMs (2 hypervisors + 2 HTCondor + 16 jobs) vs running 16 one core VMs (16 hypervisors + 16 HTCondor + 16 jobs).
 
-However in some cases you need the whole VM for your job. Multi-threaded programs will usually benefit from it. You will need extra resource requirements in your job submission file. For example, if you need a minimum of 8 cores, 16GB of RAM and 250GB of scratch space for your job, use the following parameter in your job submission file: 
+However in some cases you need the whole VM for your job. Multi-threaded programs will usually benefit from it. You will need extra resource requirements in your job submission file. For example, if you need a minimum of 8 cores, 16GB of RAM and 250GB of scratch space for your job, use the following parameters in your job submission file:
+
 - request_memory = 16000 
 - request_cpus = 8
 - request_disk = 250000000
+
 You can also add a different request parameter per job. The VMs will be dynamically partioned into jobs to maximally fit the VM flavour. See the [submission manual page](http://research.cs.wisc.edu/htcondor/manual/current/condor_submit.html) for reference on the HTCondor request parameters. 
 
 ## Managing Batch Jobs on the submission host
@@ -77,10 +79,10 @@ ssh [username]@batch.canfar.net
 Then you will need to source your credentials to access your tenant's VMs:
 
 {% highlight bash %}
-. canfar-[tenant_name]-openrc.sh
+. canfar-[tenant]-openrc.sh
 {% endhighlight %}
 
-This file is the same as the one you can download from your tenant, when clicking in the **API Access** tab from your [dashboard](https://west.cloud.computecanada.ca/dashboard/project/access_and_security/). 
+This file is the same as the one you can download from your tenant, when clicking in the **API Access** tab from your [dashboard](https://west.cloud.computecanada.ca/dashboard/project/access_and_security/). It should download it for you, then replace `[tenant]` by your tenant name.
 Now to submit the job, there is a special wrapper script that will share your VM with CANFAR, add some boiler plate lines for the cloud-scheduler, validate and submit the job. Instead of running `condor_submit`, you would run `canfar_submit`. For our simple example, you would do:
 {% highlight bash %}
 canfar_submit myjob.jdl my_vm_image c8-30gb-380
