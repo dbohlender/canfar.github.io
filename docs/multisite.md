@@ -1,7 +1,7 @@
 ---
 layout: docs
 title: Plan for CANFAR Multi Site Cluster Batch Processing
-permalink: /docs/plans/
+permalink: /docs/multisite/
 ---
 
 The CANFAR batch processing infrastructure is currently running on a single cluster orchestrated on one OpenStack cloud with ComputeCanada. CANFAR used to run on 4 clusters at 3 different clouds with Nimbus infrastructure, although with lesser amount of total resources. Multi site clusters were handy for cloud bursting and giving users higher availability and allowing specific hardware resources separation. To achieve reliable, efficient and scalable multi-sites batch processing would probably require a new design work flow. We describe here how we would need to do multi site clusters batch processing with OpenStack sites operated by ComputeCanada the most direct way.
