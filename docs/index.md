@@ -20,6 +20,10 @@ permalink: /docs/home/
 
 [Managing Virtual Machine Instances](http://www.canfar.net/docs/cli/#managing-virtual-machine-instances)
 
+### CANFAR Plans
+[Plan for CANFAR Multi Site Cluster Batch Processing](http://www.canfar.net/docs/multisite/)
+
+
 ### CANFAR Support
 
 Please email [canfar@uvic.ca](mailto:canfar@uvic.ca) for help.
