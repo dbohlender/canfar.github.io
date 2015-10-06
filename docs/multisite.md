@@ -22,11 +22,13 @@ The batch scheduler server hosts the services launching batch jobs. Batch jobs i
 
 ![Multi site cluster architecture](../../img/canfar_multi_cluster.png)
 
-##Cluster Resources
+## Cluster Resources
+
 The CANFAR resource allocation define the resource quota in each cloud. Given the archive and VOSpace data location, we will host storage resources closer to the worker VMs to minimize network traffic. Each cloud should have one CANFAR batch tenant with all the allocated quota for batch processing. In each cloud, only the storage replica is shared among Virtual Machines. 
 
   
-##Central Manager
+## Central Manager
+
 The central manager gathers all user job submissions, collect job status and negotiate job requirements with available resources. Because user software stack in CANFAR is VM based, a VM instance manager monitors the job queue and launches or shutdowns VMs according to the job requirements across clouds. To make sure the same VM image is used in all clouds, we used to have a common VM HTTPS based repository. With the current implementation of OpenStack, the image repository is local to the cloud, so we need to synchronize repositories across clouds.
 
 Central Manager  requirements: 
@@ -39,9 +41,11 @@ Central Manager  requirements:
  - contextualization for worker VMs with `cloud-init`  generated files for `HTCondor` and `GlusterFS` configuration
 
 ## Storage
+
 To manage data inputs and outputs in batch jobs, most users transport their data on remote servers which are accessible via HTTP clients to the CANFAR VOSpace storage service or the CANFAR data web service. We have two layers of storage to maximize data transfers with either HTTP or POSIX storage.
 
 ### Cache Storage
+
 The cache storage is described in more details in the "Mirroring Storage" document which we summarize here.  The cache storage is designed for fast writes of incoming data from processing VMs through the web services.  The cache nodes consists of HTTP servers with local disk storage.  Cache storage will keep a file for a few hours at most.
 
 Cache storage requirements:
@@ -68,7 +72,8 @@ Read-only slave replica requirements:
  - same network as the worker instances
  - shared file server `GlusterFS`  with geo replication setup as slave
  
-##User Job Management
+## User Job Management
+
 Users develop code and test on VMs within their own resources not shared with batch services. To submit, manage and analyze jobs, CANFAR users can either use a batch web service for basic job management, or use command line clients on a dedicated server. User VMs need to be shared with a dedicated batch tenant. 
 
 User job management dedicated server requirements:
@@ -79,12 +84,12 @@ User job management dedicated server requirements:
  - CANFAR batch web service (tomcat based)
  - job submission command line CANFAR wrappers
    
-##Scalability
+## Scalability
 
 With the elasticity of current cloud infrastructures, scaling up is only an issue of acquiring more resources either by increased allocation time on private clouds, or by credit card on public clouds. 
 Each component of the user layer can be replicated and thus distribution is made easy. However the central manager is still a single point of failure. In practice, replicating HTCondor collector is possible though not without difficulties. Other components of the central manager are not ready for automatic scalability with large increase of  either the number of users or number of tenants.
 
-##Tasks
+## Tasks
 
 1. Resource deployment
 
