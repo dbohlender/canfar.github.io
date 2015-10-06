@@ -1,3 +1,9 @@
+---
+layout: docs
+title: Deploying CADC/CANFAR storage management and data access services
+permalink: /docs/deploying_storage/
+---
+
 #Deploying CADC/CANFAR storage management and data access services
 
 CADC/CANFAR data access is managed through two layers: web services and storage management.
