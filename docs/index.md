@@ -23,6 +23,8 @@ permalink: /docs/home/
 ### CANFAR Plans
 [Plan for CANFAR Multi Site Cluster Batch Processing](http://www.canfar.net/docs/multisite/)
 
+[Plan for deploying CADC/CANFAR storage and web services](http://www.canfar.net/docs/deploying_storage)
+
 
 ### CANFAR Support
 
