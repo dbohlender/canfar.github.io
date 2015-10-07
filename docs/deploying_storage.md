@@ -4,7 +4,7 @@ title: Deploying CADC/CANFAR storage management and data access services
 permalink: /docs/deploying_storage/
 ---
 
-#Deploying CADC/CANFAR storage management and data access services
+# Deploying CADC/CANFAR storage management and data access services
 
 CADC/CANFAR data access is managed through two layers: web services and storage management.
 
@@ -26,11 +26,11 @@ A caution with regards to pairing of nodes between sites.  AD is fairly simplist
 
 Note that AD does not have the concept of a ‘read-only’ node: all nodes are expected to be able to accept writes (through the privileged HTTP instance).
 
-![CADC/CANFAR Storage sub-systems and connections](https://github.com/canfar/docs/blob/master/images/CADC_CANFAR_subsystems.png)
+![CADC/CANFAR Storage sub-systems and connections](../../CADC_CANFAR_subsystems.png)
 
-##AD Deployment
+## AD Deployment
 
-###Storage management
+### Storage management
 
 1. Deploy storage service nodes
 
@@ -124,7 +124,7 @@ Note that AD does not have the concept of a ‘read-only’ node: all nodes are 
 
         * Service configuration: CADC
 
-##Data delivery
+## Data delivery
 
 1. Web services
 
